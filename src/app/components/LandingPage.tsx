@@ -1,8 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { 
-  Cpu, 
-  Terminal, 
+   Terminal, 
   Database, 
   BarChart3, 
   ArrowRight, 
@@ -15,10 +14,10 @@ import {
   CheckCircle2,
   Calendar,
   Layers,
-  MessageCircle
-} from 'lucide-react';
+ } from 'lucide-react';
 
 import dynamic from "next/dynamic";
+import Script from 'next/script';
 
 const Scene = dynamic(() => import("./Scene"), { ssr: false });
 
@@ -27,6 +26,13 @@ const App = () => {
   // Stare pentru pop-up-ul animat la scroll
   const [showInitialPopup, setShowInitialPopup] = useState(false);
   const [hasScrolledPast, setHasScrolledPast] = useState(false);
+  // Contact form state
+  const [formName, setFormName] = useState("");
+  const [formEmail, setFormEmail] = useState("");
+  const [formPhone, setFormPhone] = useState("");
+  const [formGoal, setFormGoal] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,12 +56,57 @@ const App = () => {
   }, [hasScrolledPast]);
 
   const scrollToBooking = () => {
-    document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleScheduleClick = () => {
+    try {
+      // @ts-ignore
+      if (window.Calendly && typeof window.Calendly.initPopupWidget === 'function') {
+        // @ts-ignore
+        window.Calendly.initPopupWidget({ url: 'https://calendly.com/benedek-robertgeorge/30min' });
+        return;
+      }
+      window.open('https://calendly.com/benedek-robertgeorge/30min', '_blank');
+    } catch {
+      window.open('https://calendly.com/benedek-robertgeorge/30min', '_blank');
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitMessage(null);
+    if (!formName || !formEmail || !formPhone) {
+      setSubmitMessage('Please fill in name, email, and phone.');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/callback-requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: formName, email: formEmail, phone: formPhone, goal: formGoal }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSubmitMessage('Request received. I will call you soon.');
+        setFormName('');
+        setFormEmail('');
+        setFormPhone('');
+        setFormGoal('');
+      } else {
+        setSubmitMessage(data?.error || 'Something went wrong.');
+      }
+    } catch (err) {
+      setSubmitMessage('Network error. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#0B172C] text-[#E5E7EB] font-sans selection:bg-[#973CFF] selection:text-white overflow-x-hidden">
-      {/* Background Gradients */}
+      {/* Gradient de fundal */}
       <div className="fixed inset-0 -z-20 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#973CFF]/20 rounded-full blur-[120px]" />
         <div className="absolute bottom-[10%] right-[-5%] w-[400px] h-[400px] bg-[#973CFF]/10 rounded-full blur-[100px]" />
@@ -167,11 +218,7 @@ const App = () => {
             <div className="relative group flex items-center justify-center md:justify-end py-6 md:pl-8">
               
                {/* Animated Pop-up Bubble - Vizibilitate controlată de scroll (cu bounce) și hover (static) */}
-               <div className={`absolute top-2 right-12 md:right-32 z-20 pointer-events-none select-none transition-all duration-300 transform
-                    ${showInitialPopup ? 'opacity-100 translate-y-0 animate-bounce' : 'opacity-0 translate-y-4'}
-                    group-hover:opacity-100 group-hover:translate-y-0
-                    group-hover:animate-none // Oprim animația de bounce la hover
-               `}>
+               <div className={`absolute top-2 right-12 md:right-32 z-20 pointer-events-none select-none transition-all duration-300 transform ${showInitialPopup ? 'opacity-100 translate-y-0 animate-bounce' : 'opacity-0 translate-y-4'} group-hover:opacity-100 group-hover:translate-y-0 group-hover:animate-none`}>
                   <div className="bg-white text-[#0A2540] px-4 py-2 rounded-xl rounded-tr-none shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-[#973CFF]/30 flex items-center gap-2 text-xs font-bold whitespace-nowrap transform -rotate-2">
                     <span className="text-base">👋</span> Salut! Hai să ne conectăm!
                   </div>
@@ -195,7 +242,7 @@ const App = () => {
 
                 {/* Avatar Container with Glow */}
                 <div className="relative">
-                  <div className="absolute inset-0 bg-[#0066FF] rounded-full blur-md opacity-40 group-hover:opacity-70 animate-pulse"></div>
+                  <div className="absolute inset-0 bg-[#973CFF] rounded-full blur-md opacity-40 group-hover:opacity-70 animate-pulse"></div>
                   {/* Sursa imaginii actualizată la /portret.jpg */}
                   <img 
                     src="/portret.jpg" 
@@ -515,28 +562,42 @@ const App = () => {
 
       {/* Calendly / Booking Section */}
       <section id="booking" className="relative z-10 py-24 px-6 bg-[#122440] [background:linear-gradient(#122440,#122440),linear-gradient(135deg,#973CFF,#FBAA60)] [background-clip:padding-box,border-box] [background-origin:border-box] rounded-2xl border border-transparent">
+        {/* Contact form replacing Calendly inline widget */}
         <div className="container mx-auto max-w-4xl text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Discutăm Sisteme, Nu Strategii</h2>
           <p className="text-slate-400 mb-12 max-w-2xl mx-auto">
             Aceasta nu este o convorbire de vânzări. Este o evaluare tehnică a fluxului tău de lucru. Voi analiza unde pierzi bani și îți voi propune o soluție inginerească.
           </p>
-
-          <div className="bg-white rounded-xl overflow-hidden shadow-2xl h-[700px] w-full relative">
-            {/* Simulation of Calendly embedding - In a real scenario, standard Calendly iframe goes here */}
-            <iframe 
-              src="https://calendly.com/benedek-robert/30min" 
-              width="100%" 
-              height="100%" 
-              frameBorder="0" 
-              title="Calendly Scheduling"
-              className="w-full h-full"
-            ></iframe>
-            
-            {/* Fallback visual if iframe blocked or for demo purposes */}
-            <div className="absolute inset-0 bg-white z-[-1] flex items-center justify-center flex-col">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0B172C] mb-4"></div>
-              <p className="text-gray-500">Se încarcă modulul de programare...</p>
-            </div>
+      
+          <div className="bg-white rounded-xl overflow-hidden shadow-2xl w-full relative p-8">
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+              <div className="md:col-span-1">
+                <label className="block text-sm font-semibold text-[#0B172C] mb-2">Name</label>
+                <input type="text" value={formName} onChange={(e)=>setFormName(e.target.value)} className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#973CFF]" placeholder="Your name" />
+              </div>
+              <div className="md:col-span-1">
+                <label className="block text-sm font-semibold text-[#0B172C] mb-2">Email</label>
+                <input type="email" value={formEmail} onChange={(e)=>setFormEmail(e.target.value)} className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#973CFF]" placeholder="you@example.com" />
+              </div>
+              <div className="md:col-span-1">
+                <label className="block text-sm font-semibold text-[#0B172C] mb-2">Phone</label>
+                <input type="tel" value={formPhone} onChange={(e)=>setFormPhone(e.target.value)} className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#973CFF]" placeholder="+40 7xx xxx xxx" />
+              </div>
+              <div className="md:col-span-1">
+                <label className="block text-sm font-semibold text-[#0B172C] mb-2">What would you like to improve? (optional)</label>
+                <textarea value={formGoal} onChange={(e)=>setFormGoal(e.target.value)} className="w-full rounded-md border border-gray-300 px-4 py-2 h-28 resize-y focus:outline-none focus:ring-2 focus:ring-[#973CFF]" placeholder="Describe briefly" />
+              </div>
+              <div className="md:col-span-2 flex flex-col sm:flex-row gap-4 items-center">
+                <button type="submit" disabled={submitting} className="bg-[#973CFF] hover:bg-[#7e30d6] text-white px-6 py-3 rounded-md font-semibold shadow-[0_0_40px_rgba(151,60,255,0.2)] hover:shadow-[0_0_60px_rgba(151,60,255,0.35)] disabled:opacity-70">
+                  {submitting ? 'Submitting...' : 'Request a callback'}
+                </button>
+                <button type="button" onClick={handleScheduleClick} className="text-[#973CFF] hover:text-[#7e30d6] font-semibold flex items-center gap-2">
+                  <Calendar size={20} className="text-[#973CFF]" />
+                  Schedule time via Calendly
+                </button>
+              </div>
+              {submitMessage && <p className="md:col-span-2 text-sm text-[#0B172C] mt-2">{submitMessage}</p>}
+            </form>
           </div>
         </div>
       </section>

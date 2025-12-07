@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -24,10 +25,44 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Calendly badge widget assets */}
+        <link
+          rel="stylesheet"
+          href="https://assets.calendly.com/assets/external/widget.css"
+        />
+      </head>
       <body
         className={`${inter.variable} ${robotoMono.variable} antialiased`}
       >
         {children}
+        {/* Load external Calendly script in body */}
+        <Script
+          id="calendly-external"
+          src="https://assets.calendly.com/assets/external/widget.js"
+          strategy="afterInteractive"
+        />
+        {/* Initialize badge after interactive, retry until Calendly is ready */}
+        <Script id="calendly-badge-init" strategy="afterInteractive">
+          {`
+            (function initBadge(){
+              function start(){
+                if (window.Calendly && typeof window.Calendly.initBadgeWidget === 'function') {
+                  window.Calendly.initBadgeWidget({
+                    url: 'https://calendly.com/benedek-robertgeorge/30min',
+                    text: 'Schedule time with me',
+                    color: '#973CFF',
+                    textColor: '#ffffff',
+                    branding: true,
+                  });
+                } else {
+                  setTimeout(start, 100);
+                }
+              }
+              start();
+            })();
+          `}
+        </Script>
       </body>
     </html>
   );
