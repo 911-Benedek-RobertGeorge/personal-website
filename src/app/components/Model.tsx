@@ -1,7 +1,7 @@
 import "@react-three/fiber"
 import { useEffect, useRef, useState } from "react"
 import { Group, AnimationMixer, AnimationClip, AnimationAction, Object3D } from "three"
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
 
 
 
