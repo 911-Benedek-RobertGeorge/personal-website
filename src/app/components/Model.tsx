@@ -1,22 +1,42 @@
-import { useAnimations, useGLTF, Center } from "@react-three/drei"
-import { useEffect, useRef } from "react"
-import { Group } from "three"
+import "@react-three/fiber"
+import { useEffect, useRef, useState } from "react"
+import { Group, AnimationMixer, AnimationClip, AnimationAction, Object3D } from "three"
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
-useGLTF.preload("/robot_playground.glb")
+
 
 export default function Model() {
   const group = useRef<Group>(null)
-  const { animations, scene } = useGLTF("/robot_playground.glb")
-  const { actions } = useAnimations(animations, scene)
+  const [gltfScene, setGltfScene] = useState<Object3D | null>(null)
+  const mixerRef = useRef<AnimationMixer | null>(null)
+  const clipRef = useRef<AnimationClip | null>(null)
+  const actionRef = useRef<AnimationAction | null>(null)
 
-  // Play the animation but keep it paused; we'll scrub via scroll
+  // Load GLTF and setup animation (paused for scrub)
   useEffect(() => {
-    const action = actions && (actions as any)["Experiment"]
-    if (action) {
-      action.play()
-      action.paused = true
-    }
-  }, [actions])
+    const loader = new GLTFLoader()
+    loader.load(
+      "/robot_playground.glb",
+      (gltf) => {
+        setGltfScene(gltf.scene)
+        if (gltf.animations && gltf.animations.length > 0) {
+          const mixer = new AnimationMixer(gltf.scene)
+          mixerRef.current = mixer
+          const clip = gltf.animations[0]
+          clipRef.current = clip
+          const action = mixer.clipAction(clip)
+          actionRef.current = action
+          action.play()
+          // Pause; we'll scrub via scroll
+          action.paused = true
+        }
+      },
+      undefined,
+      (err) => {
+        console.error("Failed to load GLTF:", err)
+      }
+    )
+  }, [])
 
   // Helper to compute page scroll progress [0,1]
   const getScrollProgress = () => {
@@ -29,13 +49,14 @@ export default function Model() {
     return maxScroll > 0 ? Math.min(Math.max(scrollTop / maxScroll, 0), 1) : 0
   }
 
-  // Scrub animation time according to page scroll (RAF loop instead of useFrame)
+  // Scrub animation time according to page scroll (RAF loop)
   useEffect(() => {
     let rafId = 0
     const tick = () => {
-      const action = actions && (actions as any)["Experiment"]
-      if (action) {
-        const duration = action.getClip().duration
+      const action = actionRef.current
+      const clip = clipRef.current
+      if (action && clip) {
+        const duration = clip.duration
         const progress = getScrollProgress()
         action.time = duration * progress
       }
@@ -45,13 +66,11 @@ export default function Model() {
     return () => {
       if (rafId) cancelAnimationFrame(rafId)
     }
-  }, [actions])
+  }, [])
 
   return (
     <group ref={group} scale={1.2}>
-      <Center>
-        <primitive object={scene} />
-      </Center>
+      {gltfScene && <primitive object={gltfScene} />}
     </group>
   )
 }
