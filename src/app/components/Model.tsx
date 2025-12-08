@@ -1,9 +1,8 @@
 import "@react-three/fiber"
+import { useThree } from "@react-three/fiber"
 import { useEffect, useRef, useState } from "react"
-import { Group, AnimationMixer, AnimationClip, AnimationAction, Object3D } from "three"
+import { Group, AnimationMixer, AnimationClip, AnimationAction, Object3D, LoopOnce } from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
-
-
 
 export default function Model() {
   const group = useRef<Group>(null)
@@ -11,6 +10,14 @@ export default function Model() {
   const mixerRef = useRef<AnimationMixer | null>(null)
   const clipRef = useRef<AnimationClip | null>(null)
   const actionRef = useRef<AnimationAction | null>(null)
+  // Responsive sizing based on viewport width
+  const { size } = useThree()
+  const isMobile = size.width <= 640
+  const isTablet = size.width > 640 && size.width <= 1024
+  // Make the robot smaller across breakpoints
+  const scale = isMobile ? 0.75 : isTablet ? 0.9 : 1.05
+  // Slight left offset so the right side doesn’t get cut
+  const offsetX = isMobile ? -0.4 : isTablet ? -0.25 : -0.15
 
   // Load GLTF and setup animation (paused for scrub)
   useEffect(() => {
@@ -19,6 +26,11 @@ export default function Model() {
       "/robot_playground.glb",
       (gltf) => {
         setGltfScene(gltf.scene)
+        // Improve visibility & avoid frustum culling issues
+        gltf.scene.frustumCulled = false
+        gltf.scene.traverse((obj) => {
+          obj.frustumCulled = false
+        })
         if (gltf.animations && gltf.animations.length > 0) {
           const mixer = new AnimationMixer(gltf.scene)
           mixerRef.current = mixer
@@ -26,9 +38,18 @@ export default function Model() {
           clipRef.current = clip
           const action = mixer.clipAction(clip)
           actionRef.current = action
+          action.reset()
+          action.setLoop(LoopOnce, 0) // LoopOnce
+          action.clampWhenFinished = true
+          action.enabled = true
           action.play()
           // Pause; we'll scrub via scroll
           action.paused = true
+          // Ensure initial pose is applied
+          action.time = 0
+          mixer.update(0)
+        } else {
+          console.warn("GLTF loaded without animations; scrubbing will have no effect.")
         }
       },
       undefined,
@@ -53,12 +74,15 @@ export default function Model() {
   useEffect(() => {
     let rafId = 0
     const tick = () => {
-      const action = actionRef.current
+      const mixer = mixerRef.current
       const clip = clipRef.current
-      if (action && clip) {
-        const duration = clip.duration
+      const action = actionRef.current
+      if (mixer && clip && action) {
         const progress = getScrollProgress()
-        action.time = duration * progress
+        const t = Math.max(0, Math.min(clip.duration * progress, clip.duration))
+        action.time = t
+        // Apply keyframes at current time
+        mixer.update(0)
       }
       rafId = requestAnimationFrame(tick)
     }
@@ -69,7 +93,7 @@ export default function Model() {
   }, [])
 
   return (
-    <group ref={group} scale={1.2}>
+    <group ref={group} scale={scale} position={[offsetX, -0.5, 0]} rotation={[0, 0, 0]}>
       {gltfScene && <primitive object={gltfScene} />}
     </group>
   )
