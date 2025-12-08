@@ -35,6 +35,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${inter.variable} ${robotoMono.variable} antialiased`}
+        suppressHydrationWarning={true}
       >
         {children}
         {/* External Calendly script */}

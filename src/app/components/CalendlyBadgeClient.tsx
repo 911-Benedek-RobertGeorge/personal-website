@@ -12,7 +12,7 @@ export default function CalendlyBadgeClient() {
           calendly.initBadgeWidget({
             url: "https://calendly.com/benedek-robertgeorge/30min",
             text: "Schedule time with me",
-            color: "#973CFF",
+            color: "#76007D",
             textColor: "#ffffff",
             branding: true,
           });
