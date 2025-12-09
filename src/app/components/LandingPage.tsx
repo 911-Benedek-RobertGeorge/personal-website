@@ -319,97 +319,7 @@ const App = () => {
       </div>
       </section>
 
-      {/* De ce pierd bani acum */}
-      <section className="relative z-10 py-16 px-6 bg-[#39B5C4]/8 backdrop-blur-xl border-y border-white/5">
-        <div className="container mx-auto max-w-5xl">
-          <div className="relative p-8 rounded-2xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 shadow-[0_0_40px_rgba(57,181,196,0.20)] overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white">Unde se scurge profitul</h2>
-            <p className="mt-4 text-slate-300">Fără proces ⇒ întârzieri, supra-promisiuni, erori. Clienții calzi se răcesc.</p>
-            <details className="mt-4 group">
-              <summary className="cursor-pointer text-slate-400 hover:text-white inline-flex items-center gap-2">
-                <span>Vezi detalii</span>
-                <ArrowRight size={14} className="transition-transform group-open:rotate-90" />
-              </summary>
-              <ul className="mt-4 grid sm:grid-cols-2 gap-3 text-slate-300">
-                <li>Fără centralizare nu există prioritizare și follow-up automat ⇒ conversii ratate.</li>
-                <li>Fără segmentare, vorbești generic cu toți ⇒ efort mare, rezultate mici.</li>
-                <li>Timp irosit pe task-uri manuale, lead-uri nepreluate, vizibilitate scăzută.</li>
-              </ul>
-            </details>
-          </div>
-        </div>
-      </section>
-
-      {/* De ce metodele lor actuale nu funcționează */}
-      <section className="relative z-10 py-16 px-6 bg-[#39B5C4]/8 backdrop-blur-xl border-y border-white/5">
-        <div className="container mx-auto max-w-5xl">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">De ce „patch-urile” nu rezolvă problema</h2>
-          <p className="mt-4 text-slate-300">Soluții temporare ⇒ probleme permanente.</p>
-          <details className="mt-4 group">
-            <summary className="cursor-pointer text-slate-400 hover:text-white inline-flex items-center gap-2">
-              <span>Vezi detalii</span>
-              <ArrowRight size={14} className="transition-transform group-open:rotate-90" />
-            </summary>
-            <div className="mt-4 space-y-3 text-slate-300">
-              <p>Grupuri WhatsApp, excel-uri, CRM-uri lăsate pe jumătate, mesaje manuale — toate sunt temporare.</p>
-              <p className="text-slate-400">Fără integrare și reguli clare, sistemul se rupe la primul volum mai mare.</p>
-              <p className="text-slate-400">„Mai punem un om” nu e soluție: costuri cresc, erorile rămân. Ai instrumente, dar nu ai sistem.</p>
-            </div>
-          </details>
-        </div>
-      </section>
-
-      {/* Poziționare: inginer, nu marketer */}
-      <section className="relative z-10 py-16 px-6 bg-[#39B5C4]/8 backdrop-blur-xl border-y border-white/5">
-        <div className="container mx-auto max-w-5xl">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">Inginer backend, nu marketer</h2>
-          <p className="mt-4 text-slate-300">Vin din sisteme critice: acolo unde erorile nu sunt permise.</p>
-          <p className="mt-2 text-slate-400">Experiență internațională (Dubai, Luxembourg, Multinațională) ⇒ standarde stricte, procese clare.</p>
-        </div>
-      </section>
-
-      {/* Ce fac diferit */}
-      <section className="relative z-10 py-16 px-6 bg-[#000022]/40 backdrop-blur-xl border-y border-white/5">
-        <div className="container mx-auto max-w-5xl">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">Îți construiesc o mașină de ordine și follow-up</h2>
-          <ul className="mt-6 grid sm:grid-cols-2 gap-3 text-slate-300">
-            <li>Centralizăm toate punctele de contact într-un singur flux.</li>
-            <li>Definim pipeline-ul: cereri, follow-up, ofertă, programare, finalizare.</li>
-            <li>Automatizăm confirmări, remindere, reactivări, segmentări.</li>
-            <li>Un singur sistem, un singur adevăr. Reguli clare, vizibilitate totală.</li>
-          </ul>
-        </div>
-      </section>
-
-      {/* Case Studies -> Studiu de caz REAL */}
-      <section className="relative z-10 py-24 px-6 bg-[#39B5C4]/8 backdrop-blur-xl border-y border-white/5">
-        <div className="container mx-auto max-w-5xl">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">Studiu de caz REAL — Reactivarea bazei de date</h2>
-          <p className="mt-4 text-slate-300">Fără reclame, fără costuri suplimentare: sistem &gt; improvizații.</p>
-          <details className="mt-6 group">
-            <summary className="cursor-pointer text-slate-400 hover:text-white inline-flex items-center gap-2">
-              <span>Vezi pașii</span>
-              <ArrowRight size={14} className="transition-transform group-open:rotate-90" />
-            </summary>
-            <div className="mt-4 grid sm:grid-cols-2 gap-6">
-              <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
-                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
-                <ol className="list-decimal list-inside text-slate-300 space-y-2">
-                  <li>Preluare bază veche, haotică și incompletă.</li>
-                  <li>Digitalizare, organizare și segmentare contacte.</li>
-                  <li>Automatizare mesaje de reactivare, pe segmente.</li>
-                  <li>O parte a răspuns ⇒ clienți noi, cu cost zero media.</li>
-                </ol>
-              </div>
-              <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
-                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
-                <p className="text-slate-300">Rezultate reale, fără promisiuni magice.</p>
-              </div>
-            </div>
-          </details>
-        </div>
-      </section>
+      
 
       {/* Beneficii tangibile → Flow Boost Benefits */}
       <section className="relative z-10 py-16 px-6 bg-[#39B5C4]/8 backdrop-blur-xl border-y border-white/5">
@@ -563,30 +473,35 @@ const App = () => {
                 </ul>
               </div>
 
-              {/* Service 4 - CUSTOM PERSONALIZED */}
-              <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 hover:translate-x-2 transition-transform overflow-hidden group">
-                <div className="absolute top-0 right-0 p-2 bg-[#76007D]/10 text-[#76007D] text-xs font-bold rounded-bl-lg border-b border-l border-[#76007D]/20">
+              {/* Service 4 - CUSTOM PERSONALIZED (Premium Cyan Neon) */}
+              <div className="relative p-8 rounded-2xl bg-[#00FFFF]/8 backdrop-blur-xl border border-[#00FFFF]/25 shadow-[0_16px_48px_rgba(0,255,255,0.20)] hover:-translate-y-[2px] hover:shadow-[0_24px_72px_rgba(0,255,255,0.30)] transition-all overflow-hidden group">
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#00FFFF] via-[#39B5C4] to-[#00FFFF] opacity-80"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#00FFFF] via-[#39B5C4] to-[#00FFFF] opacity-60"></div>
+                <div className="absolute inset-0 pointer-events-none">
+                  <div className="absolute -top-10 -left-14 w-[260px] h-[260px] bg-gradient-to-br from-white/15 to-transparent rounded-full blur-3xl opacity-20"></div>
+                  <div className="absolute -bottom-12 -right-16 w-[300px] h-[300px] bg-gradient-to-tr from-[#00FFFF]/15 to-transparent rounded-full blur-3xl opacity-20"></div>
+                </div>
+                <div className="absolute top-0 right-0 p-2 bg-[#00FFFF]/10 text-[#00FFFF] text-xs font-bold rounded-bl-lg border-b border-l border-[#00FFFF]/25">
                   PREMIUM
                 </div>
-                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="p-3 bg-[#76007D]/10 rounded-lg text-[#76007D]">
+                  <div className="p-3 bg-[#00FFFF]/10 border border-[#00FFFF]/25 rounded-lg text-[#00FFFF]">
                     <Layers size={28} />
                   </div>
                   <h3 className="text-xl font-bold text-white">Arhitectură Custom & Audit</h3>
                 </div>
                 <p className="text-slate-300 mb-4">
-                  Soluțiile standard nu se potrivesc modelului tău? Analizez business-ul de la zero și construiesc un sistem <span className="text-[#1E94A5] font-semibold">100% personalizat</span>. Rezolv probleme complexe pe care agențiile "copy-paste" le ignoră.
+                  Soluțiile standard nu se potrivesc modelului tău? Analizez business-ul de la zero și construiesc un sistem <span className="text-[#39B5C4] font-semibold">100% personalizat</span>. Rezolv probleme complexe pe care agențiile "copy-paste" le ignoră.
                 </p>
-                <ul className="grid grid-cols-2 gap-2 text-sm text-slate-400">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Consultanță 1-la-1</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Integrare Sisteme Legacy</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Soluții Non-Standard</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Scalabilitate Garantată</li>
+                <ul className="grid grid-cols-2 gap-2 text-sm text-slate-300">
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Consultanță 1-la-1</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Integrare Sisteme Legacy</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Soluții Non-Standard</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Scalabilitate Garantată</li>
                 </ul>
-                <div className="mt-6 pt-4 border-t border-white/5">
-                   <button onClick={scrollToBooking} className="w-full py-2 border border-[#1E94A5] text-[#1E94A5] rounded font-medium transition-colors text-sm flex items-center justify-center gap-2 hover:shadow-[0_0_22px_rgba(30,148,165,0.35)]">
-                     Cere Ofertă Personalizată <ArrowRight size={14}/>
+                <div className="mt-6 pt-4 border-t border-white/10">
+                   <button onClick={scrollToBooking} className="w-full py-3 rounded-xl bg-gradient-to-r from-[#00FFFF] via-[#39B5C4] to-[#00FFFF] text-[#0A2540] font-bold tracking-tight shadow-[0_10px_28px_rgba(0,255,255,0.30)] hover:shadow-[0_16px_40px_rgba(0,255,255,0.40)] hover:-translate-y-[1px] transition-all flex items-center justify-center gap-2">
+                     Cere Ofertă Personalizată <ArrowRight size={16} />
                    </button>
                 </div>
               </div>

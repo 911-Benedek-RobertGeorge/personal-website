@@ -17,7 +17,7 @@ export default function Model() {
   // Make the robot smaller across breakpoints
   const scale = isMobile ? 0.75 : isTablet ? 0.9 : 1.05
   // Slight left offset so the right side doesn’t get cut
-  const offsetX = isMobile ? -0.4 : isTablet ? -0.25 : -0.15
+  const offsetX = isMobile ? -0.15 : isTablet ? -0.22 : -0.15
 
   // Load GLTF and setup animation (paused for scrub)
   useEffect(() => {
