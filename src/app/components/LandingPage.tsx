@@ -153,7 +153,7 @@ const App = () => {
             <a href="#services" className="hover:text-white transition-colors">Servicii</a>
             <a href="#philosophy" className="hover:text-white transition-colors">Abordare</a>
           </div>
-          <div className="flex items-center gap-4">
+          {/* <div className="flex items-center gap-4">
              <a 
               href="https://www.linkedin.com/in/benedek-robert/" 
               target="_blank" 
@@ -169,7 +169,7 @@ const App = () => {
             >
               Audit Tehnic
             </button>
-          </div>
+          </div> */}
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
       </nav>
@@ -222,16 +222,16 @@ const App = () => {
             <div className="mt-6 flex flex-col sm:flex-row gap-4 relative z-30 md:z-0">
               <button
                 onClick={scrollToBooking}
-                className="flex items-center justify-center gap-3 bg-gradient-to-r from-[#1E94A5] via-[#2AAF7F] to-[#1E94A5] text-white px-9 py-4 rounded-xl font-bold shadow-[0_8px_24px_rgba(42,175,127,0.35)] hover:shadow-[0_12px_32px_rgba(42,175,127,0.45)] hover:-translate-y-[1px] focus-visible:ring-2 focus-visible:ring-[#1E94A5] focus-visible:ring-offset-0 transition-all"
+                className="group relative h-16 w-full sm:w-72 md:w-80 bg-[#000022]/60 border-2 border-[#39B5C4] text-white text-base font-bold rounded-xl overflow-hidden transform transition-all duration-500 hover:scale-105 hover:border-[#2AAF7F] hover:text-[#2AAF7F] px-6 text-center before:absolute before:w-10 before:h-10 before:content-[''] before:right-2 before:top-2 before:z-10 before:bg-[#76007D] before:rounded-full before:blur-lg before:transition-all before:duration-500 after:absolute after:z-10 after:w-16 after:h-16 after:content-[''] after:bg-[#39B5C4] after:right-6 after:top-4 after:rounded-full after:blur-lg after:transition-all after:duration-500 hover:before:right-10 hover:before:-bottom-4 hover:after:-right-6 hover:after:scale-110"
               >
-                PROGRAMEAZĂ SESIUNEA DE DESCOPERIRE (30 MIN)
+                Audit tehnic
               </button>
               <button 
                 onClick={handleScheduleClick}
-                className="bg-[#1E94A5]/10 border border-[#1E94A5]/40 text-[#1E94A5] rounded-xl px-6 py-3 hover:bg-[#1E94A5]/15 hover:shadow-[0_8px_24px_rgba(30,148,165,0.35)] transition-all font-semibold flex items-center gap-2"
+                className="group relative h-16 w-full sm:w-64 bg-[#000022]/40 border-2 border-[#76007D] text-[#76007D] text-base font-semibold rounded-xl overflow-hidden transform transition-all duration-500 hover:scale-105 hover:border-[#2AAF7F] hover:text-[#2AAF7F] px-6 text-center flex items-center justify-center gap-2 before:absolute before:w-8 before:h-8 before:content-[''] before:right-2 before:top-2 before:z-10 before:bg-[#76007D] before:rounded-full before:blur before:transition-all before:duration-500 after:absolute after:z-10 after:w-12 after:h-12 after:content-[''] after:bg-[#39B5C4] after:right-6 after:top-4 after:rounded-full after:blur after:transition-all after:duration-500 hover:before:right-10 hover:before:-bottom-4 hover:after:-right-6 hover:after:scale-110"
               >
-                <Calendar size={20} className="text-[#1E94A5]" />
-                Sau alege o oră în Calendly
+                <Calendar size={20} className="text-current" />
+                Calendly
               </button>
             </div>
           </div>
