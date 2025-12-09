@@ -52,3 +52,18 @@ html {
   background: #39B5C4;
   box-shadow: 0 0 26px rgba(57, 181, 196, 1), inset 0 0 12px rgba(57, 181, 196, 0.8);
 }
+
+@keyframes hudShadow {
+  0% { box-shadow: 0 0 40px rgba(57, 181, 196, 0.20); }
+  100% { box-shadow: 0 0 80px rgba(57, 181, 196, 0.45); }
+}
+
+.hud-shadow-animate {
+  animation: hudShadow 2.4s ease-in-out infinite alternate;
+}
+
+@media (max-width: 640px) {
+  .calendly-badge-widget {
+    display: none !important;
+  }
+}

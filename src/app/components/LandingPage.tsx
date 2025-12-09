@@ -3,11 +3,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
    Terminal, 
   Database, 
-  BarChart3, 
+ 
   ArrowRight, 
   Code2, 
   ShieldCheck, 
-  Workflow, 
+ 
   Linkedin,
   Server,
   Zap,
@@ -102,7 +102,7 @@ const App = () => {
 
   const [videoExpanded, setVideoExpanded] = useState(false);
   const playerRef = useRef<any>(null);
-  const videoSrc = `https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1&autoplay=0&controls=1&rel=0`;
+  const videoSrc = `https://www.youtube.com/embed/Co4FE_SGRtI?enablejsapi=1&autoplay=0&controls=1&rel=0`;
 
   useEffect(() => {
     const createPlayer = () => {
@@ -175,7 +175,7 @@ const App = () => {
       </nav>
 
       {/* Hero Section with VSL */}
-      <section className="relative z-10 border-y border-white/10 bg-[#39B5C4]/5 backdrop-blur-xl overflow-hidden">
+      <section className="relative z-10 border-y border-white/10 bg-[#39B5C4]/5 backdrop-blur-xl overflow-hidden md:min-h-[600px] lg:min-h-[700px]">
         <Script src="https://www.youtube.com/iframe_api" strategy="afterInteractive" />
         
         <div className="absolute inset-0 pointer-events-none">
@@ -193,7 +193,7 @@ const App = () => {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1E94A5] opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1E94A5]"></span>
                 </span>
-                Sisteme, nu promisiuni
+                Sisteme, nu probleme
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight drop-shadow-[0_0_20px_rgba(30,148,165,0.25)]">
                 Elimină haosul operațional.
@@ -203,17 +203,8 @@ const App = () => {
               </p>
             </div>
             {/* Right: VSL Video */}
-            <div className={`${videoExpanded ? 'absolute inset-0 z-20 left-1/2 -translate-x-1/2 w-[calc(100%-3rem)] md:w-[calc(100%-4rem)] rounded-2xl scale-[1.01]' : 'relative rounded-2xl'} group overflow-hidden bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 shadow-[0_0_40px_rgba(57,181,196,0.20)] hover:shadow-[0_0_70px_rgba(57,181,196,0.35)] transition-all duration-500 ease-out`}>
-              <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
-              <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute left-4 top-4 w-6 h-6 border-t-2 border-l-2 border-[#39B5C4]/60 rounded-sm"></div>
-                <div className="absolute right-4 top-4 w-6 h-6 border-t-2 border-r-2 border-[#39B5C4]/60 rounded-sm"></div>
-                <div className="absolute left-4 bottom-4 w-6 h-6 border-b-2 border-l-2 border-[#39B5C4]/60 rounded-sm"></div>
-                <div className="absolute right-4 bottom-4 w-6 h-6 border-b-2 border-r-2 border-[#39B5C4]/60 rounded-sm"></div>
-                <div className="absolute inset-x-0 top-1/2 h-px bg-gradient-to-r from-transparent via-[#39B5C4]/20 to-transparent"></div>
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.04]"></div>
-              </div>
-              <div className="aspect-video relative transition-all duration-500 ease-out">
+            <div className={`${videoExpanded ? 'absolute inset-0 z-20 rounded-2xl' : 'relative z-0 rounded-2xl md:scale-[1.10] lg:scale-[1.14] origin-center w-full md:max-w-[900px] lg:max-w-[1100px] ml-auto'} group overflow-hidden bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 shadow-none md:shadow-[0_0_40px_rgba(57,181,196,0.20)] md:hover:shadow-[0_0_70px_rgba(57,181,196,0.35)] transition-all duration-500 ease-out transform-gpu`}>
+              <div className={`${videoExpanded ? 'w-full h-full' : 'w-full h-[260px] sm:h-[280px] md:h-[340px] lg:h-[400px]'} transition-all duration-500 ease-out`}>
                 {videoExpanded && (
                   <button onClick={() => setVideoExpanded(false)} className="absolute top-4 right-4 z-30 bg-white/10 text-white text-xs px-3 py-1 rounded border border-white/20">Close</button>
                 )}
@@ -228,16 +219,16 @@ const App = () => {
               </div>
             </div>
             {/* CTA after Video */}
-            <div className="mt-6 flex flex-col sm:flex-row gap-4">
+            <div className="mt-6 flex flex-col sm:flex-row gap-4 relative z-30 md:z-0">
               <button
                 onClick={scrollToBooking}
-                className="flex items-center justify-center gap-3 bg-gradient-to-r from-[#1E94A5] to-[#2AAF7F] text-white px-8 py-4 rounded-lg font-bold shadow-[0_0_24px_rgba(42,175,127,0.35)] hover:shadow-[0_0_36px_rgba(42,175,127,0.45)] focus-visible:ring-2 focus-visible:ring-[#1E94A5] transition-all"
+                className="flex items-center justify-center gap-3 bg-gradient-to-r from-[#1E94A5] via-[#2AAF7F] to-[#1E94A5] text-white px-9 py-4 rounded-xl font-bold shadow-[0_8px_24px_rgba(42,175,127,0.35)] hover:shadow-[0_12px_32px_rgba(42,175,127,0.45)] hover:-translate-y-[1px] focus-visible:ring-2 focus-visible:ring-[#1E94A5] focus-visible:ring-offset-0 transition-all"
               >
                 PROGRAMEAZĂ SESIUNEA DE DESCOPERIRE (30 MIN)
               </button>
               <button 
                 onClick={handleScheduleClick}
-                className="border border-[#1E94A5] text-[#1E94A5] rounded-lg px-6 py-3 hover:shadow-[0_0_22px_rgba(30,148,165,0.35)] transition-all font-semibold flex items-center gap-2"
+                className="bg-[#1E94A5]/10 border border-[#1E94A5]/40 text-[#1E94A5] rounded-xl px-6 py-3 hover:bg-[#1E94A5]/15 hover:shadow-[0_8px_24px_rgba(30,148,165,0.35)] transition-all font-semibold flex items-center gap-2"
               >
                 <Calendar size={20} className="text-[#1E94A5]" />
                 Sau alege o oră în Calendly
@@ -289,7 +280,7 @@ const App = () => {
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 hover:bg-[#0077b5]/10 p-2 rounded-xl transition-all cursor-pointer relative"
               >
-                <div className="text-right hidden sm:block">
+                <div className="text-right block">
                   <div className="text-white font-bold text-lg group-hover:text-[#0077b5] transition-colors">Robert Benedek</div>
                   <div className="text-slate-400 flex items-center gap-1 justify-end text-sm">
                      Vezi Profilul <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform"/>
@@ -319,12 +310,12 @@ const App = () => {
           <p className="mt-4 text-slate-300">Poate crezi că „Inteligența Artificială” este doar un termen de marketing. Sau poate știi că ar putea ajuta, dar nu ai nicio idee de unde să începi.</p>
           <p className="mt-2 text-slate-400">Adevărul este că, dacă business-ul tău încă se bazează pe:</p>
           <ul className="mt-6 space-y-3">
-            <li className="flex items-start gap-3 text-slate-300"><span className="text-[#1E94A5]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2Zm4.243 14.243L12 12l4.243-4.243L12 12l4.243 4.243ZM7.757 16.243 12 12 7.757 7.757 12 12 7.757 16.243Z" fill="#1E94A5"/></svg></span>Agende fizice și post-it-uri pierdute;</li>
-            <li className="flex items-start gap-3 text-slate-300"><span className="text-[#1E94A5]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2Zm4.243 14.243L12 12l4.243-4.243L12 12l4.243 4.243ZM7.757 16.243 12 12 7.757 7.757 12 12 7.757 16.243Z" fill="#1E94A5"/></svg></span>Mesaje date manual clienților când îți aduci aminte;</li>
-            <li className="flex items-start gap-3 text-slate-300"><span className="text-[#1E94A5]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2Zm4.243 14.243L12 12l4.243-4.243L12 12l4.243 4.243ZM7.757 16.243 12 12 7.757 7.757 12 12 7.757 16.243Z" fill="#1E94A5"/></svg></span>Excel-uri pe care nu le mai înțelege nimeni;</li>
-            <li className="flex items-start gap-3 text-slate-300"><span className="text-[#1E94A5]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2Zm4.243 14.243L12 12l4.243-4.243L12 12l4.243 4.243ZM7.757 16.243 12 12 7.757 7.757 12 12 7.757 16.243Z" fill="#1E94A5"/></svg></span>„Speranța” că vor veni clienți noi...</li>
-        </ul>
-        <p className="mt-4 text-slate-300">…atunci te lupți cu o mână legată la spate. La Flow Boost, nu vindem iluzii. Luăm tehnologia din start-up-urile de top și o aplicăm în afacerea ta locală pentru a elimina munca inutilă.</p>
+            <li className="flex items-start gap-3 text-slate-300"><span className="text-red-500">❌</span>Agende fizice și post-it-uri pierdute;</li>
+            <li className="flex items-start gap-3 text-slate-300"><span className="text-red-500">❌</span>Mesaje date manual clienților când îți aduci aminte;</li>
+            <li className="flex items-start gap-3 text-slate-300"><span className="text-red-500">❌</span>Excel-uri pe care nu le mai înțelege nimeni;</li>
+            <li className="flex items-start gap-3 text-slate-300"><span className="text-red-500">❌</span>„Speranța” că vor veni clienți noi...</li>
+          </ul>
+        <p className="mt-4 text-slate-300">…atunci te lupți cu o mână legată la spate. La Work Flow Boost, nu vindem iluzii. Luăm tehnologia din start-up-urile de top și o aplicăm în afacerea ta locală pentru a elimina munca inutilă.</p>
       </div>
       </section>
 

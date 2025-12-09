@@ -75,7 +75,7 @@ const App = () => {
                 <iframe
                   title="Thank You Video"
                   className="w-full h-full"
-                  src={`https://www.youtube.com/embed/THANK_YOU_VIDEO_ID?autoplay=1&controls=1&rel=0&modestbranding=1&playsinline=1&mute=1`}
+                  src={`https://www.youtube.com/embed/A_kyJov6HDE?autoplay=1&controls=1&rel=0&modestbranding=1&playsinline=1&mute=1`}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   loading="lazy"
                   allowFullScreen
