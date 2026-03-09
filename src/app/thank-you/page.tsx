@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import { 
   Terminal, 
   CheckCircle2, 
@@ -12,6 +13,10 @@ import {
   Activity,
   Layers
 } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: "Programare Confirmată | BENEDEK.SYS",
+};
 
 const App = () => {
   return (
@@ -48,9 +53,9 @@ const App = () => {
               <Terminal className="w-4 h-4 text-[#1E94A5]" /> 
               <span className="text-xs font-mono tracking-widest text-slate-300">SYSTEM ARCHITECTURE</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight mt-4">
-              BENEDEK<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E94A5] to-[#2AAF7F]">.SYS</span>
-            </h1>
+            <div className="mt-4">
+              <img src="/logo.png" alt="Benedek Systems" className="h-10 md:h-12 w-auto mx-auto rounded-md" />
+            </div>
           </div>
           
           {/* Success Status - Using the Green Accent (#2AAF7F) */}

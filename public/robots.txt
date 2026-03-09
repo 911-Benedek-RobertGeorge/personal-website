@@ -1,0 +1,4 @@
+User-Agent: *
+Allow: /
+
+Sitemap: https://benedek-systems.vercel.app/sitemap.xml
