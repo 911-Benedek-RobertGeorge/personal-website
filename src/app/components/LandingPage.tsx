@@ -141,12 +141,12 @@ const App = () => {
       </div>
 
       {/* 3D Robot Background Canvas */}
-      <div className="fixed   sm:left-[15vw] bottom-0 sm:bottom-auto sm:top-0 h-[55vh] sm:h-screen w-[65vw] sm:w-[32vw] md:w-[40vw] z-[999] pointer-events-none overflow-visible">
+      <div className="fixed -left-[3vw] sm:-left-[1vw] bottom-0 h-[45vh] sm:h-[55vh] w-[52vw] sm:w-[26vw] md:w-[32vw] z-[999] pointer-events-none scale-[0.8] origin-bottom-left" style={{ overflow: 'visible' }}>
         <Scene />
       </div>
 
-      <nav className={`absolute top-0 w-full z-40 bg-transparent mb-10 md:mb-0 ${videoExpanded ? 'pointer-events-none' : ''}`}>
-        <div className="container mx-auto px-6 py-6 md:py-4 flex justify-between items-center">
+      {/* <nav className={`absolute top-0 w-full z-40 bg-transparent mb-10 md:mb-0 ${videoExpanded ? 'pointer-events-none' : ''}`}>
+         <div className="container mx-auto px-6 py-6 md:py-4 flex justify-between items-center">
           <div className="relative flex items-center font-sans tracking-tight">
             <div className="relative z-10 w-20 h-20 md:w-24 md:h-24">
               <img src="/logo.png" alt="B" className="w-full h-full object-contain object-center scale-110 md:scale-100" />
@@ -157,21 +157,24 @@ const App = () => {
               </span>
               <span className="block text-[0.65rem] md:text-[0.85rem] font-bold uppercase text-transparent bg-clip-text bg-gradient-to-r from-[#39B5C4] to-[#76007D] tracking-[0.3em] md:tracking-[0.38em] ml-0.5 -mt-0.5 md:-mt-2 pr-1">
                 SYSTEMS
-              </span>
-            </div>
-          </div>
-
-          {/* <button
-            onClick={scrollToBooking}
-            className="relative inline-flex h-10 w-32 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-[#1E94A5] focus:ring-offset-2 focus:ring-offset-[#000022]"
-          >
-            <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#00FFFF_0%,#76007D_50%,#39B5C4_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-[#000022] px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
-              Audit Tehnic
-            </span>
-          </button> */}
+              </span> */}
+      {/* Animated Logo — Corner Shape */}
+      <div className="absolute top-0 -left-2 z-40">
+        <div
+          className="relative w-[180px] h-[110px] md:w-[240px] md:h-[140px] overflow-hidden shadow-[10px_10px_40px_rgba(30,148,165,0.15)]"
+          style={{
+            borderRadius: '0 20% 60% 10% / 0 30% 60% 20%', // Sharp top-left, organic bottom/right
+          }}
+        >
+          <video
+            src="/logo-intro.mp4"
+            autoPlay
+            muted
+            playsInline
+            className="absolute top-1/2 left-1/2 -translate-x-[50%] -translate-y-[65%] w-[130%] h-[130%] object-cover"
+          />
         </div>
-      </nav>
+      </div>
 
       {/* Navigation */}
       <FloatingNav
@@ -199,37 +202,31 @@ const App = () => {
         <div className="container mx-auto max-w-7xl px-6 pt-32 md:pt-28 pb-16 md:pb-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             {/* Left: Value Proposition */}
-            <div>
-              <div className="inline-flex md:mt-10 items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[#1E94A5] text-xs font-mono uppercase tracking-wider mb-6">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1E94A5] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1E94A5]"></span>
-                </span>
-                SISTEM DE AUTOMATIZARE
-              </div>
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight">
-                Motorul de Clienți Noi
+            <div className="md:mt-6">
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.05]">
+                Motorul de <br className="hidden sm:block" />Clienți Noi
               </h1>
               <h2 className="mt-3 text-2xl md:text-3xl font-semibold text-white max-w-3xl">
                 Nu doar gestionez haosul. Îl <br></br> <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#39B5C4] to-[#2AAF7F]">transform în profit</span>
               </h2>
-              <p className="mt-4 text-slate-300 text-lg max-w-2xl">
-                Îți construiesc infrastructura digitală
+              <p className="mt-4 text-slate-400 text-lg max-w-lg leading-relaxed">
+                Îți construiesc infrastructura digitală - automatizări, CRM și sisteme AI care lucrează non-stop pentru afacerea ta
               </p>
-              <div className="mt-8 mb-2 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[#2AAF7F] font-bold text-xs font-mono uppercase tracking-wider">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2AAF7F] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#2AAF7F]"></span>
-                </span>
-                Nu lăsa lead-uri să scape
+              <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <button
+                  onClick={handleScheduleClick}
+                  className="group relative text-left h-16 w-full sm:w-64 bg-[#000022]/40 border-2 border-[#76007D] text-[#76007D] text-base font-semibold rounded-xl overflow-hidden transform transition-all duration-500 hover:scale-105 hover:border-[#39B5C4] hover:text-[#39B5C4] px-6 flex items-center justify-start gap-2 before:absolute before:w-8 before:h-8 before:content-[''] before:right-2 before:top-2 before:z-10 before:bg-[#76007D] before:rounded-full before:blur before:transition-all before:duration-500 after:absolute after:z-10 after:w-12 after:h-12 after:content-[''] after:bg-[#39B5C4] after:right-6 after:top-4 after:rounded-full after:blur after:transition-all after:duration-500 hover:before:right-10 hover:before:-bottom-4 hover:after:-right-6 hover:after:scale-110"
+                >
+                  <Calendar size={18} className="text-white/90" />
+                  Activează Sistemul
+                </button>
+                <button
+                  onClick={scrollToBooking}
+                  className="text-slate-400 hover:text-white text-sm font-medium transition-colors duration-300 flex items-center gap-2"
+                >
+                  sau trimite o cerere <ArrowRight size={14} />
+                </button>
               </div>
-              <button
-                onClick={handleScheduleClick}
-                className="group relative text-left h-16 w-full sm:w-64 bg-[#000022]/40 border-2 border-[#76007D] text-[#76007D] text-base font-semibold rounded-xl overflow-hidden transform transition-all duration-500 hover:scale-105 hover:border-[#39B5C4] hover:text-[#39B5C4] px-6 flex items-center justify-start gap-2 before:absolute before:w-8 before:h-8 before:content-[''] before:right-2 before:top-2 before:z-10 before:bg-[#76007D] before:rounded-full before:blur before:transition-all before:duration-500 after:absolute after:z-10 after:w-12 after:h-12 after:content-[''] after:bg-[#39B5C4] after:right-6 after:top-4 after:rounded-full after:blur after:transition-all after:duration-500 hover:before:right-10 hover:before:-bottom-4 hover:after:-right-6 hover:after:scale-110"
-              >
-                <Calendar size={20} className="text-current" />
-                Activează Sistemul
-              </button>
             </div>
             {/* Right: VSL Video */}
             <div className="relative">
@@ -343,22 +340,79 @@ const App = () => {
       </section>
 
       {/* Problemă + haos actual → Reality Check */}
-      <section className="relative z-10 py-16 px-6 bg-[#39B5C4]/8 backdrop-blur-xl border-y border-white/5">
-        <div className="container mx-auto max-w-5xl">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">Dacă nu folosești AI-ul pentru a fi mai productiv, lași bani pe masă.</h2>
-          <p className="mt-4 text-slate-300">Poate crezi că „Inteligența Artificială” este doar un termen de marketing. Sau poate știi că ar putea ajuta, dar nu ai nicio idee de unde să începi.</p>
-          <p className="mt-2 text-slate-400">Adevărul este că, dacă business-ul tău încă se bazează pe:</p>
-          <ul className="mt-6 space-y-3">
-            <li className="flex items-start gap-3 text-slate-300"><span className="text-red-500">❌</span>Agende fizice și post-it-uri pierdute;</li>
-            <li className="flex items-start gap-3 text-slate-300"><span className="text-red-500">❌</span>Mesaje date manual clienților când îți aduci aminte;</li>
-            <li className="flex items-start gap-3 text-slate-300"><span className="text-red-500">❌</span>Excel-uri pe care nu le mai înțelege nimeni;</li>
-            <li className="flex items-start gap-3 text-slate-300"><span className="text-red-500">❌</span>„Speranța” că vor veni clienți noi...</li>
-          </ul>
-          <p className="mt-4 text-slate-300">…atunci te lupți cu o mână legată la spate. La Benedek Systems, nu vindem iluzii. Luăm tehnologia din start-up-urile de top și o aplicăm în afacerea ta locală pentru a elimina munca inutilă.</p>
+      <section className="relative z-10 py-20 md:py-24 px-6 border-y border-white/5">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] right-[10%] w-[400px] h-[400px] bg-[#76007D]/10 rounded-full blur-[120px]" />
+          <div className="absolute bottom-[10%] left-[5%] w-[350px] h-[350px] bg-[#1E94A5]/8 rounded-full blur-[100px]" />
+        </div>
+        <div className="container mx-auto max-w-5xl relative z-10">
+          <div className="max-w-2xl mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight">Dacă nu folosești AI-ul pentru a fi mai productiv, <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#39B5C4] to-[#2AAF7F]">lași bani pe masă</span></h2>
+            <p className="mt-5 text-slate-400 text-lg leading-relaxed">Poate crezi că „Inteligența Artificială" este doar un termen de marketing. Sau poate știi că ar putea ajuta, dar nu ai nicio idee de unde să începi.</p>
+            <p className="mt-3 text-slate-500">Adevărul este că, dacă business-ul tău încă se bazează pe:</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+            {/* Pain 1 */}
+            <div className="group relative p-5 md:p-6 rounded-xl bg-white/[0.03] border border-white/[0.07] hover:border-red-500/20 transition-all duration-300 hover:bg-red-500/[0.03]">
+              <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="flex items-start gap-4">
+                <div className="mt-0.5 p-2 rounded-lg bg-red-500/10 border border-red-500/10 text-red-400 shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                </div>
+                <div>
+                  <h4 className="text-white font-semibold text-sm md:text-base">Agende fizice și post-it-uri pierdute</h4>
+                  <p className="text-slate-500 text-xs md:text-sm mt-1">Informații critice care dispar în haos</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Pain 2 */}
+            <div className="group relative p-5 md:p-6 rounded-xl bg-white/[0.03] border border-white/[0.07] hover:border-red-500/20 transition-all duration-300 hover:bg-red-500/[0.03]">
+              <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="flex items-start gap-4">
+                <div className="mt-0.5 p-2 rounded-lg bg-red-500/10 border border-red-500/10 text-red-400 shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                </div>
+                <div>
+                  <h4 className="text-white font-semibold text-sm md:text-base">Mesaje date manual când îți aduci aminte</h4>
+                  <p className="text-slate-500 text-xs md:text-sm mt-1">Lead-uri pierdute din lipsa de follow-up</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Pain 3 */}
+            <div className="group relative p-5 md:p-6 rounded-xl bg-white/[0.03] border border-white/[0.07] hover:border-red-500/20 transition-all duration-300 hover:bg-red-500/[0.03]">
+              <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="flex items-start gap-4">
+                <div className="mt-0.5 p-2 rounded-lg bg-red-500/10 border border-red-500/10 text-red-400 shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                </div>
+                <div>
+                  <h4 className="text-white font-semibold text-sm md:text-base">Excel-uri pe care nu le mai înțelege nimeni</h4>
+                  <p className="text-slate-500 text-xs md:text-sm mt-1">Zero vizibilitate asupra cifrelor reale</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Pain 4 */}
+            <div className="group relative p-5 md:p-6 rounded-xl bg-white/[0.03] border border-white/[0.07] hover:border-red-500/20 transition-all duration-300 hover:bg-red-500/[0.03]">
+              <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="flex items-start gap-4">
+                <div className="mt-0.5 p-2 rounded-lg bg-red-500/10 border border-red-500/10 text-red-400 shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                </div>
+                <div>
+                  <h4 className="text-white font-semibold text-sm md:text-base">„Speranța" că vor veni clienți noi</h4>
+                  <p className="text-slate-500 text-xs md:text-sm mt-1">Fără sistem = fără predictibilitate</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p className="mt-10 text-slate-300 text-base md:text-lg max-w-3xl leading-relaxed">…atunci te lupți cu o mână legată la spate. La <span className="text-white font-semibold">Benedek Systems</span>, nu vindem iluzii. Luăm tehnologia din start-up-urile de top și o aplicăm în afacerea ta locală pentru a elimina munca inutilă.</p>
         </div>
       </section>
-
-
 
       {/* Beneficii tangibile → Flow Boost Benefits */}
       {/* <section className="relative z-10 py-16 px-6 bg-[#39B5C4]/8 backdrop-blur-xl border-y border-white/5">
@@ -563,12 +617,10 @@ const App = () => {
             <div>
 
 
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[#1E94A5] text-xs font-mono uppercase tracking-wider mb-6">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1E94A5] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1E94A5]"></span>
-                </span>
-                Inginerie, nu gălăgie
+              <div className="relative inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-white/[0.15] bg-gradient-to-r from-[#76007D]/15 to-[#1E94A5]/15 shadow-[0_0_20px_rgba(118,0,125,0.15)] mb-6 group cursor-default">
+                <Terminal size={14} className="text-[#1E94A5]" />
+                <span className="text-sm font-semibold text-white/90 tracking-wide">Inginerie, nu gălăgie</span>
+                <span className="absolute inset-x-0 w-2/3 mx-auto -bottom-px bg-gradient-to-r from-transparent via-[#1E94A5] to-transparent h-px" />
               </div>
               <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-8">
                 Nu îți vând povești.<br />
