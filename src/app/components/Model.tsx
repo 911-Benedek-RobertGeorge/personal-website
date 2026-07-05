@@ -3,6 +3,7 @@ import { useThree } from "@react-three/fiber"
 import { useEffect, useRef, useState } from "react"
 import { Group, AnimationMixer, AnimationClip, AnimationAction, Object3D, LoopOnce } from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js"
 
 export default function Model() {
   const group = useRef<Group>(null)
@@ -22,6 +23,7 @@ export default function Model() {
   // Load GLTF and setup animation (paused for scrub)
   useEffect(() => {
     const loader = new GLTFLoader()
+    loader.setMeshoptDecoder(MeshoptDecoder)
     loader.load(
       "/robot_playground.glb",
       (gltf) => {
