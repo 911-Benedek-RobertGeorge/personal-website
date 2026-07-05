@@ -1,8 +1,8 @@
 "use client"
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
-import { Suspense, useCallback, useEffect, useRef, useState } from "react"
-import { PointLight } from "three"
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { AdditiveBlending, BufferAttribute, BufferGeometry, PointLight, Points } from "three"
 import Model, { ModelHandle } from "./Model"
 import { SECTIONS, buildTimeline, resolvePose, type Keyframe, type Pose } from "./choreography"
 
@@ -24,6 +24,39 @@ function useMediaFlags() {
     }
   }, [])
   return flags
+}
+
+// Deterministic LCG so the cloud is identical every load (and no Math.random in render).
+function ParticleCloud({ color, seed }: { color: string; seed: number }) {
+  const ref = useRef<Points>(null)
+  const geometry = useMemo(() => {
+    const g = new BufferGeometry()
+    const N = 100
+    const pos = new Float32Array(N * 3)
+    let s = seed * 16807 + 1
+    const rand = () => {
+      s = (s * 16807) % 2147483647
+      return s / 2147483647
+    }
+    for (let i = 0; i < N; i++) {
+      pos[i * 3] = (rand() - 0.5) * 12
+      pos[i * 3 + 1] = (rand() - 0.5) * 7
+      pos[i * 3 + 2] = -1.5 + rand() * 3
+    }
+    g.setAttribute("position", new BufferAttribute(pos, 3))
+    return g
+  }, [seed])
+  useFrame((state) => {
+    if (!ref.current) return
+    const t = state.clock.elapsedTime
+    ref.current.rotation.y = t * 0.02 * (seed % 2 === 0 ? 1 : -1)
+    ref.current.position.y = Math.sin(t * 0.15 + seed) * 0.25
+  })
+  return (
+    <points ref={ref} geometry={geometry}>
+      <pointsMaterial color={color} size={0.035} transparent opacity={0.35} depthWrite={false} blending={AdditiveBlending} sizeAttenuation />
+    </points>
+  )
 }
 
 function ChoreoRig({ mobile, reduced }: { mobile: boolean; reduced: boolean }) {
@@ -123,6 +156,12 @@ export default function Scene() {
       className="h-full w-full"
     >
       <ChoreoRig mobile={mobile} reduced={reduced} />
+      {!mobile && !reduced && (
+        <>
+          <ParticleCloud color="#1E94A5" seed={1} />
+          <ParticleCloud color="#76007D" seed={2} />
+        </>
+      )}
     </Canvas>
   )
 }
