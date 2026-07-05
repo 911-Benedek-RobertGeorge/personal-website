@@ -11,6 +11,7 @@ import {
   Linkedin,
   Server,
   Zap,
+  TrendingUp,
   CheckCircle2,
   Calendar,
   Layers,
@@ -42,21 +43,27 @@ const App = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
 
+  const credSectionRef = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
+    if (hasScrolledPast) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
     const handleScroll = () => {
-      if (window.scrollY > 600 && !hasScrolledPast) {
+      const el = credSectionRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      // Same trigger the robot choreography uses: the section entering view.
+      if (rect.top < window.innerHeight * 0.55 && rect.bottom > 0) {
         setShowInitialPopup(true);
         setHasScrolledPast(true);
-
-        const timer = setTimeout(() => {
-          setShowInitialPopup(false);
-        }, 3000);
-
-        return () => clearTimeout(timer);
+        timer = setTimeout(() => setShowInitialPopup(false), 3000);
       }
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (timer) clearTimeout(timer);
+    };
   }, [hasScrolledPast]);
 
   const scrollToBooking = () => {
@@ -199,7 +206,7 @@ const App = () => {
       />
 
       {/* Hero Section with VSL */}
-      <section className="relative z-10 border-y border-white/10 bg-[#39B5C4]/5 backdrop-blur-xl overflow-hidden md:min-h-[600px] lg:min-h-[700px]">
+      <section data-choreo="hero" className="relative z-10 border-y border-white/10 bg-[#39B5C4]/5 backdrop-blur-xl overflow-hidden md:min-h-[600px] lg:min-h-[700px]">
         <Script src="https://www.youtube.com/iframe_api" strategy="afterInteractive" />
 
         <div className="absolute inset-0 pointer-events-none">
@@ -221,7 +228,8 @@ const App = () => {
               <p className="mt-4 text-slate-400 text-lg max-w-lg leading-relaxed">
                 Îți construiesc infrastructura digitală - automatizări, CRM și sisteme AI care lucrează non-stop pentru afacerea ta
               </p>
-              <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <p className="mt-6 text-[#2AAF7F] font-bold text-base tracking-wide">Nu lăsa lead-uri să scape.</p>
+              <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <button
                   onClick={handleScheduleClick}
                   className="group relative text-left h-16 w-full sm:w-64 bg-[#000022]/40 border-2 border-[#76007D] text-[#76007D] text-base font-semibold rounded-xl overflow-hidden transform transition-all duration-500 hover:scale-105 hover:border-[#39B5C4] hover:text-[#39B5C4] px-6 flex items-center justify-start gap-2 before:absolute before:w-8 before:h-8 before:content-[''] before:right-2 before:top-2 before:z-10 before:bg-[#76007D] before:rounded-full before:blur before:transition-all before:duration-500 after:absolute after:z-10 after:w-12 after:h-12 after:content-[''] after:bg-[#39B5C4] after:right-6 after:top-4 after:rounded-full after:blur after:transition-all after:duration-500 hover:before:right-10 hover:before:-bottom-4 hover:after:-right-6 hover:after:scale-110"
@@ -285,7 +293,7 @@ const App = () => {
 
 
       {/* Credibility Frame - ENHANCED LINKEDIN WITH AVATAR POPUP */}
-      <section className="relative z-10 border-y border-white/5 bg-[#39B5C4]/8 backdrop-blur-xl">
+      <section data-choreo="credibility" ref={credSectionRef} className="relative z-10 border-y border-white/5 bg-[#39B5C4]/8 backdrop-blur-xl">
         <div className="container mx-auto px-6 py-0">
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">
             {/* Tech Cred */}
@@ -349,7 +357,7 @@ const App = () => {
       </section>
 
       {/* Problemă + haos actual → Reality Check */}
-      <section className="relative z-10 py-20 md:py-24 px-6 border-y border-white/5">
+      <section data-choreo="pains" className="relative z-10 py-20 md:py-24 px-6 border-y border-white/5">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-[20%] right-[10%] w-[400px] h-[400px] bg-[#76007D]/10 rounded-full blur-[120px]" />
           <div className="absolute bottom-[10%] left-[5%] w-[350px] h-[350px] bg-[#1E94A5]/8 rounded-full blur-[100px]" />
@@ -450,8 +458,9 @@ const App = () => {
       </section> */}
 
       {/* Case Studies → Use Cases */}
-      <section id="case-studies" className="relative z-10 py-24 px-6 bg-[#39B5C4]/8 backdrop-blur-xl">
+      <section id="case-studies" data-choreo="cases" className="relative z-10 py-24 px-6 bg-[#39B5C4]/8 backdrop-blur-xl">
         <div className="container mx-auto max-w-5xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#2AAF7F]/30 bg-[#2AAF7F]/10 text-[#2AAF7F] text-xs font-mono uppercase tracking-widest mb-4">Date din producție</div>
           <h2 className="text-2xl sm:text-3xl font-bold text-white">Cum arată digitalizarea în practică?</h2>
           <p className="mt-4 text-slate-300">Câteva scenarii reale unde sistemele mele fac diferența:</p>
           <div className="mt-6 grid sm:grid-cols-3 gap-6">
@@ -460,18 +469,21 @@ const App = () => {
               <h3 className="text-white font-semibold">„Mina de Aur Abandonată”</h3>
               <p className="text-slate-400 text-sm">Reactivarea bazei de date</p>
               <p className="mt-3 text-slate-300">Ai sute de numere vechi. Nu ai timp să le suni. Sistem AI care trimite mesaje personalizate și empatice tuturor. Clienți vechi se reîntorc în 24 de ore, fără reclame.</p>
+              <div className="mt-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2AAF7F]/10 border border-[#2AAF7F]/25 text-[#2AAF7F] text-sm font-bold"><TrendingUp size={14} /> 3.5x ROI</div>
             </div>
             <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
               <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
               <h3 className="text-white font-semibold">„Secretara Virtuală care nu doarme”</h3>
               <p className="text-slate-400 text-sm">Asistent AI 24/7</p>
               <p className="mt-3 text-slate-300">Pierzi clienți pentru că nu răspunzi în weekend/seara. Asistentul AI răspunde la întrebări și face programarea direct în calendarul tău.</p>
+              <div className="mt-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2AAF7F]/10 border border-[#2AAF7F]/25 text-[#2AAF7F] text-sm font-bold"><ShieldCheck size={14} /> 0 erori umane</div>
             </div>
             <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
               <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
               <h3 className="text-white font-semibold">„Marketingul care nu uită”</h3>
               <p className="text-slate-400 text-sm">Nurturing automat</p>
               <p className="mt-3 text-slate-300">Plătești reclame, oamenii intră pe site, dar nu cumpără. Sistemul trimite mail/SMS util timp de 2 săptămâni până când sunt gata să cumpere.</p>
+              <div className="mt-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2AAF7F]/10 border border-[#2AAF7F]/25 text-[#2AAF7F] text-sm font-bold"><Zap size={14} /> +40% eficiență</div>
             </div>
           </div>
         </div>
@@ -498,7 +510,7 @@ const App = () => {
       </section> */}
 
       {/* Services Section */}
-      <section id="services" className="relative z-10 py-24 px-6">
+      <section id="services" data-choreo="services" className="relative z-10 py-24 px-6">
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-1">
@@ -611,7 +623,7 @@ const App = () => {
       </section>
 
       {/* USPs / Philosophy */}
-      <section id="philosophy" className="relative z-10 py-24 px-6 text-[#E5E7EB] font-sans selection:bg-[#76007D] selection:text-white overflow-x-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#000045] via-[#000025] to-[#000010]">
+      <section id="philosophy" data-choreo="philosophy" className="relative z-10 py-24 px-6 text-[#E5E7EB] font-sans selection:bg-[#76007D] selection:text-white overflow-x-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#000045] via-[#000025] to-[#000010]">
         <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
           <svg width="100%" height="100%">
             <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -702,7 +714,7 @@ const App = () => {
       </section>
 
       {/* Calendly / Booking Section */}
-      <section id="booking" className="relative z-10 py-24 px-6">
+      <section id="booking" data-choreo="booking" className="relative z-10 py-24 px-6">
         <div className="container mx-auto max-w-4xl text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Discutăm Sisteme, Nu Strategii</h2>
           <p className="text-slate-400 mb-12 max-w-2xl mx-auto">
