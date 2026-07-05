@@ -1,18 +1,7 @@
 import type { Metadata } from "next";
-import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import CalendlyBadgeClient from "./components/CalendlyBadgeClient";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const robotoMono = Roboto_Mono({
-  variable: "--font-roboto-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://benedek-systems.vercel.app'),
@@ -72,7 +61,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body
-        className={`${inter.variable} ${robotoMono.variable} antialiased`}
+        className="antialiased"
         suppressHydrationWarning={true}
       >
         {children}

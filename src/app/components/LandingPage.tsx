@@ -22,6 +22,16 @@ import { FloatingNav } from "@/components/ui/floating-navbar";
 
 const Scene = dynamic(() => import("./Scene"), { ssr: false });
 
+type YTPlayer = { playVideo?: () => void };
+type YTNamespace = {
+  Player: new (elementId: string, options: object) => YTPlayer;
+  PlayerState: { PLAYING: number };
+};
+type YTWindow = Window & { YT?: YTNamespace; onYouTubeIframeAPIReady?: () => void };
+type CalendlyWindow = Window & {
+  Calendly?: { initPopupWidget?: (opts: { url: string }) => void };
+};
+
 const App = () => {
   const [showInitialPopup, setShowInitialPopup] = useState(false);
   const [hasScrolledPast, setHasScrolledPast] = useState(false);
@@ -55,10 +65,9 @@ const App = () => {
 
   const handleScheduleClick = () => {
     try {
-      // @ts-ignore
-      if (window.Calendly && typeof window.Calendly.initPopupWidget === 'function') {
-        // @ts-ignore
-        window.Calendly.initPopupWidget({ url: 'https://calendly.com/benedek-robertgeorge/30min' });
+      const calendly = (window as CalendlyWindow).Calendly;
+      if (calendly && typeof calendly.initPopupWidget === 'function') {
+        calendly.initPopupWidget({ url: 'https://calendly.com/benedek-robertgeorge/30min' });
         return;
       }
       window.open('https://calendly.com/benedek-robertgeorge/30min', '_blank');
@@ -99,13 +108,13 @@ const App = () => {
   };
 
   const [videoExpanded, setVideoExpanded] = useState(false);
-  const playerRef = useRef<any>(null);
+  const playerRef = useRef<YTPlayer | null>(null);
   const videoSrc = `https://www.youtube.com/embed/Co4FE_SGRtI?enablejsapi=1&autoplay=0&controls=1&rel=0&modestbranding=1&playsinline=1`;
 
   useEffect(() => {
     const createPlayer = () => {
       try {
-        const YTObj = (window as any).YT;
+        const YTObj = (window as YTWindow).YT;
         if (YTObj && YTObj.Player && !playerRef.current) {
           playerRef.current = new YTObj.Player('hero-vsl', {
             playerVars: {
@@ -115,7 +124,7 @@ const App = () => {
               playsinline: 1,
             },
             events: {
-              onStateChange: (e: any) => {
+              onStateChange: (e: { data?: number }) => {
                 const state = e?.data;
                 if (state === YTObj.PlayerState.PLAYING) {
                   setVideoExpanded(true);
@@ -126,7 +135,7 @@ const App = () => {
         }
       } catch { }
     };
-    (window as any).onYouTubeIframeAPIReady = createPlayer;
+    (window as YTWindow).onYouTubeIframeAPIReady = createPlayer;
     createPlayer();
   }, []);
 
@@ -348,7 +357,7 @@ const App = () => {
         <div className="container mx-auto max-w-5xl relative z-10">
           <div className="max-w-2xl mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight">Dacă nu folosești AI-ul pentru a fi mai productiv, <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#39B5C4] to-[#2AAF7F]">lași bani pe masă</span></h2>
-            <p className="mt-5 text-slate-400 text-lg leading-relaxed">Poate crezi că „Inteligența Artificială" este doar un termen de marketing. Sau poate știi că ar putea ajuta, dar nu ai nicio idee de unde să începi.</p>
+            <p className="mt-5 text-slate-400 text-lg leading-relaxed">Poate crezi că „Inteligența Artificială” este doar un termen de marketing. Sau poate știi că ar putea ajuta, dar nu ai nicio idee de unde să începi.</p>
             <p className="mt-3 text-slate-500">Adevărul este că, dacă business-ul tău încă se bazează pe:</p>
           </div>
 
@@ -403,7 +412,7 @@ const App = () => {
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
                 </div>
                 <div>
-                  <h4 className="text-white font-semibold text-sm md:text-base">„Speranța" că vor veni clienți noi</h4>
+                  <h4 className="text-white font-semibold text-sm md:text-base">„Speranța” că vor veni clienți noi</h4>
                   <p className="text-slate-500 text-xs md:text-sm mt-1">Fără sistem = fără predictibilitate</p>
                 </div>
               </div>
@@ -550,7 +559,7 @@ const App = () => {
                   <h3 className="text-xl font-bold text-white">Reactivare Baze de Date & CRM</h3>
                 </div>
                 <p className="text-slate-300 mb-4">
-                  Transformă listele de contacte "moarte" în venituri. Configurez sisteme care scanează baza de date, segmentează clienții și inițiază conversații personalizate prin AI pentru a-i readuce în pipeline.
+                  Transformă listele de contacte „moarte” în venituri. Configurez sisteme care scanează baza de date, segmentează clienții și inițiază conversații personalizate prin AI pentru a-i readuce în pipeline.
                 </p>
                 <ul className="grid grid-cols-2 gap-2 text-sm text-slate-400">
                   <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Lead Scoring Automat</li>
@@ -578,7 +587,7 @@ const App = () => {
                   <h3 className="text-xl font-bold text-white">Arhitectură Custom & Audit</h3>
                 </div>
                 <p className="text-slate-300 mb-4">
-                  Soluțiile standard nu se potrivesc modelului tău? Analizez business-ul de la zero și construiesc un sistem <span className="text-[#39B5C4] font-semibold">100% personalizat</span>. Rezolv probleme complexe pe care agențiile "copy-paste" le ignoră.
+                  Soluțiile standard nu se potrivesc modelului tău? Analizez business-ul de la zero și construiesc un sistem <span className="text-[#39B5C4] font-semibold">100% personalizat</span>. Rezolv probleme complexe pe care agențiile „copy-paste” le ignoră.
                 </p>
                 <ul className="grid grid-cols-2 gap-2 text-sm text-slate-300">
                   <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Consultanță 1-la-1</li>
@@ -633,7 +642,7 @@ const App = () => {
                   </div>
                   <div>
                     <h4 className="font-bold text-xl mb-1">Inginer Backend, Nu Marketer</h4>
-                    <p className="text-blue-100">Gândesc în sisteme logice, fluxuri de date și eficiență computațională, nu în "buzzwords" creative.</p>
+                    <p className="text-blue-100">Gândesc în sisteme logice, fluxuri de date și eficiență computațională, nu în „buzzwords” creative.</p>
                   </div>
                 </div>
                 <div className="flex gap-4">
@@ -650,7 +659,7 @@ const App = () => {
                     <ShieldCheck size={20} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-xl mb-1">Garanții "Fără BS"</h4>
+                    <h4 className="font-bold text-xl mb-1">Garanții „Fără BS”</h4>
                     <p className="text-blue-100">Dacă sistemul nu aduce eficiență măsurabilă, îl rescriem. Transparență totală în raportare.</p>
                   </div>
                 </div>
