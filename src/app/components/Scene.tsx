@@ -102,8 +102,8 @@ function ChoreoRig({ mobile, reduced }: { mobile: boolean; reduced: boolean }) {
 
     if (mobile || reduced) {
       // ponytail: docked mode = pre-choreography behavior; the full show is desktop-only
-      g.position.set((0.16 - 0.5) * 2 * halfW, (0.5 - 0.82) * 2 * halfH, 0)
-      g.scale.setScalar(0.55)
+      g.position.set((0.16 - 0.5) * 2 * halfW, (0.5 - 0.92) * 2 * halfH, 0)
+      g.scale.setScalar(0.42)
       g.rotation.y = 0.3
       const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1)
       const t = reduced ? 0.15 : Math.min(Math.max(window.scrollY / maxScroll, 0), 1)
