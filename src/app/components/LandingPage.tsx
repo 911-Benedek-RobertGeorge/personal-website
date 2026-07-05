@@ -156,8 +156,8 @@ const App = () => {
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]"></div>
       </div>
 
-      {/* 3D Robot Background Canvas */}
-      <div className="fixed -left-[3vw] sm:-left-[1vw] bottom-0 h-[45vh] sm:h-[55vh] w-[52vw] sm:w-[26vw] md:w-[32vw] z-[999] pointer-events-none scale-[0.8] origin-bottom-left" style={{ overflow: 'visible' }}>
+      {/* 3D Robot Choreography Overlay */}
+      <div className="fixed inset-0 z-[999] pointer-events-none">
         <Scene />
       </div>
 
