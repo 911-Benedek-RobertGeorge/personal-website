@@ -77,10 +77,10 @@ function specToPose(s: SectionSpec, clipT: number, halfW: number, halfH: number)
 /**
  * Two keyframes per section that has a measured DOM rect (missing rects are
  * skipped): the pose is reached when the viewport center crosses 15% of the
- * section, held until 85%, while the clip window scrubs t0 -> t1. Because the
- * anchors are viewport-center crossings of non-overlapping sections, they are
- * strictly ascending. Travel between sections happens in the 85% -> next 15%
- * gap, where both position and clip time lerp.
+ * section, held until 85%, while the clip window scrubs t0 -> t1. Travel
+ * between sections happens in the 85% -> next 15% gap, where both position
+ * and clip time lerp. The result is sorted ascending by anchor, since
+ * `specs` order (not DOM order) drives clip progression.
  */
 export function buildTimeline(
   specs: SectionSpec[],
@@ -97,6 +97,7 @@ export function buildTimeline(
     out.push({ at: r.top + 0.15 * r.height - 0.5 * vh, pose: specToPose(s, s.clip[0], halfW, halfH) });
     out.push({ at: r.top + 0.85 * r.height - 0.5 * vh, pose: specToPose(s, s.clip[1], halfW, halfH) });
   }
+  out.sort((a, b) => a.at - b.at);
   return out;
 }
 

@@ -67,4 +67,23 @@ const centered = buildTimeline(
 assert.equal(centered[0].pose.x, 0, "nx 0.5 is world center");
 assert.equal(centered[0].pose.y, 0, "ny 0.5 is world center");
 
+// SECTIONS data invariants (the hand-tuned table).
+const ids = new Set(SECTIONS.map((s) => s.id));
+assert.equal(ids.size, SECTIONS.length, "unique section ids");
+for (const s of SECTIONS) {
+  assert.ok(s.clip[0] >= 0 && s.clip[1] <= 1 && s.clip[0] <= s.clip[1], `clip window sane: ${s.id}`);
+  assert.ok(s.nx >= 0 && s.nx <= 1 && s.ny >= 0 && s.ny <= 1, `nx/ny normalized: ${s.id}`);
+  assert.ok(s.scale > 0, `scale positive: ${s.id}`);
+}
+for (let i = 1; i < SECTIONS.length; i++) {
+  assert.ok(SECTIONS[i].clip[0] >= SECTIONS[i - 1].clip[1] - 1e-9, `clip windows sequential: ${SECTIONS[i].id}`);
+}
+
+// Reordered DOM sections still produce a strictly ascending timeline (the sort).
+const reversedRects = SECTIONS.map((s, i) => ({ id: s.id, top: (SECTIONS.length - 1 - i) * 1000, height: 900 }));
+const tlReordered = buildTimeline(SECTIONS, reversedRects, vh, halfW, halfH);
+for (let i = 1; i < tlReordered.length; i++) {
+  assert.ok(tlReordered[i].at > tlReordered[i - 1].at, "timeline ascending after DOM reorder");
+}
+
 console.log("choreography check: OK");

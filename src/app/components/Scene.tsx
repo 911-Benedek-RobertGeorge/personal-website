@@ -1,7 +1,7 @@
 "use client"
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Component, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react"
 import { AdditiveBlending, BufferAttribute, BufferGeometry, PointLight, Points } from "three"
 import Model, { ModelHandle } from "./Model"
 import { SECTIONS, buildTimeline, resolvePose, type Keyframe, type Pose } from "./choreography"
@@ -10,7 +10,10 @@ const FOV = 54
 const BASE_Z = 5
 
 function useMediaFlags() {
-  const [flags, setFlags] = useState({ mobile: false, reduced: false })
+  const [flags, setFlags] = useState(() => ({
+    mobile: window.matchMedia("(max-width: 767px)").matches,
+    reduced: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  }))
   useEffect(() => {
     const mqMobile = window.matchMedia("(max-width: 767px)")
     const mqReduced = window.matchMedia("(prefers-reduced-motion: reduce)")
@@ -146,22 +149,37 @@ function ChoreoRig({ mobile, reduced }: { mobile: boolean; reduced: boolean }) {
   )
 }
 
+class CanvasErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false }
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+  componentDidCatch(err: unknown) {
+    console.error("3D scene disabled:", err)
+  }
+  render() {
+    return this.state.failed ? null : this.props.children
+  }
+}
+
 export default function Scene() {
   const { mobile, reduced } = useMediaFlags()
   return (
-    <Canvas
-      gl={{ antialias: true }}
-      dpr={[1, 1.5]}
-      camera={{ fov: FOV, near: 0.1, far: 100, position: [0, 0, BASE_Z] }}
-      className="h-full w-full"
-    >
-      <ChoreoRig mobile={mobile} reduced={reduced} />
-      {!mobile && !reduced && (
-        <>
-          <ParticleCloud color="#1E94A5" seed={1} />
-          <ParticleCloud color="#76007D" seed={2} />
-        </>
-      )}
-    </Canvas>
+    <CanvasErrorBoundary>
+      <Canvas
+        gl={{ antialias: true }}
+        dpr={[1, 1.5]}
+        camera={{ fov: FOV, near: 0.1, far: 100, position: [0, 0, BASE_Z] }}
+        className="h-full w-full"
+      >
+        <ChoreoRig mobile={mobile} reduced={reduced} />
+        {!mobile && !reduced && (
+          <>
+            <ParticleCloud color="#1E94A5" seed={1} />
+            <ParticleCloud color="#76007D" seed={2} />
+          </>
+        )}
+      </Canvas>
+    </CanvasErrorBoundary>
   )
 }
