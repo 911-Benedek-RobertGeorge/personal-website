@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "check:choreo": "node --experimental-strip-types scripts/choreography.check.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "9.0.0-rc.1",
