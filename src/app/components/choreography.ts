@@ -38,13 +38,13 @@ export type Keyframe = { at: number; pose: Pose };
 // The approved storyboard. Clip windows are sequential so the dance clip
 // plays continuously across the whole page. Numbers tuned in Task 6.
 export const SECTIONS: SectionSpec[] = [
-  { id: "hero",        nx: 0.10, ny: 0.68, scale: 0.85, rotY:  0.35, clip: [0.00, 0.18], cam: [0, 0, 0],     accent: "#1E94A5" },
-  { id: "credibility", nx: 0.85, ny: 0.55, scale: 0.65, rotY: -0.45, clip: [0.18, 0.34], cam: [0.2, 0, 0],   accent: "#0077b5" },
-  { id: "pains",       nx: 0.30, ny: 0.60, scale: 0.75, rotY:  0.55, clip: [0.34, 0.50], cam: [0, 0, 0],     accent: "#76007D" },
-  { id: "cases",       nx: 0.82, ny: 0.62, scale: 0.75, rotY: -0.50, clip: [0.50, 0.64], cam: [-0.2, 0, 0],  accent: "#2AAF7F" },
-  { id: "services",    nx: 0.14, ny: 0.66, scale: 0.60, rotY:  0.40, clip: [0.64, 0.76], cam: [0.2, 0, 0],   accent: "#1E94A5" },
-  { id: "philosophy",  nx: 0.52, ny: 0.70, scale: 0.70, rotY:  0.00, clip: [0.76, 0.88], cam: [0, 0, 0],     accent: "#76007D" },
-  { id: "booking",     nx: 0.72, ny: 0.60, scale: 0.90, rotY: -0.30, clip: [0.88, 1.00], cam: [0, 0, -0.6],  accent: "#2AAF7F" },
+  { id: "hero",        nx: 0.38, ny: 0.86, scale: 0.55, rotY:  0.35, clip: [0.00, 0.18], cam: [0, 0, 0],     accent: "#1E94A5" },
+  { id: "credibility", nx: 0.66, ny: 0.55, scale: 0.42, rotY:  0.45, clip: [0.18, 0.34], cam: [0.2, 0, 0],   accent: "#0077b5" },
+  { id: "pains",       nx: 0.09, ny: 0.58, scale: 0.40, rotY:  0.55, clip: [0.34, 0.50], cam: [0, 0, 0],     accent: "#76007D" },
+  { id: "cases",       nx: 0.92, ny: 0.60, scale: 0.32, rotY: -0.50, clip: [0.50, 0.64], cam: [-0.2, 0, 0],  accent: "#2AAF7F" },
+  { id: "services",    nx: 0.13, ny: 0.74, scale: 0.55, rotY:  0.40, clip: [0.64, 0.76], cam: [0.2, 0, 0],   accent: "#1E94A5" },
+  { id: "philosophy",  nx: 0.505, ny: 0.60, scale: 0.24, rotY:  0.00, clip: [0.76, 0.88], cam: [0, 0, 0],     accent: "#76007D" },
+  { id: "booking",     nx: 0.87, ny: 0.62, scale: 0.56, rotY: -0.30, clip: [0.88, 1.00], cam: [0, 0, -0.6],  accent: "#2AAF7F" },
 ];
 
 export function hexToRgb(hex: string): [number, number, number] {
