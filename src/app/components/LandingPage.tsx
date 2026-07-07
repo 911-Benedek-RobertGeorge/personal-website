@@ -13,13 +13,14 @@ import {
   Zap,
   TrendingUp,
   CheckCircle2,
-  Calendar,
   Layers,
 } from 'lucide-react';
 
 import dynamic from "next/dynamic";
 import Script from 'next/script';
 import { FloatingNav } from "@/components/ui/floating-navbar";
+import StagePanels from "./StagePanels";
+import { useReveal } from "./useReveal";
 
 const Scene = dynamic(() => import("./Scene"), { ssr: false });
 
@@ -44,6 +45,7 @@ const App = () => {
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
 
   const credSectionRef = useRef<HTMLElement | null>(null);
+  const [vslRevealRef, vslRevealed] = useReveal<HTMLDivElement>();
 
   useEffect(() => {
     if (hasScrolledPast) return;
@@ -205,51 +207,22 @@ const App = () => {
         ctaLink="#booking"
       />
 
-      {/* Hero Section with VSL */}
-      <section data-choreo="hero" className="relative z-10 border-y border-white/10 bg-[#39B5C4]/5 backdrop-blur-xl overflow-hidden md:min-h-[600px] lg:min-h-[700px]">
-        <Script src="https://www.youtube.com/iframe_api" strategy="afterInteractive" />
+      {/* Act 1 — The pinned robot stage */}
+      <Script src="https://www.youtube.com/iframe_api" strategy="afterInteractive" />
+      <StagePanels onPrimaryCta={handleScheduleClick} onSecondaryCta={scrollToBooking} />
 
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-24 -left-24 w-[460px] h-[460px] bg-gradient-to-br from-[#76007D]/20 to-transparent rounded-full blur-3xl" />
-          <div className="absolute -bottom-16 right-[10%] w-[520px] h-[520px] bg-gradient-to-tr from-[#2AAF7F]/18 to-transparent rounded-full blur-[120px]" />
-          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
-          <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
-        </div>
-        <div className="container mx-auto max-w-7xl px-6 pt-32 md:pt-28 pb-16 md:pb-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-            {/* Left: Value Proposition */}
-            <div className="md:mt-6">
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.05]">
-                Motorul de <br className="hidden sm:block" />Clienți Noi
-              </h1>
-              <h2 className="mt-3 text-2xl md:text-3xl font-semibold text-white max-w-3xl">
-                Nu doar gestionez haosul. Îl <br></br> <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#39B5C4] to-[#2AAF7F]">transform în profit</span>
-              </h2>
-              <p className="mt-4 text-slate-400 text-lg max-w-lg leading-relaxed">
-                Îți construiesc infrastructura digitală - automatizări, CRM și sisteme AI care lucrează non-stop pentru afacerea ta
-              </p>
-              <p className="mt-6 text-[#2AAF7F] font-bold text-base tracking-wide">Nu lăsa lead-uri să scape.</p>
-              <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <button
-                  onClick={handleScheduleClick}
-                  className="group relative text-left h-16 w-full sm:w-64 bg-[#000022]/40 border-2 border-[#76007D] text-[#76007D] text-base font-semibold rounded-xl overflow-hidden transform transition-all duration-500 hover:scale-105 hover:border-[#39B5C4] hover:text-[#39B5C4] px-6 flex items-center justify-start gap-2 before:absolute before:w-8 before:h-8 before:content-[''] before:right-2 before:top-2 before:z-10 before:bg-[#76007D] before:rounded-full before:blur before:transition-all before:duration-500 after:absolute after:z-10 after:w-12 after:h-12 after:content-[''] after:bg-[#39B5C4] after:right-6 after:top-4 after:rounded-full after:blur after:transition-all after:duration-500 hover:before:right-10 hover:before:-bottom-4 hover:after:-right-6 hover:after:scale-110"
-                >
-                  <Calendar size={18} className="text-white/90" />
-                  Activează Sistemul
-                </button>
-                <button
-                  onClick={scrollToBooking}
-                  className="text-slate-400 hover:text-white text-sm font-medium transition-colors duration-300 flex items-center gap-2"
-                >
-                  sau trimite o cerere <ArrowRight size={14} />
-                </button>
-              </div>
-            </div>
-            {/* Right: VSL Video */}
+      {/* Act 2 — VSL */}
+      <section id="vsl" className="relative z-10 py-20 md:py-28 px-6">
+        <div className="container mx-auto max-w-5xl">
+          <div
+            ref={vslRevealRef}
+            className={`transition-all duration-700 ease-out ${vslRevealed ? 'opacity-100 scale-100' : 'opacity-0 scale-[0.94]'}`}
+          >
             <div className="relative">
-              <div className="absolute -z-10 inset-0 -top-8 w-[560px] h-[560px] mx-auto lg:mx-0 lg:left-auto lg:right-0 bg-[#2AAF7F]/20 rounded-full blur-[100px]" />
-              <div className={`${videoExpanded ? 'fixed inset-0 z-[6000] rounded-none pointer-events-none' : 'relative z-0 rounded-2xl origin-center w-full md:scale-[1.10] lg:scale-[1.14] md:max-w-[900px] lg:max-w-[1100px] ml-auto'} group overflow-hidden bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 shadow-none transition-all duration-700 ease-[cubic-bezier(.2,.8,.2,1)] transform-gpu`}>
-                <div className={`${videoExpanded ? 'w-full h-full' : 'w-full h-[260px] sm:h-[280px] md:h-[340px] lg:h-[400px]'} transition-all duration-700 ease-[cubic-bezier(.2,.8,.2,1)]`}>
+              <div className="absolute -inset-10 bg-[#2AAF7F]/15 rounded-full blur-[110px] pointer-events-none" />
+              <div className="absolute -inset-10 bg-[#76007D]/10 rounded-full blur-[130px] pointer-events-none" />
+              <div className={`${videoExpanded ? 'fixed inset-0 z-[6000] rounded-none pointer-events-none' : 'relative z-0 rounded-2xl w-full'} group overflow-hidden bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 transition-all duration-700 ease-[cubic-bezier(.2,.8,.2,1)] transform-gpu`}>
+                <div className={`${videoExpanded ? 'w-full h-full' : 'w-full aspect-video'} transition-all duration-700 ease-[cubic-bezier(.2,.8,.2,1)]`}>
                   <iframe
                     title="VSL — Digitalizare & Automatizare"
                     className="w-full h-full pointer-events-auto"
@@ -282,18 +255,14 @@ const App = () => {
                   </button>
                 </div>
               )}
-
             </div>
-            {/* CTA after Video */}
-
-
           </div>
         </div>
       </section>
 
 
       {/* Credibility Frame - ENHANCED LINKEDIN WITH AVATAR POPUP */}
-      <section data-choreo="credibility" ref={credSectionRef} className="relative z-10 border-y border-white/5 bg-[#39B5C4]/8 backdrop-blur-xl">
+      <section ref={credSectionRef} className="relative z-10 border-y border-white/5 bg-[#39B5C4]/8 backdrop-blur-xl">
         <div className="container mx-auto px-6 py-0">
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">
             {/* Tech Cred */}
@@ -356,81 +325,6 @@ const App = () => {
         </div>
       </section>
 
-      {/* Problemă + haos actual → Reality Check */}
-      <section data-choreo="pains" className="relative z-10 py-20 md:py-24 px-6 border-y border-white/5">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-[20%] right-[10%] w-[400px] h-[400px] bg-[#76007D]/10 rounded-full blur-[120px]" />
-          <div className="absolute bottom-[10%] left-[5%] w-[350px] h-[350px] bg-[#1E94A5]/8 rounded-full blur-[100px]" />
-        </div>
-        <div className="container mx-auto max-w-5xl relative z-10">
-          <div className="max-w-2xl mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight">Dacă nu folosești AI-ul pentru a fi mai productiv, <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#39B5C4] to-[#2AAF7F]">lași bani pe masă</span></h2>
-            <p className="mt-5 text-slate-400 text-lg leading-relaxed">Poate crezi că „Inteligența Artificială” este doar un termen de marketing. Sau poate știi că ar putea ajuta, dar nu ai nicio idee de unde să începi.</p>
-            <p className="mt-3 text-slate-500">Adevărul este că, dacă business-ul tău încă se bazează pe:</p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
-            {/* Pain 1 */}
-            <div className="group relative p-5 md:p-6 rounded-xl bg-white/[0.03] border border-white/[0.07] hover:border-red-500/20 transition-all duration-300 hover:bg-red-500/[0.03]">
-              <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="flex items-start gap-4">
-                <div className="mt-0.5 p-2 rounded-lg bg-red-500/10 border border-red-500/10 text-red-400 shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-                </div>
-                <div>
-                  <h4 className="text-white font-semibold text-sm md:text-base">Agende fizice și post-it-uri pierdute</h4>
-                  <p className="text-slate-500 text-xs md:text-sm mt-1">Informații critice care dispar în haos</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Pain 2 */}
-            <div className="group relative p-5 md:p-6 rounded-xl bg-white/[0.03] border border-white/[0.07] hover:border-red-500/20 transition-all duration-300 hover:bg-red-500/[0.03]">
-              <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="flex items-start gap-4">
-                <div className="mt-0.5 p-2 rounded-lg bg-red-500/10 border border-red-500/10 text-red-400 shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-                </div>
-                <div>
-                  <h4 className="text-white font-semibold text-sm md:text-base">Mesaje date manual când îți aduci aminte</h4>
-                  <p className="text-slate-500 text-xs md:text-sm mt-1">Lead-uri pierdute din lipsa de follow-up</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Pain 3 */}
-            <div className="group relative p-5 md:p-6 rounded-xl bg-white/[0.03] border border-white/[0.07] hover:border-red-500/20 transition-all duration-300 hover:bg-red-500/[0.03]">
-              <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="flex items-start gap-4">
-                <div className="mt-0.5 p-2 rounded-lg bg-red-500/10 border border-red-500/10 text-red-400 shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-                </div>
-                <div>
-                  <h4 className="text-white font-semibold text-sm md:text-base">Excel-uri pe care nu le mai înțelege nimeni</h4>
-                  <p className="text-slate-500 text-xs md:text-sm mt-1">Zero vizibilitate asupra cifrelor reale</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Pain 4 */}
-            <div className="group relative p-5 md:p-6 rounded-xl bg-white/[0.03] border border-white/[0.07] hover:border-red-500/20 transition-all duration-300 hover:bg-red-500/[0.03]">
-              <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="flex items-start gap-4">
-                <div className="mt-0.5 p-2 rounded-lg bg-red-500/10 border border-red-500/10 text-red-400 shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-                </div>
-                <div>
-                  <h4 className="text-white font-semibold text-sm md:text-base">„Speranța” că vor veni clienți noi</h4>
-                  <p className="text-slate-500 text-xs md:text-sm mt-1">Fără sistem = fără predictibilitate</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <p className="mt-10 text-slate-300 text-base md:text-lg max-w-3xl leading-relaxed">…atunci te lupți cu o mână legată la spate. La <span className="text-white font-semibold">Benedek Systems</span>, nu vindem iluzii. Luăm tehnologia din start-up-urile de top și o aplicăm în afacerea ta locală pentru a elimina munca inutilă.</p>
-        </div>
-      </section>
-
       {/* Beneficii tangibile → Flow Boost Benefits */}
       {/* <section className="relative z-10 py-16 px-6 bg-[#39B5C4]/8 backdrop-blur-xl border-y border-white/5">
         <div className="container mx-auto max-w-5xl">
@@ -458,7 +352,7 @@ const App = () => {
       </section> */}
 
       {/* Case Studies → Use Cases */}
-      <section id="case-studies" data-choreo="cases" className="relative z-10 py-24 px-6 bg-[#39B5C4]/8 backdrop-blur-xl">
+      <section id="case-studies" className="relative z-10 py-24 px-6 bg-[#39B5C4]/8 backdrop-blur-xl">
         <div className="container mx-auto max-w-5xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#2AAF7F]/30 bg-[#2AAF7F]/10 text-[#2AAF7F] text-xs font-mono uppercase tracking-widest mb-4">Date din producție</div>
           <h2 className="text-2xl sm:text-3xl font-bold text-white">Cum arată digitalizarea în practică?</h2>
@@ -510,7 +404,7 @@ const App = () => {
       </section> */}
 
       {/* Services Section */}
-      <section id="services" data-choreo="services" className="relative z-10 py-24 px-6">
+      <section id="services" className="relative z-10 py-24 px-6">
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-1">
@@ -623,7 +517,7 @@ const App = () => {
       </section>
 
       {/* USPs / Philosophy */}
-      <section id="philosophy" data-choreo="philosophy" className="relative z-10 py-24 px-6 text-[#E5E7EB] font-sans selection:bg-[#76007D] selection:text-white overflow-x-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#000045] via-[#000025] to-[#000010]">
+      <section id="philosophy" className="relative z-10 py-24 px-6 text-[#E5E7EB] font-sans selection:bg-[#76007D] selection:text-white overflow-x-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#000045] via-[#000025] to-[#000010]">
         <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
           <svg width="100%" height="100%">
             <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -714,7 +608,7 @@ const App = () => {
       </section>
 
       {/* Calendly / Booking Section */}
-      <section id="booking" data-choreo="booking" className="relative z-10 py-24 px-6">
+      <section id="booking" className="relative z-10 py-24 px-6">
         <div className="container mx-auto max-w-4xl text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Discutăm Sisteme, Nu Strategii</h2>
           <p className="text-slate-400 mb-12 max-w-2xl mx-auto">
