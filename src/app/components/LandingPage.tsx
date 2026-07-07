@@ -54,7 +54,7 @@ const App = () => {
       const el = credSectionRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      // Same trigger the robot choreography uses: the section entering view.
+      // Same trigger the robot stage rig uses: the section entering view.
       if (rect.top < window.innerHeight * 0.55 && rect.bottom > 0) {
         setShowInitialPopup(true);
         setHasScrolledPast(true);
