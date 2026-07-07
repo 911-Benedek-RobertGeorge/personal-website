@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint src scripts",
-    "check:choreo": "node --experimental-strip-types scripts/choreography.check.mjs"
+    "check:choreo": "node --experimental-strip-types scripts/choreography.check.mjs",
+    "check:stage": "node --experimental-strip-types scripts/stage.check.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "9.0.0-rc.1",
