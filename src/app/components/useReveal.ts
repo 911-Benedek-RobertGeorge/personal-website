@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-// Reveal-on-scroll: `revealed` flips true once when the element enters the viewport.
-export function useReveal<T extends HTMLElement>(threshold = 0.2) {
+// Reveal-on-scroll: fires once when the element's top edge clears the bottom 80px of the viewport — height-independent (a ratio threshold can be unreachable for very tall sections).
+export function useReveal<T extends HTMLElement>(threshold = 0) {
   const ref = useRef<T | null>(null);
   const [revealed, setRevealed] = useState(false);
 
@@ -21,7 +21,7 @@ export function useReveal<T extends HTMLElement>(threshold = 0.2) {
           io.disconnect();
         }
       },
-      { threshold }
+      { threshold, rootMargin: '0px 0px -80px 0px' }
     );
     io.observe(el);
     return () => io.disconnect();
