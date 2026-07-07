@@ -69,7 +69,9 @@ export function hexToRgb(hex: string): [number, number, number] {
 
 /** Trapezoid visibility: 0 before enter, ramps over PANEL_FADE, 1 mid-window, back to 0 by exit. */
 export function panelT(spec: PanelSpec, p: number): number {
-  const rise = smoothstep((p - spec.enterAt) / PANEL_FADE)
+  // Panels whose window starts at the very top of the stage are fully
+  // visible at p=0 (no fade-in) — the hero headline must not start hidden.
+  const rise = spec.enterAt <= 0 ? 1 : smoothstep((p - spec.enterAt) / PANEL_FADE)
   const fall = smoothstep((spec.exitAt - p) / PANEL_FADE)
   return Math.min(rise, fall)
 }

@@ -40,6 +40,11 @@ assert.equal(panelT(w, mid), 1, "fully visible mid-window");
 assert.equal(panelT(w, w.exitAt + 0.01), 0, "hidden after exit");
 assert.ok(panelT(w, w.enterAt + PANEL_FADE / 2) > 0 && panelT(w, w.enterAt + PANEL_FADE / 2) < 1, "ramps during fade");
 
+// Panels starting at p=0 are fully visible on load (no fade-in at the top).
+const headline = PANELS.find((s) => s.id === "wake-headline");
+assert.equal(panelT(headline, 0), 1, "wake-headline visible at p=0");
+assert.ok(panelT(headline, headline.exitAt + 0.01) === 0, "wake-headline still exits");
+
 // resolveStage: clamping and endpoints.
 assert.deepEqual(resolveStage(-1), resolveStage(0), "clamped below");
 assert.deepEqual(resolveStage(2), resolveStage(1), "clamped above");
