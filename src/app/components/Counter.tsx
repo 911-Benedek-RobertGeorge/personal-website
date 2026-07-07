@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { flushSync } from 'react-dom';
 
 type Props = {
   to: number;
@@ -22,8 +21,8 @@ export default function Counter({ to, decimals = 0, prefix = '', suffix = '', ac
     if (!active || started.current) return;
     started.current = true;
     if (to === 0 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      flushSync(() => setDisplay(to));
-      return;
+      const raf = requestAnimationFrame(() => setDisplay(to));
+      return () => cancelAnimationFrame(raf);
     }
     const t0 = performance.now();
     let raf = 0;

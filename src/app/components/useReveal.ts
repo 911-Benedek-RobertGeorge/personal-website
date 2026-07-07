@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { flushSync } from 'react-dom';
 
 // Reveal-on-scroll: `revealed` flips true once when the element enters the viewport.
 export function useReveal<T extends HTMLElement>(threshold = 0.2) {
@@ -10,8 +9,8 @@ export function useReveal<T extends HTMLElement>(threshold = 0.2) {
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      flushSync(() => setRevealed(true));
-      return;
+      const raf = requestAnimationFrame(() => setRevealed(true));
+      return () => cancelAnimationFrame(raf);
     }
     const el = ref.current;
     if (!el) return;
