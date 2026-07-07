@@ -21,6 +21,8 @@ import Script from 'next/script';
 import { FloatingNav } from "@/components/ui/floating-navbar";
 import StagePanels from "./StagePanels";
 import { useReveal } from "./useReveal";
+import Counter from "./Counter";
+import TiltCard from "./TiltCard";
 
 const Scene = dynamic(() => import("./Scene"), { ssr: false });
 
@@ -34,6 +36,8 @@ type CalendlyWindow = Window & {
   Calendly?: { initPopupWidget?: (opts: { url: string }) => void };
 };
 
+const revealCls = (on: boolean) => `transition-all duration-700 ease-out ${on ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`;
+
 const App = () => {
   const [showInitialPopup, setShowInitialPopup] = useState(false);
   const [hasScrolledPast, setHasScrolledPast] = useState(false);
@@ -46,6 +50,11 @@ const App = () => {
 
   const credSectionRef = useRef<HTMLElement | null>(null);
   const [vslRevealRef, vslRevealed] = useReveal<HTMLDivElement>();
+  const [credRevealRef, credRevealed] = useReveal<HTMLDivElement>();
+  const [casesRevealRef, casesRevealed] = useReveal<HTMLDivElement>();
+  const [servicesRevealRef, servicesRevealed] = useReveal<HTMLDivElement>();
+  const [philosophyRevealRef, philosophyRevealed] = useReveal<HTMLDivElement>();
+  const [bookingRevealRef, bookingRevealed] = useReveal<HTMLDivElement>();
 
   useEffect(() => {
     if (hasScrolledPast) return;
@@ -158,7 +167,7 @@ const App = () => {
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]"></div>
       </div>
 
-      {/* 3D Robot Choreography Overlay */}
+      {/* 3D Robot Stage Overlay */}
       <div className="fixed inset-0 z-[999] pointer-events-none">
         <Scene />
       </div>
@@ -263,7 +272,7 @@ const App = () => {
 
       {/* Credibility Frame - ENHANCED LINKEDIN WITH AVATAR POPUP */}
       <section ref={credSectionRef} className="relative z-10 border-y border-white/5 bg-[#39B5C4]/8 backdrop-blur-xl">
-        <div className="container mx-auto px-6 py-0">
+        <div ref={credRevealRef} className={`container mx-auto px-6 py-0 ${revealCls(credRevealed)}`}>
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">
             {/* Tech Cred */}
             <div className="flex items-center justify-center md:justify-start gap-4 py-8 md:pr-8">
@@ -357,27 +366,27 @@ const App = () => {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#2AAF7F]/30 bg-[#2AAF7F]/10 text-[#2AAF7F] text-xs font-mono uppercase tracking-widest mb-4">Date din producție</div>
           <h2 className="text-2xl sm:text-3xl font-bold text-white">Cum arată digitalizarea în practică?</h2>
           <p className="mt-4 text-slate-300">Câteva scenarii reale unde sistemele mele fac diferența:</p>
-          <div className="mt-6 grid sm:grid-cols-3 gap-6">
+          <div ref={casesRevealRef} className={`mt-6 grid sm:grid-cols-3 gap-6 ${revealCls(casesRevealed)}`}>
             <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
               <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
               <h3 className="text-white font-semibold">„Mina de Aur Abandonată”</h3>
               <p className="text-slate-400 text-sm">Reactivarea bazei de date</p>
               <p className="mt-3 text-slate-300">Ai sute de numere vechi. Nu ai timp să le suni. Sistem AI care trimite mesaje personalizate și empatice tuturor. Clienți vechi se reîntorc în 24 de ore, fără reclame.</p>
-              <div className="mt-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2AAF7F]/10 border border-[#2AAF7F]/25 text-[#2AAF7F] text-sm font-bold"><TrendingUp size={14} /> 3.5x ROI</div>
+              <div className="mt-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2AAF7F]/10 border border-[#2AAF7F]/25 text-[#2AAF7F] text-sm font-bold"><TrendingUp size={14} /> <Counter to={3.5} decimals={1} suffix="x ROI" active={casesRevealed} /></div>
             </div>
             <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
               <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
               <h3 className="text-white font-semibold">„Secretara Virtuală care nu doarme”</h3>
               <p className="text-slate-400 text-sm">Asistent AI 24/7</p>
               <p className="mt-3 text-slate-300">Pierzi clienți pentru că nu răspunzi în weekend/seara. Asistentul AI răspunde la întrebări și face programarea direct în calendarul tău.</p>
-              <div className="mt-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2AAF7F]/10 border border-[#2AAF7F]/25 text-[#2AAF7F] text-sm font-bold"><ShieldCheck size={14} /> 0 erori umane</div>
+              <div className="mt-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2AAF7F]/10 border border-[#2AAF7F]/25 text-[#2AAF7F] text-sm font-bold"><ShieldCheck size={14} /> <Counter to={0} suffix=" erori umane" active={casesRevealed} /></div>
             </div>
             <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
               <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
               <h3 className="text-white font-semibold">„Marketingul care nu uită”</h3>
               <p className="text-slate-400 text-sm">Nurturing automat</p>
               <p className="mt-3 text-slate-300">Plătești reclame, oamenii intră pe site, dar nu cumpără. Sistemul trimite mail/SMS util timp de 2 săptămâni până când sunt gata să cumpere.</p>
-              <div className="mt-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2AAF7F]/10 border border-[#2AAF7F]/25 text-[#2AAF7F] text-sm font-bold"><Zap size={14} /> +40% eficiență</div>
+              <div className="mt-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2AAF7F]/10 border border-[#2AAF7F]/25 text-[#2AAF7F] text-sm font-bold"><Zap size={14} /> <Counter to={40} prefix="+" suffix="% eficiență" active={casesRevealed} /></div>
             </div>
           </div>
         </div>
@@ -414,9 +423,10 @@ const App = () => {
               </h2>
             </div>
 
-            <div className="lg:col-span-2 space-y-6">
+            <div ref={servicesRevealRef} className={`lg:col-span-2 space-y-6 ${revealCls(servicesRevealed)}`}>
               {/* Service 1 */}
-              <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 hover:translate-x-2 transition-transform overflow-hidden">
+              <TiltCard>
+              <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
                 <div className="flex items-center gap-4 mb-4">
                   <div className="p-3 bg-[#76007D]/10 rounded-lg text-[#76007D]">
@@ -434,9 +444,11 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Securitate Enterprise</li>
                 </ul>
               </div>
+              </TiltCard>
 
               {/* Service 2 */}
-              <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 hover:translate-x-2 transition-transform overflow-hidden">
+              <TiltCard>
+              <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
                 <div className="flex items-center gap-4 mb-4">
                   <div className="p-3 bg-[#76007D]/10 rounded-lg text-[#76007D]">
@@ -454,9 +466,11 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Rapoarte KPI Automate</li>
                 </ul>
               </div>
+              </TiltCard>
 
               {/* Service 3 */}
-              <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 hover:translate-x-2 transition-transform overflow-hidden">
+              <TiltCard>
+              <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
                 <div className="flex items-center gap-4 mb-4">
                   <div className="p-3 bg-[#76007D]/10 rounded-lg text-[#76007D]">
@@ -474,8 +488,10 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Curățare Date Automată</li>
                 </ul>
               </div>
+              </TiltCard>
 
               {/* Service 4 - CUSTOM PERSONALIZED (Premium Cyan Neon) */}
+              <TiltCard>
               <div className="relative p-8 rounded-2xl bg-[#00FFFF]/8 backdrop-blur-xl border border-[#00FFFF]/25   transition-all overflow-hidden group">
                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#00FFFF] via-[#39B5C4] to-[#00FFFF] opacity-80"></div>
                 <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#00FFFF] via-[#39B5C4] to-[#00FFFF] opacity-60"></div>
@@ -510,6 +526,7 @@ const App = () => {
                   </button>
                 </div>
               </div>
+              </TiltCard>
 
             </div>
           </div>
@@ -527,7 +544,7 @@ const App = () => {
           </svg>
         </div>
 
-        <div className="container mx-auto max-w-6xl relative z-10">
+        <div ref={philosophyRevealRef} className={`container mx-auto max-w-6xl relative z-10 ${revealCls(philosophyRevealed)}`}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
 
@@ -609,7 +626,7 @@ const App = () => {
 
       {/* Calendly / Booking Section */}
       <section id="booking" className="relative z-10 py-24 px-6">
-        <div className="container mx-auto max-w-4xl text-center">
+        <div ref={bookingRevealRef} className={`container mx-auto max-w-4xl text-center ${revealCls(bookingRevealed)}`}>
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Discutăm Sisteme, Nu Strategii</h2>
           <p className="text-slate-400 mb-12 max-w-2xl mx-auto">
             Aceasta nu este o convorbire de vânzări. Este o evaluare tehnică a fluxului tău de lucru. Voi analiza unde pierzi bani și îți voi propune o soluție inginerească.

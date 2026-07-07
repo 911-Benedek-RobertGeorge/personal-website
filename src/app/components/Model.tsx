@@ -9,7 +9,7 @@ export type ModelHandle = {
   setClipT: (t: number) => void
 }
 
-// Loads the robot and exposes imperative control to the ChoreoRig in Scene.tsx.
+// Loads the robot and exposes imperative control to the StageRig in Scene.tsx.
 // Position/rotation/scale are owned by the rig; this component only loads and scrubs.
 const Model = forwardRef<ModelHandle>(function Model(_props, ref) {
   const group = useRef<Group>(null)
