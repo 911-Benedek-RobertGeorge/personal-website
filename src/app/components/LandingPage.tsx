@@ -158,7 +158,8 @@ const App = () => {
   }, []);
 
   return (
-    <div className="min-h-screen text-[#E5E7EB] font-sans selection:bg-[#76007D] selection:text-white overflow-x-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#000045] via-[#000025] to-[#000010]">
+    // overflow-x-clip (NOT -hidden): hidden computes overflow-y:auto, making this a scroll container that un-sticks the pinned stage.
+    <div className="min-h-screen text-[#E5E7EB] font-sans selection:bg-[#76007D] selection:text-white overflow-x-clip bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#000045] via-[#000025] to-[#000010]">
       {/* Ambient & Noise */}
       <div className="fixed inset-0 -z-20 pointer-events-none overflow-hidden">
         <div className="absolute top-[8%] left-[12%] w-[700px] h-[700px] bg-[#76007D]/20 rounded-full blur-[120px] mix-blend-screen animate-pulse" />
@@ -225,7 +226,9 @@ const App = () => {
         <div className="container mx-auto max-w-5xl">
           <div
             ref={vslRevealRef}
-            className={`transition-all duration-700 ease-out ${vslRevealed ? 'opacity-100 scale-100' : 'opacity-0 scale-[0.94]'}`}
+            // Revealed state must carry NO transform (scale-100 still sets one), or this div becomes the
+            // containing block for the expanded video's `fixed inset-0` and collapses it to ~2px.
+            className={`transition-all duration-700 ease-out ${vslRevealed ? 'opacity-100' : 'opacity-0 scale-[0.94]'}`}
           >
             <div className="relative">
               <div className="absolute -inset-10 bg-[#2AAF7F]/15 rounded-full blur-[110px] pointer-events-none" />
