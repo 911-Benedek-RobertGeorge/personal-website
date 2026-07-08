@@ -33,7 +33,9 @@ const POS: Record<string, string> = {
   'results-c2': 'right-[9vw] top-[28vh]',
   'results-c3': 'left-[11vw] bottom-[26vh]',
   'results-c4': 'right-[11vw] bottom-[26vh]',
-  'activate-cta': 'left-1/2 -translate-x-1/2 bottom-[12vh] w-[min(92vw,560px)] text-center',
+  // Top-center like wake (bookend): the z-999 canvas paints the robot OVER panels, and only ~120px clears
+  // the podium at the bottom — a bottom-centered CTA gets buried. Above the head it is always readable.
+  'activate-cta': 'left-1/2 -translate-x-1/2 top-[12vh] w-[min(92vw,560px)] text-center',
 };
 
 function CtaButton({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
@@ -241,7 +243,7 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
 
   const wrapperClass = (spec: PanelSpec) =>
     spec.id.startsWith('m-')
-      ? 'absolute md:hidden inset-x-4 bottom-[7vh]'
+      ? 'absolute md:hidden inset-x-4 bottom-[5vh]'
       : `absolute hidden md:block ${POS[spec.id] ?? ''}`;
 
   // First-paint default: beat-1 panels visible, the rest hidden (rAF corrects after hydration).
@@ -271,7 +273,9 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
   }
 
   return (
-    <section ref={stageRef} data-stage className="relative h-[400vh] md:h-[500vh]">
+    // z-[1000] on mobile lifts the bottom cards above the z-[999] canvas (an 812px screen can't fit robot + card
+    // separated, so the glass sheet covers his feet). md:z-auto keeps the desktop robot painting in front.
+    <section ref={stageRef} data-stage className="relative h-[400vh] md:h-[500vh] z-[1000] md:z-auto">
       <div className="sticky top-0 h-screen overflow-hidden">
         {PANELS.map((spec) => (
           <div key={spec.id} className={wrapperClass(spec)}>

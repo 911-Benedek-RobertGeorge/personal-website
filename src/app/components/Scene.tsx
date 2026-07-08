@@ -92,11 +92,14 @@ function StageRig({ mobile, reduced, pointer }: { mobile: boolean; reduced: bool
     const dockT = smoothstep(overshoot / (vh * 0.6))
 
     const center = mobile
-      ? { x: 0, y: (0.5 - 0.72) * 2 * halfH, scale: 0.62 }
+      ? // ny 0.68 (was 0.72): the bottom cards sit above the canvas on mobile — keep his torso above their top edge.
+        { x: 0, y: (0.5 - 0.68) * 2 * halfH, scale: 0.62 }
       : { x: 0, y: (0.5 - 0.78) * 2 * halfH, scale: 1.05 }
     const dock = mobile
-      ? { x: (0.16 - 0.5) * 2 * halfW, y: (0.5 - 0.92) * 2 * halfH, scale: 0.42 }
-      : { x: (0.9 - 0.5) * 2 * halfW, y: (0.5 - 0.9) * 2 * halfH, scale: 0.4 }
+      ? // Smaller/lower than v1 (0.16/0.92/0.42): full-width mobile text otherwise disappears behind him.
+        { x: (0.13 - 0.5) * 2 * halfW, y: (0.5 - 0.94) * 2 * halfH, scale: 0.34 }
+      : // 0.95/0.93/0.36: at 1280w the wide (max-w-6xl) cards reach x~1216 — nx 0.9 parked the robot over their text.
+        { x: (0.95 - 0.5) * 2 * halfW, y: (0.5 - 0.93) * 2 * halfH, scale: 0.36 }
 
     const bob = Math.sin(state.clock.elapsedTime * 1.2) * 0.05 * (1 - dockT)
     const breath = 1 + Math.sin(state.clock.elapsedTime * 0.8) * 0.02 * (1 - dockT)
@@ -196,6 +199,10 @@ export default function Scene() {
         dpr={[1, 1.5]}
         camera={{ fov: FOV, near: 0.1, far: 100, position: [0, 0, BASE_Z] }}
         className="h-full w-full"
+        // R3F forces inline pointer-events:auto on its container, defeating the overlay's
+        // pointer-events-none and swallowing every click on the page. We use window
+        // listeners for mouse-follow, so the canvas never needs pointer events.
+        style={{ pointerEvents: "none" }}
       >
         <StageRig mobile={mobile} reduced={reduced} pointer={pointer} />
         {!mobile && !reduced && (
