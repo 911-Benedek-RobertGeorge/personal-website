@@ -54,6 +54,7 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
   const stageRef = useRef<HTMLElement | null>(null);
   const innerRefs = useRef(new Map<string, HTMLDivElement>());
   const countersOnRef = useRef(false);
+  const lastPRef = useRef(-1);
   const [countersOn, setCountersOn] = useState(false);
   const [reduced, setReduced] = useState(false);
 
@@ -73,17 +74,20 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
         const rect = el.getBoundingClientRect();
         const span = rect.height - window.innerHeight;
         const p = span > 0 ? Math.min(Math.max(-rect.top / span, 0), 1) : 0;
-        for (const spec of PANELS) {
-          const node = innerRefs.current.get(spec.id);
-          if (!node) continue;
-          const t = panelT(spec, p);
-          node.style.opacity = t.toFixed(3);
-          node.style.transform = `translateY(${((1 - t) * 24).toFixed(1)}px)`;
-          node.style.pointerEvents = t > 0.5 ? 'auto' : 'none';
-        }
-        if (!countersOnRef.current && p >= BEATS[3].range[0]) {
-          countersOnRef.current = true;
-          setCountersOn(true);
+        if (p !== lastPRef.current) {
+          lastPRef.current = p;
+          for (const spec of PANELS) {
+            const node = innerRefs.current.get(spec.id);
+            if (!node) continue;
+            const t = panelT(spec, p);
+            node.style.opacity = t.toFixed(3);
+            node.style.transform = `translateY(${((1 - t) * 24).toFixed(1)}px)`;
+            node.style.pointerEvents = t > 0.5 ? 'auto' : 'none';
+          }
+          if (!countersOnRef.current && p >= BEATS[3].range[0]) {
+            countersOnRef.current = true;
+            setCountersOn(true);
+          }
         }
       }
       raf = requestAnimationFrame(tick);
@@ -243,8 +247,8 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
 
   const wrapperClass = (spec: PanelSpec) =>
     spec.id.startsWith('m-')
-      ? 'absolute md:hidden inset-x-4 bottom-[5vh]'
-      : `absolute hidden md:block ${POS[spec.id] ?? ''}`;
+      ? 'absolute md:hidden inset-x-4 bottom-[5vh] pointer-events-none'
+      : `absolute hidden md:block pointer-events-none ${POS[spec.id] ?? ''}`;
 
   // First-paint default: beat-1 panels visible, the rest hidden (rAF corrects after hydration).
   const innerClass = (spec: PanelSpec) =>
@@ -276,7 +280,7 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
     // z-[1000] on mobile lifts the bottom cards above the z-[999] canvas (an 812px screen can't fit robot + card
     // separated, so the glass sheet covers his feet). md:z-auto keeps the desktop robot painting in front.
     <section ref={stageRef} data-stage className="relative h-[400vh] md:h-[500vh] z-[1000] md:z-auto">
-      <div className="sticky top-0 h-screen overflow-hidden">
+      <div className="sticky top-0 h-screen supports-[height:100dvh]:h-dvh overflow-hidden">
         {PANELS.map((spec) => (
           <div key={spec.id} className={wrapperClass(spec)}>
             <div ref={setInner(spec.id)} className={innerClass(spec)}>

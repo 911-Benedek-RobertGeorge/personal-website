@@ -72,8 +72,8 @@ function StageRig({ mobile, reduced, pointer }: { mobile: boolean; reduced: bool
 
     if (reduced) {
       // Static dock, frozen mid-pose. No travel, no bob, no follow.
-      g.position.set((0.16 - 0.5) * 2 * halfW, (0.5 - 0.92) * 2 * halfH, 0)
-      g.scale.setScalar(0.42)
+      g.position.set((0.13 - 0.5) * 2 * halfW, (0.5 - 0.94) * 2 * halfH, 0)
+      g.scale.setScalar(0.34)
       g.rotation.set(0, 0.3, 0)
       if (lastClipT.current !== 0.15) {
         lastClipT.current = 0.15
@@ -98,8 +98,8 @@ function StageRig({ mobile, reduced, pointer }: { mobile: boolean; reduced: bool
     const dock = mobile
       ? // Smaller/lower than v1 (0.16/0.92/0.42): full-width mobile text otherwise disappears behind him.
         { x: (0.13 - 0.5) * 2 * halfW, y: (0.5 - 0.94) * 2 * halfH, scale: 0.34 }
-      : // 0.95/0.93/0.36: at 1280w the wide (max-w-6xl) cards reach x~1216 — nx 0.9 parked the robot over their text.
-        { x: (0.95 - 0.5) * 2 * halfW, y: (0.5 - 0.93) * 2 * halfH, scale: 0.36 }
+      : // Docked bottom-left (was 0.95/right): nx 0.05 clears the services grid, which starts at col 1 left-aligned.
+        { x: (0.05 - 0.5) * 2 * halfW, y: (0.5 - 0.93) * 2 * halfH, scale: 0.36 }
 
     const bob = Math.sin(state.clock.elapsedTime * 1.2) * 0.05 * (1 - dockT)
     const breath = 1 + Math.sin(state.clock.elapsedTime * 0.8) * 0.02 * (1 - dockT)
@@ -114,7 +114,7 @@ function StageRig({ mobile, reduced, pointer }: { mobile: boolean; reduced: bool
 
     // Mouse-follow on desktop, fading out as the robot docks.
     const followY = mobile ? 0 : pointer.current.x * 0.18
-    const dockRotY = mobile ? 0.3 : -0.35
+    const dockRotY = mobile ? 0.3 : 0.35
     g.rotation.y = MathUtils.damp(g.rotation.y, MathUtils.lerp(followY, dockRotY, dockT), 5, delta)
     g.rotation.x = MathUtils.damp(g.rotation.x, mobile ? 0 : -pointer.current.y * 0.05 * (1 - dockT), 5, delta)
 
