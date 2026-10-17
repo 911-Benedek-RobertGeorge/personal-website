@@ -11,16 +11,35 @@ import {
   Linkedin,
   Server,
   Zap,
+  TrendingUp,
   CheckCircle2,
-  Calendar,
   Layers,
+  Workflow,
+  Search,
+  Bot,
 } from 'lucide-react';
 
 import dynamic from "next/dynamic";
 import Script from 'next/script';
 import { FloatingNav } from "@/components/ui/floating-navbar";
+import StagePanels from "./StagePanels";
+import { useReveal } from "./useReveal";
+import Counter from "./Counter";
+import TiltCard from "./TiltCard";
 
 const Scene = dynamic(() => import("./Scene"), { ssr: false });
+
+type YTPlayer = { playVideo?: () => void };
+type YTNamespace = {
+  Player: new (elementId: string, options: object) => YTPlayer;
+  PlayerState: { PLAYING: number };
+};
+type YTWindow = Window & { YT?: YTNamespace; onYouTubeIframeAPIReady?: () => void };
+type CalendlyWindow = Window & {
+  Calendly?: { initPopupWidget?: (opts: { url: string }) => void };
+};
+
+const revealCls = (on: boolean) => `transition-all duration-700 ease-out ${on ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`;
 
 const App = () => {
   const [showInitialPopup, setShowInitialPopup] = useState(false);
@@ -32,21 +51,33 @@ const App = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
 
+  const credSectionRef = useRef<HTMLElement | null>(null);
+  const [vslRevealRef, vslRevealed] = useReveal<HTMLDivElement>();
+  const [credRevealRef, credRevealed] = useReveal<HTMLDivElement>();
+  const [casesRevealRef, casesRevealed] = useReveal<HTMLDivElement>();
+  const [servicesRevealRef, servicesRevealed] = useReveal<HTMLDivElement>();
+  const [philosophyRevealRef, philosophyRevealed] = useReveal<HTMLDivElement>();
+  const [bookingRevealRef, bookingRevealed] = useReveal<HTMLDivElement>();
+
   useEffect(() => {
+    if (hasScrolledPast) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
     const handleScroll = () => {
-      if (window.scrollY > 600 && !hasScrolledPast) {
+      const el = credSectionRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      // Same trigger the robot stage rig uses: the section entering view.
+      if (rect.top < window.innerHeight * 0.55 && rect.bottom > 0) {
         setShowInitialPopup(true);
         setHasScrolledPast(true);
-
-        const timer = setTimeout(() => {
-          setShowInitialPopup(false);
-        }, 3000);
-
-        return () => clearTimeout(timer);
+        timer = setTimeout(() => setShowInitialPopup(false), 3000);
       }
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (timer) clearTimeout(timer);
+    };
   }, [hasScrolledPast]);
 
   const scrollToBooking = () => {
@@ -55,10 +86,9 @@ const App = () => {
 
   const handleScheduleClick = () => {
     try {
-      // @ts-ignore
-      if (window.Calendly && typeof window.Calendly.initPopupWidget === 'function') {
-        // @ts-ignore
-        window.Calendly.initPopupWidget({ url: 'https://calendly.com/benedek-robertgeorge/30min' });
+      const calendly = (window as CalendlyWindow).Calendly;
+      if (calendly && typeof calendly.initPopupWidget === 'function') {
+        calendly.initPopupWidget({ url: 'https://calendly.com/benedek-robertgeorge/30min' });
         return;
       }
       window.open('https://calendly.com/benedek-robertgeorge/30min', '_blank');
@@ -99,13 +129,13 @@ const App = () => {
   };
 
   const [videoExpanded, setVideoExpanded] = useState(false);
-  const playerRef = useRef<any>(null);
+  const playerRef = useRef<YTPlayer | null>(null);
   const videoSrc = `https://www.youtube.com/embed/Co4FE_SGRtI?enablejsapi=1&autoplay=0&controls=1&rel=0&modestbranding=1&playsinline=1`;
 
   useEffect(() => {
     const createPlayer = () => {
       try {
-        const YTObj = (window as any).YT;
+        const YTObj = (window as YTWindow).YT;
         if (YTObj && YTObj.Player && !playerRef.current) {
           playerRef.current = new YTObj.Player('hero-vsl', {
             playerVars: {
@@ -115,7 +145,7 @@ const App = () => {
               playsinline: 1,
             },
             events: {
-              onStateChange: (e: any) => {
+              onStateChange: (e: { data?: number }) => {
                 const state = e?.data;
                 if (state === YTObj.PlayerState.PLAYING) {
                   setVideoExpanded(true);
@@ -126,12 +156,13 @@ const App = () => {
         }
       } catch { }
     };
-    (window as any).onYouTubeIframeAPIReady = createPlayer;
+    (window as YTWindow).onYouTubeIframeAPIReady = createPlayer;
     createPlayer();
   }, []);
 
   return (
-    <div className="min-h-screen text-[#E5E7EB] font-sans selection:bg-[#76007D] selection:text-white overflow-x-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#000045] via-[#000025] to-[#000010]">
+    // overflow-x-clip (NOT -hidden): hidden computes overflow-y:auto, making this a scroll container that un-sticks the pinned stage.
+    <div className="min-h-screen text-[#E5E7EB] font-sans selection:bg-[#76007D] selection:text-white overflow-x-clip bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#000045] via-[#000025] to-[#000010]">
       {/* Ambient & Noise */}
       <div className="fixed inset-0 -z-20 pointer-events-none overflow-hidden">
         <div className="absolute top-[8%] left-[12%] w-[700px] h-[700px] bg-[#76007D]/20 rounded-full blur-[120px] mix-blend-screen animate-pulse" />
@@ -140,8 +171,8 @@ const App = () => {
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]"></div>
       </div>
 
-      {/* 3D Robot Background Canvas */}
-      <div className="fixed -left-[3vw] sm:-left-[1vw] bottom-0 h-[45vh] sm:h-[55vh] w-[52vw] sm:w-[26vw] md:w-[32vw] z-[999] pointer-events-none scale-[0.8] origin-bottom-left" style={{ overflow: 'visible' }}>
+      {/* 3D Robot Stage Overlay */}
+      <div className="fixed inset-0 z-[999] pointer-events-none">
         <Scene />
       </div>
 
@@ -179,9 +210,9 @@ const App = () => {
       {/* Navigation */}
       <FloatingNav
         navItems={[
+          { name: "Abordare", link: "#philosophy" },
           { name: "Studii de Caz", link: "#case-studies" },
           { name: "Servicii", link: "#services" },
-          { name: "Abordare", link: "#philosophy" },
           { name: "Despre mine", link: "https://www.linkedin.com/in/benedek-robert/" },
         ]}
         className="bg-[#000022] border-white/[0.1]"
@@ -189,50 +220,24 @@ const App = () => {
         ctaLink="#booking"
       />
 
-      {/* Hero Section with VSL */}
-      <section className="relative z-10 border-y border-white/10 bg-[#39B5C4]/5 backdrop-blur-xl overflow-hidden md:min-h-[600px] lg:min-h-[700px]">
-        <Script src="https://www.youtube.com/iframe_api" strategy="afterInteractive" />
+      {/* Act 1 — The pinned robot stage */}
+      <Script src="https://www.youtube.com/iframe_api" strategy="afterInteractive" />
+      <StagePanels onPrimaryCta={handleScheduleClick} onSecondaryCta={scrollToBooking} />
 
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-24 -left-24 w-[460px] h-[460px] bg-gradient-to-br from-[#76007D]/20 to-transparent rounded-full blur-3xl" />
-          <div className="absolute -bottom-16 right-[10%] w-[520px] h-[520px] bg-gradient-to-tr from-[#2AAF7F]/18 to-transparent rounded-full blur-[120px]" />
-          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
-          <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
-        </div>
-        <div className="container mx-auto max-w-7xl px-6 pt-32 md:pt-28 pb-16 md:pb-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-            {/* Left: Value Proposition */}
-            <div className="md:mt-6">
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.05]">
-                Motorul de <br className="hidden sm:block" />Clienți Noi
-              </h1>
-              <h2 className="mt-3 text-2xl md:text-3xl font-semibold text-white max-w-3xl">
-                Nu doar gestionez haosul. Îl <br></br> <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#39B5C4] to-[#2AAF7F]">transform în profit</span>
-              </h2>
-              <p className="mt-4 text-slate-400 text-lg max-w-lg leading-relaxed">
-                Îți construiesc infrastructura digitală - automatizări, CRM și sisteme AI care lucrează non-stop pentru afacerea ta
-              </p>
-              <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <button
-                  onClick={handleScheduleClick}
-                  className="group relative text-left h-16 w-full sm:w-64 bg-[#000022]/40 border-2 border-[#76007D] text-[#76007D] text-base font-semibold rounded-xl overflow-hidden transform transition-all duration-500 hover:scale-105 hover:border-[#39B5C4] hover:text-[#39B5C4] px-6 flex items-center justify-start gap-2 before:absolute before:w-8 before:h-8 before:content-[''] before:right-2 before:top-2 before:z-10 before:bg-[#76007D] before:rounded-full before:blur before:transition-all before:duration-500 after:absolute after:z-10 after:w-12 after:h-12 after:content-[''] after:bg-[#39B5C4] after:right-6 after:top-4 after:rounded-full after:blur after:transition-all after:duration-500 hover:before:right-10 hover:before:-bottom-4 hover:after:-right-6 hover:after:scale-110"
-                >
-                  <Calendar size={18} className="text-white/90" />
-                  Activează Sistemul
-                </button>
-                <button
-                  onClick={scrollToBooking}
-                  className="text-slate-400 hover:text-white text-sm font-medium transition-colors duration-300 flex items-center gap-2"
-                >
-                  sau trimite o cerere <ArrowRight size={14} />
-                </button>
-              </div>
-            </div>
-            {/* Right: VSL Video */}
+      {/* Act 2 — VSL */}
+      <section id="vsl" className="relative z-10 py-20 md:py-28 px-6">
+        <div className="container mx-auto max-w-5xl">
+          <div
+            ref={vslRevealRef}
+            // Revealed state must carry NO transform (scale-100 still sets one), or this div becomes the
+            // containing block for the expanded video's `fixed inset-0` and collapses it to ~2px.
+            className={`transition-all duration-700 ease-out ${vslRevealed ? 'opacity-100' : 'opacity-0 scale-[0.94]'}`}
+          >
             <div className="relative">
-              <div className="absolute -z-10 inset-0 -top-8 w-[560px] h-[560px] mx-auto lg:mx-0 lg:left-auto lg:right-0 bg-[#2AAF7F]/20 rounded-full blur-[100px]" />
-              <div className={`${videoExpanded ? 'fixed inset-0 z-[6000] rounded-none pointer-events-none' : 'relative z-0 rounded-2xl origin-center w-full md:scale-[1.10] lg:scale-[1.14] md:max-w-[900px] lg:max-w-[1100px] ml-auto'} group overflow-hidden bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 shadow-none transition-all duration-700 ease-[cubic-bezier(.2,.8,.2,1)] transform-gpu`}>
-                <div className={`${videoExpanded ? 'w-full h-full' : 'w-full h-[260px] sm:h-[280px] md:h-[340px] lg:h-[400px]'} transition-all duration-700 ease-[cubic-bezier(.2,.8,.2,1)]`}>
+              <div className="absolute -inset-10 bg-[#2AAF7F]/15 rounded-full blur-[110px] pointer-events-none" />
+              <div className="absolute -inset-10 bg-[#76007D]/10 rounded-full blur-[130px] pointer-events-none" />
+              <div className={`${videoExpanded ? 'fixed inset-0 z-[6000] rounded-none pointer-events-none' : 'relative z-0 rounded-2xl w-full'} group overflow-hidden bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 transition-all duration-700 ease-[cubic-bezier(.2,.8,.2,1)] transform-gpu`}>
+                <div className={`${videoExpanded ? 'w-full h-full' : 'w-full aspect-video'} transition-all duration-700 ease-[cubic-bezier(.2,.8,.2,1)]`}>
                   <iframe
                     title="VSL — Digitalizare & Automatizare"
                     className="w-full h-full pointer-events-auto"
@@ -265,19 +270,15 @@ const App = () => {
                   </button>
                 </div>
               )}
-
             </div>
-            {/* CTA after Video */}
-
-
           </div>
         </div>
       </section>
 
 
       {/* Credibility Frame - ENHANCED LINKEDIN WITH AVATAR POPUP */}
-      <section className="relative z-10 border-y border-white/5 bg-[#39B5C4]/8 backdrop-blur-xl">
-        <div className="container mx-auto px-6 py-0">
+      <section ref={credSectionRef} className="relative z-10 border-y border-white/5 bg-[#39B5C4]/8 backdrop-blur-xl">
+        <div ref={credRevealRef} className={`container mx-auto px-6 py-0 ${revealCls(credRevealed)}`}>
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">
             {/* Tech Cred */}
             <div className="flex items-center justify-center md:justify-start gap-4 py-8 md:pr-8">
@@ -286,7 +287,7 @@ const App = () => {
               </div>
               <div className="text-sm">
                 <div className="text-white font-bold text-lg">Backend Engineer</div>
-                <div className="text-slate-400">Arhitectură de Sistem</div>
+                <div className="text-slate-400">Integrări AI în producție</div>
               </div>
             </div>
 
@@ -296,8 +297,8 @@ const App = () => {
                 <Server size={28} className="text-[#76007D]" />
               </div>
               <div className="text-sm">
-                <div className="text-white font-bold text-lg">Itheum + Tokeny</div>
-                <div className="text-slate-400">3 Ani+ în mediu startup</div>
+                <div className="text-white font-bold text-lg">Tokeny · Apex Group</div>
+                <div className="text-slate-400">Integrare AI în echipa de dezvoltare</div>
               </div>
             </div>
 
@@ -339,78 +340,97 @@ const App = () => {
         </div>
       </section>
 
-      {/* Problemă + haos actual → Reality Check */}
-      <section className="relative z-10 py-20 md:py-24 px-6 border-y border-white/5">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-[20%] right-[10%] w-[400px] h-[400px] bg-[#76007D]/10 rounded-full blur-[120px]" />
-          <div className="absolute bottom-[10%] left-[5%] w-[350px] h-[350px] bg-[#1E94A5]/8 rounded-full blur-[100px]" />
+      {/* Proof: real AI integration story */}
+      <section id="philosophy" className="relative z-10 py-24 px-6 text-[#E5E7EB] font-sans selection:bg-[#76007D] selection:text-white overflow-x-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#000045] via-[#000025] to-[#000010]">
+        <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
+          <svg width="100%" height="100%">
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" />
+            </pattern>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+          </svg>
         </div>
-        <div className="container mx-auto max-w-5xl relative z-10">
-          <div className="max-w-2xl mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight">Dacă nu folosești AI-ul pentru a fi mai productiv, <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#39B5C4] to-[#2AAF7F]">lași bani pe masă</span></h2>
-            <p className="mt-5 text-slate-400 text-lg leading-relaxed">Poate crezi că „Inteligența Artificială" este doar un termen de marketing. Sau poate știi că ar putea ajuta, dar nu ai nicio idee de unde să începi.</p>
-            <p className="mt-3 text-slate-500">Adevărul este că, dacă business-ul tău încă se bazează pe:</p>
+
+        <div ref={philosophyRevealRef} className={`container mx-auto max-w-6xl relative z-10 ${revealCls(philosophyRevealed)}`}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="relative inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-white/[0.15] bg-gradient-to-r from-[#76007D]/15 to-[#1E94A5]/15 shadow-[0_0_20px_rgba(118,0,125,0.15)] mb-6 group cursor-default">
+                <Terminal size={14} className="text-[#1E94A5]" />
+                <span className="text-sm font-semibold text-white/90 tracking-wide">Caz real, nu teorie</span>
+                <span className="absolute inset-x-0 w-2/3 mx-auto -bottom-px bg-gradient-to-r from-transparent via-[#1E94A5] to-transparent h-px" />
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
+                Nu îți vând povești.<br />
+                Îți arăt <span className="text-[#0A2540] bg-white px-2 whitespace-nowrap">ce am construit.</span>
+              </h2>
+              <p className="text-blue-100 mb-8">
+                La Tokeny (Apex Group), în ultimul an m-am ocupat de integrarea AI în echipa mea de dezvoltare. Metoda e simplă: găsești blocajul, îl automatizezi, treci la următorul.
+              </p>
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="mt-1 p-1 bg-[#0A2540] rounded text-white h-fit">
+                    <Workflow size={20} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xl mb-1">Primele agent loops din echipă</h4>
+                    <p className="text-blue-100">Un tichet intră, agenții AI scriu specificația, implementează codul și deschid un pull request gata de livrare. Spec-driven development, cap-coadă.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="mt-1 p-1 bg-[#0A2540] rounded text-white h-fit">
+                    <Search size={20} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xl mb-1">Următorul blocaj: QA-ul</h4>
+                    <p className="text-blue-100">Când codul a început să vină mai repede, testarea a devenit punctul lent. Așa se întâmplă în orice proces: rezolvi un blocaj și apare următorul.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="mt-1 p-1 bg-[#0A2540] rounded text-white h-fit">
+                    <Bot size={20} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xl mb-1">Agenți autonomi care testează</h4>
+                    <p className="text-blue-100">Am integrat agenți AI care apelează singuri endpoint-urile noi și le verifică. O bună parte din QA rulează acum automat.</p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-8 p-5 rounded-xl border border-[#2AAF7F]/30 bg-[#2AAF7F]/10">
+                <p className="text-white font-semibold">Orice companie are un astfel de blocaj. Rolul meu este să-l găsesc și să-l automatizez, ca să câștigi timp și bani și să te adaptezi la lumea cu AI.</p>
+                <p className="mt-2 text-sm text-slate-400">Garanție „fără BS”: dacă sistemul nu aduce eficiență măsurabilă, îl rescriem.</p>
+              </div>
+            </div>
+
+            <div className="relative p-8 rounded-2xl bg-[#39B5C4]/10 backdrop-blur-xl shadow-[0_20px_60px_rgba(57,181,196,0.15)] hover:-translate-y-[2px] hover:shadow-[0_30px_80px_rgba(57,181,196,0.25)] border border-white/10">
+              <div className="absolute top-0 left-0 right-0 mx-2 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
+              <div className="absolute -top-4 -right-8 bg-white text-[#0A2540] px-4 py-2 font-bold rounded shadow-lg transform rotate-12">
+                TESTAT ÎN PRODUCȚIE
+              </div>
+              <div className="space-y-4 font-mono text-sm text-slate-300">
+                <div className="flex justify-between border-b border-gray-700 pb-2">
+                  <span>AGENȚI:</span>
+                  <span className="text-[#2AAF7F]">ACTIVI</span>
+                </div>
+                <div className="flex justify-between border-b border-gray-700 pb-2">
+                  <span>MOD:</span>
+                  <span className="text-white">SPEC-DRIVEN</span>
+                </div>
+                <div className="flex justify-between border-b border-gray-700 pb-2">
+                  <span>QA:</span>
+                  <span className="text-[#1E94A5]">AUTOMATIZAT</span>
+                </div>
+                <div className="p-4 bg-black/30 rounded mt-4">
+                  <code className="block text-xs text-green-500 mb-1">$ agent-loop --ticket 142</code>
+                  <code className="block text-xs text-slate-400">› specificație generată</code>
+                  <code className="block text-xs text-slate-400">› cod și teste implementate</code>
+                  <code className="block text-xs text-slate-400">› pull request deschis</code>
+                  <code className="block text-xs text-green-500 mt-2 mb-1">$ qa-agents --test endpoints</code>
+                  <code className="block text-xs text-slate-400">› endpoint-uri noi verificate</code>
+                  <code className="block text-xs text-green-500 mt-2">Gata. Blocaj eliminat.</code>
+                </div>
+              </div>
+            </div>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
-            {/* Pain 1 */}
-            <div className="group relative p-5 md:p-6 rounded-xl bg-white/[0.03] border border-white/[0.07] hover:border-red-500/20 transition-all duration-300 hover:bg-red-500/[0.03]">
-              <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="flex items-start gap-4">
-                <div className="mt-0.5 p-2 rounded-lg bg-red-500/10 border border-red-500/10 text-red-400 shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-                </div>
-                <div>
-                  <h4 className="text-white font-semibold text-sm md:text-base">Agende fizice și post-it-uri pierdute</h4>
-                  <p className="text-slate-500 text-xs md:text-sm mt-1">Informații critice care dispar în haos</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Pain 2 */}
-            <div className="group relative p-5 md:p-6 rounded-xl bg-white/[0.03] border border-white/[0.07] hover:border-red-500/20 transition-all duration-300 hover:bg-red-500/[0.03]">
-              <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="flex items-start gap-4">
-                <div className="mt-0.5 p-2 rounded-lg bg-red-500/10 border border-red-500/10 text-red-400 shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-                </div>
-                <div>
-                  <h4 className="text-white font-semibold text-sm md:text-base">Mesaje date manual când îți aduci aminte</h4>
-                  <p className="text-slate-500 text-xs md:text-sm mt-1">Lead-uri pierdute din lipsa de follow-up</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Pain 3 */}
-            <div className="group relative p-5 md:p-6 rounded-xl bg-white/[0.03] border border-white/[0.07] hover:border-red-500/20 transition-all duration-300 hover:bg-red-500/[0.03]">
-              <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="flex items-start gap-4">
-                <div className="mt-0.5 p-2 rounded-lg bg-red-500/10 border border-red-500/10 text-red-400 shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-                </div>
-                <div>
-                  <h4 className="text-white font-semibold text-sm md:text-base">Excel-uri pe care nu le mai înțelege nimeni</h4>
-                  <p className="text-slate-500 text-xs md:text-sm mt-1">Zero vizibilitate asupra cifrelor reale</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Pain 4 */}
-            <div className="group relative p-5 md:p-6 rounded-xl bg-white/[0.03] border border-white/[0.07] hover:border-red-500/20 transition-all duration-300 hover:bg-red-500/[0.03]">
-              <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="flex items-start gap-4">
-                <div className="mt-0.5 p-2 rounded-lg bg-red-500/10 border border-red-500/10 text-red-400 shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-                </div>
-                <div>
-                  <h4 className="text-white font-semibold text-sm md:text-base">„Speranța" că vor veni clienți noi</h4>
-                  <p className="text-slate-500 text-xs md:text-sm mt-1">Fără sistem = fără predictibilitate</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <p className="mt-10 text-slate-300 text-base md:text-lg max-w-3xl leading-relaxed">…atunci te lupți cu o mână legată la spate. La <span className="text-white font-semibold">Benedek Systems</span>, nu vindem iluzii. Luăm tehnologia din start-up-urile de top și o aplicăm în afacerea ta locală pentru a elimina munca inutilă.</p>
         </div>
       </section>
 
@@ -443,26 +463,30 @@ const App = () => {
       {/* Case Studies → Use Cases */}
       <section id="case-studies" className="relative z-10 py-24 px-6 bg-[#39B5C4]/8 backdrop-blur-xl">
         <div className="container mx-auto max-w-5xl">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">Cum arată digitalizarea în practică?</h2>
-          <p className="mt-4 text-slate-300">Câteva scenarii reale unde sistemele mele fac diferența:</p>
-          <div className="mt-6 grid sm:grid-cols-3 gap-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#2AAF7F]/30 bg-[#2AAF7F]/10 text-[#2AAF7F] text-xs font-mono uppercase tracking-widest mb-4">Date din producție</div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white">Cum arată AI-ul aplicat în afacerea ta</h2>
+          <p className="mt-4 text-slate-300">Trei scenarii concrete în care AI-ul aduce bani înapoi:</p>
+          <div ref={casesRevealRef} className={`mt-6 grid sm:grid-cols-3 gap-6 ${revealCls(casesRevealed)}`}>
             <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
               <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
               <h3 className="text-white font-semibold">„Mina de Aur Abandonată”</h3>
               <p className="text-slate-400 text-sm">Reactivarea bazei de date</p>
               <p className="mt-3 text-slate-300">Ai sute de numere vechi. Nu ai timp să le suni. Sistem AI care trimite mesaje personalizate și empatice tuturor. Clienți vechi se reîntorc în 24 de ore, fără reclame.</p>
+              <div className="mt-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2AAF7F]/10 border border-[#2AAF7F]/25 text-[#2AAF7F] text-sm font-bold"><TrendingUp size={14} /> <Counter to={3.5} decimals={1} suffix="x ROI" active={casesRevealed} /></div>
             </div>
             <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
               <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
               <h3 className="text-white font-semibold">„Secretara Virtuală care nu doarme”</h3>
               <p className="text-slate-400 text-sm">Asistent AI 24/7</p>
               <p className="mt-3 text-slate-300">Pierzi clienți pentru că nu răspunzi în weekend/seara. Asistentul AI răspunde la întrebări și face programarea direct în calendarul tău.</p>
+              <div className="mt-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2AAF7F]/10 border border-[#2AAF7F]/25 text-[#2AAF7F] text-sm font-bold"><ShieldCheck size={14} /> <Counter to={0} suffix=" erori umane" active={casesRevealed} /></div>
             </div>
             <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
               <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
               <h3 className="text-white font-semibold">„Marketingul care nu uită”</h3>
               <p className="text-slate-400 text-sm">Nurturing automat</p>
               <p className="mt-3 text-slate-300">Plătești reclame, oamenii intră pe site, dar nu cumpără. Sistemul trimite mail/SMS util timp de 2 săptămâni până când sunt gata să cumpere.</p>
+              <div className="mt-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2AAF7F]/10 border border-[#2AAF7F]/25 text-[#2AAF7F] text-sm font-bold"><Zap size={14} /> <Counter to={40} prefix="+" suffix="% eficiență" active={casesRevealed} /></div>
             </div>
           </div>
         </div>
@@ -494,14 +518,15 @@ const App = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-1">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 sticky top-32">
-                Stack Tehnologic & Servicii
+                Ce construiesc pentru tine
                 <div className="w-20 h-1 bg-[#76007D] mt-4 rounded-full"></div>
               </h2>
             </div>
 
-            <div className="lg:col-span-2 space-y-6">
+            <div ref={servicesRevealRef} className={`lg:col-span-2 space-y-6 ${revealCls(servicesRevealed)}`}>
               {/* Service 1 */}
-              <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 hover:translate-x-2 transition-transform overflow-hidden">
+              <TiltCard>
+              <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
                 <div className="flex items-center gap-4 mb-4">
                   <div className="p-3 bg-[#76007D]/10 rounded-lg text-[#76007D]">
@@ -519,9 +544,11 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Securitate Enterprise</li>
                 </ul>
               </div>
+              </TiltCard>
 
               {/* Service 2 */}
-              <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 hover:translate-x-2 transition-transform overflow-hidden">
+              <TiltCard>
+              <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
                 <div className="flex items-center gap-4 mb-4">
                   <div className="p-3 bg-[#76007D]/10 rounded-lg text-[#76007D]">
@@ -539,9 +566,11 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Rapoarte KPI Automate</li>
                 </ul>
               </div>
+              </TiltCard>
 
               {/* Service 3 */}
-              <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 hover:translate-x-2 transition-transform overflow-hidden">
+              <TiltCard>
+              <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
                 <div className="flex items-center gap-4 mb-4">
                   <div className="p-3 bg-[#76007D]/10 rounded-lg text-[#76007D]">
@@ -550,7 +579,7 @@ const App = () => {
                   <h3 className="text-xl font-bold text-white">Reactivare Baze de Date & CRM</h3>
                 </div>
                 <p className="text-slate-300 mb-4">
-                  Transformă listele de contacte "moarte" în venituri. Configurez sisteme care scanează baza de date, segmentează clienții și inițiază conversații personalizate prin AI pentru a-i readuce în pipeline.
+                  Transformă listele de contacte „moarte” în venituri. Configurez sisteme care scanează baza de date, segmentează clienții și inițiază conversații personalizate prin AI pentru a-i readuce în pipeline.
                 </p>
                 <ul className="grid grid-cols-2 gap-2 text-sm text-slate-400">
                   <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Lead Scoring Automat</li>
@@ -559,8 +588,10 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Curățare Date Automată</li>
                 </ul>
               </div>
+              </TiltCard>
 
               {/* Service 4 - CUSTOM PERSONALIZED (Premium Cyan Neon) */}
+              <TiltCard>
               <div className="relative p-8 rounded-2xl bg-[#00FFFF]/8 backdrop-blur-xl border border-[#00FFFF]/25   transition-all overflow-hidden group">
                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#00FFFF] via-[#39B5C4] to-[#00FFFF] opacity-80"></div>
                 <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#00FFFF] via-[#39B5C4] to-[#00FFFF] opacity-60"></div>
@@ -575,16 +606,16 @@ const App = () => {
                   <div className="p-3 bg-[#00FFFF]/10 border border-[#00FFFF]/25 rounded-lg text-[#00FFFF]">
                     <Layers size={28} />
                   </div>
-                  <h3 className="text-xl font-bold text-white">Arhitectură Custom & Audit</h3>
+                  <h3 className="text-xl font-bold text-white">Integrare AI Custom & Audit</h3>
                 </div>
                 <p className="text-slate-300 mb-4">
-                  Soluțiile standard nu se potrivesc modelului tău? Analizez business-ul de la zero și construiesc un sistem <span className="text-[#39B5C4] font-semibold">100% personalizat</span>. Rezolv probleme complexe pe care agențiile "copy-paste" le ignoră.
+                  Analizez procesele afacerii tale, găsesc blocajul care te costă cel mai mult și integrez agenți AI exact acolo. Aceeași metodă pe care o folosesc în echipa mea, adaptată <span className="text-[#39B5C4] font-semibold">100% modelului tău</span>.
                 </p>
                 <ul className="grid grid-cols-2 gap-2 text-sm text-slate-300">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Consultanță 1-la-1</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Integrare Sisteme Legacy</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Soluții Non-Standard</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Scalabilitate Garantată</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Audit de procese 1-la-1</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Agenți AI construiți pe măsură</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Integrare cu sistemele existente</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Rezultate măsurabile</li>
                 </ul>
                 <div className="mt-6 items-center justify-center pt-4  border-t border-white/10">
                   <button
@@ -595,98 +626,8 @@ const App = () => {
                   </button>
                 </div>
               </div>
+              </TiltCard>
 
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* USPs / Philosophy */}
-      <section id="philosophy" className="relative z-10 py-24 px-6 text-[#E5E7EB] font-sans selection:bg-[#76007D] selection:text-white overflow-x-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#000045] via-[#000025] to-[#000010]">
-        <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
-          <svg width="100%" height="100%">
-            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" />
-            </pattern>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
-        </div>
-
-        <div className="container mx-auto max-w-6xl relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div>
-
-
-              <div className="relative inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-white/[0.15] bg-gradient-to-r from-[#76007D]/15 to-[#1E94A5]/15 shadow-[0_0_20px_rgba(118,0,125,0.15)] mb-6 group cursor-default">
-                <Terminal size={14} className="text-[#1E94A5]" />
-                <span className="text-sm font-semibold text-white/90 tracking-wide">Inginerie, nu gălăgie</span>
-                <span className="absolute inset-x-0 w-2/3 mx-auto -bottom-px bg-gradient-to-r from-transparent via-[#1E94A5] to-transparent h-px" />
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-8">
-                Nu îți vând povești.<br />
-                Îți construiesc <span className="text-[#0A2540] bg-white px-2">infrastructura.</span>
-              </h2>
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <div className="mt-1 p-1 bg-[#0A2540] rounded text-white h-fit">
-                    <Terminal size={20} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-xl mb-1">Inginer Backend, Nu Marketer</h4>
-                    <p className="text-blue-100">Gândesc în sisteme logice, fluxuri de date și eficiență computațională, nu în "buzzwords" creative.</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="mt-1 p-1 bg-[#0A2540] rounded text-white h-fit">
-                    <Code2 size={20} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-xl mb-1">Implementare Tehnică Reală</h4>
-                    <p className="text-blue-100">Scriu cod, integrez API-uri și configurez servere. Soluțiile mele sunt robuste și scalabile.</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="mt-1 p-1 bg-[#0A2540] rounded text-white h-fit">
-                    <ShieldCheck size={20} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-xl mb-1">Garanții "Fără BS"</h4>
-                    <p className="text-blue-100">Dacă sistemul nu aduce eficiență măsurabilă, îl rescriem. Transparență totală în raportare.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative p-8 rounded-2xl bg-[#39B5C4]/10 backdrop-blur-xl shadow-[0_20px_60px_rgba(57,181,196,0.15)] hover:-translate-y-[2px] hover:shadow-[0_30px_80px_rgba(57,181,196,0.25)] border border-white/10  ">
-              <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
-              {/* <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute -top-8 -left-12 w-[240px] h-[240px] bg-gradient-to-br from-white/10 to-transparent rounded-full blur-2xl opacity-10"></div>
-                <div className="absolute -bottom-12 -right-16 w-[300px] h-[300px] bg-gradient-to-tr from-[#1E94A5]/10 to-transparent rounded-full blur-2xl opacity-10"></div>
-              </div> */}
-              <div className="absolute -top-4 -right-8 bg-white text-[#0A2540] px-4 py-2 font-bold rounded shadow-lg transform rotate-12">
-                TESTAT ÎN PRODUCȚIE
-              </div>
-              <div className="space-y-4 font-mono text-sm text-slate-300">
-                <div className="flex justify-between border-b border-gray-700 pb-2">
-                  <span>STATUS:</span>
-                  <span className="text-[#2AAF7F]">ONLINE</span>
-                </div>
-                <div className="flex justify-between border-b border-gray-700 pb-2">
-                  <span>UPTIME:</span>
-                  <span className="text-white">99.9%</span>
-                </div>
-                <div className="flex justify-between border-b border-gray-700 pb-2">
-                  <span>OPTIMIZATION:</span>
-                  <span className="text-[#1E94A5]">AI-ENABLED</span>
-                </div>
-                <div className="p-4 bg-black/30 rounded mt-4">
-                  <code className="block text-xs text-green-500 mb-1">$ system_check --complet</code>
-                  <code className="block text-xs text-slate-400">Analyzing workflow bottlenecks...</code>
-                  <code className="block text-xs text-slate-400">Found: 3 critical inefficiencies</code>
-                  <code className="block text-xs text-slate-400">Initiating automated fix...</code>
-                  <code className="block text-xs text-green-500 mt-2">Done. Revenue increased.</code>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -694,10 +635,10 @@ const App = () => {
 
       {/* Calendly / Booking Section */}
       <section id="booking" className="relative z-10 py-24 px-6">
-        <div className="container mx-auto max-w-4xl text-center">
+        <div ref={bookingRevealRef} className={`container mx-auto max-w-4xl text-center ${revealCls(bookingRevealed)}`}>
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Discutăm Sisteme, Nu Strategii</h2>
           <p className="text-slate-400 mb-12 max-w-2xl mx-auto">
-            Aceasta nu este o convorbire de vânzări. Este o evaluare tehnică a fluxului tău de lucru. Voi analiza unde pierzi bani și îți voi propune o soluție inginerească.
+            Aceasta nu este o convorbire de vânzări. Este o evaluare tehnică a fluxului tău de lucru: găsim împreună blocajul și îți arăt unde AI-ul aduce cei mai mulți bani.
           </p>
           <div className="relative bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(57,181,196,0.20)] w-full p-8 text-left">
             <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>

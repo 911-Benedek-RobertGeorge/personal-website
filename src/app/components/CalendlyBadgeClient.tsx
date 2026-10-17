@@ -1,6 +1,10 @@
 "use client";
 import { useEffect } from "react";
 
+type CalendlyWindow = Window & {
+  Calendly?: { initBadgeWidget?: (opts: object) => void };
+};
+
 export default function CalendlyBadgeClient() {
   useEffect(() => {
     let cancelled = false;
@@ -11,7 +15,7 @@ export default function CalendlyBadgeClient() {
           const isMobile = window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
           if (isMobile) return;
         }
-        const calendly = (window as any).Calendly;
+        const calendly = (window as CalendlyWindow).Calendly;
         if (calendly && typeof calendly.initBadgeWidget === "function") {
           calendly.initBadgeWidget({
             url: "https://calendly.com/benedek-robertgeorge/30min",
