@@ -8,6 +8,7 @@ import { resolveStage, smoothstep } from "./stage"
 
 const FOV = 54
 const BASE_Z = 5
+const CLIP_DAMPING = 3
 
 type PointerRef = MutableRefObject<{ x: number; y: number }>
 
@@ -94,7 +95,8 @@ function StageRig({ mobile, reduced, pointer }: { mobile: boolean; reduced: bool
     const center = mobile
       ? // ny 0.68 (was 0.72): the bottom cards sit above the canvas on mobile — keep his torso above their top edge.
         { x: 0, y: (0.5 - 0.68) * 2 * halfH, scale: 0.62 }
-      : { x: 0, y: (0.5 - 0.78) * 2 * halfH, scale: 1.05 }
+      : // ny 0.86 / scale 0.95 (was 0.78 / 1.05): the two-line headline + CTA need the space above his antenna at 720px heights.
+        { x: 0, y: (0.5 - 0.86) * 2 * halfH, scale: 0.95 }
     const dock = mobile
       ? // Smaller/lower than v1 (0.16/0.92/0.42): full-width mobile text otherwise disappears behind him.
         { x: (0.13 - 0.5) * 2 * halfW, y: (0.5 - 0.94) * 2 * halfH, scale: 0.34 }
@@ -119,9 +121,11 @@ function StageRig({ mobile, reduced, pointer }: { mobile: boolean; reduced: bool
     g.rotation.x = MathUtils.damp(g.rotation.x, mobile ? 0 : -pointer.current.y * 0.05 * (1 - dockT), 5, delta)
 
     const st = resolveStage(p)
-    if (st.clipT !== lastClipT.current) {
-      lastClipT.current = st.clipT
-      modelRef.current?.setClipT(st.clipT)
+    // Damped: the robot's animation glides toward the scroll position instead of jumping with each wheel tick.
+    const clipT = lastClipT.current < 0 ? st.clipT : MathUtils.damp(lastClipT.current, st.clipT, CLIP_DAMPING, delta)
+    if (Math.abs(clipT - lastClipT.current) > 1e-4) {
+      lastClipT.current = clipT
+      modelRef.current?.setClipT(clipT)
       accentRef.current?.color.setRGB(st.accentR, st.accentG, st.accentB)
     }
     camera.position.set(0, 0, BASE_Z)

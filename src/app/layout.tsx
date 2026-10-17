@@ -5,23 +5,23 @@ import CalendlyBadgeClient from "./components/CalendlyBadgeClient";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://benedek-systems.vercel.app'),
-  title: "BENEDEK.SYS",
-  description: "Inginerie, nu gălăgie! Iți construiesc infrastructura digitală",
+  title: "BENEDEK.SYS · Integrare AI pentru afaceri",
+  description: "Găsesc blocajul din afacerea ta și îl automatizez cu AI. Integrări AI construite de un developer, nu de un marketer.",
   icons: {
     icon: "/logo.png",
     shortcut: "/logo.png",
     apple: "/logo.png",
   },
   openGraph: {
-    title: "BENEDEK.SYS",
-    description: "Inginerie, nu gălăgie! Iți construiesc infrastructura digitală",
+    title: "BENEDEK.SYS · Integrare AI pentru afaceri",
+    description: "Găsesc blocajul din afacerea ta și îl automatizez cu AI. Integrări AI construite de un developer, nu de un marketer.",
     images: ["/og-image.png"],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "BENEDEK.SYS",
-    description: "Inginerie, nu gălăgie! Iți construiesc infrastructura digitală",
+    title: "BENEDEK.SYS · Integrare AI pentru afaceri",
+    description: "Găsesc blocajul din afacerea ta și îl automatizez cu AI. Integrări AI construite de un developer, nu de un marketer.",
     images: ["/og-image.png"],
   },
 };

@@ -27,24 +27,25 @@ export const BEATS: Beat[] = [
 ]
 
 // Desktop panels + mobile per-beat cards (m-*). exitAt 1.05 = stays until unpin.
+// A beat's panels arrive together (tight 0.005 stagger) and hold until the beat ends, so text stays readable.
 export const PANELS: PanelSpec[] = [
-  { id: "wake-headline",  enterAt: 0.00, exitAt: 0.17 },
-  { id: "wake-cue",       enterAt: 0.00, exitAt: 0.15 },
-  { id: "helper-title",   enterAt: 0.18, exitAt: 0.39 },
-  { id: "helper-chip-1",  enterAt: 0.20, exitAt: 0.39 },
-  { id: "helper-chip-2",  enterAt: 0.22, exitAt: 0.39 },
-  { id: "helper-chip-3",  enterAt: 0.24, exitAt: 0.39 },
-  { id: "helper-chip-4",  enterAt: 0.26, exitAt: 0.39 },
-  { id: "chaos-title",    enterAt: 0.40, exitAt: 0.59 },
-  { id: "chaos-pain-1",   enterAt: 0.42, exitAt: 0.59 },
-  { id: "chaos-pain-2",   enterAt: 0.44, exitAt: 0.59 },
-  { id: "chaos-pain-3",   enterAt: 0.46, exitAt: 0.59 },
-  { id: "results-title",  enterAt: 0.60, exitAt: 0.81 },
-  { id: "results-c1",     enterAt: 0.62, exitAt: 0.81 },
-  { id: "results-c2",     enterAt: 0.63, exitAt: 0.81 },
-  { id: "results-c3",     enterAt: 0.64, exitAt: 0.81 },
-  { id: "results-c4",     enterAt: 0.65, exitAt: 0.81 },
-  { id: "activate-cta",   enterAt: 0.82, exitAt: 1.05 },
+  { id: "wake-headline",  enterAt: 0.00,  exitAt: 0.17 },
+  { id: "wake-cue",       enterAt: 0.00,  exitAt: 0.15 },
+  { id: "helper-title",   enterAt: 0.18,  exitAt: 0.39 },
+  { id: "helper-chip-1",  enterAt: 0.185, exitAt: 0.39 },
+  { id: "helper-chip-2",  enterAt: 0.19,  exitAt: 0.39 },
+  { id: "helper-chip-3",  enterAt: 0.195, exitAt: 0.39 },
+  { id: "helper-chip-4",  enterAt: 0.20,  exitAt: 0.39 },
+  { id: "chaos-title",    enterAt: 0.40,  exitAt: 0.59 },
+  { id: "chaos-pain-1",   enterAt: 0.405, exitAt: 0.59 },
+  { id: "chaos-pain-2",   enterAt: 0.41,  exitAt: 0.59 },
+  { id: "chaos-pain-3",   enterAt: 0.415, exitAt: 0.59 },
+  { id: "results-title",  enterAt: 0.60,  exitAt: 0.81 },
+  { id: "results-c1",     enterAt: 0.605, exitAt: 0.81 },
+  { id: "results-c2",     enterAt: 0.61,  exitAt: 0.81 },
+  { id: "results-c3",     enterAt: 0.615, exitAt: 0.81 },
+  { id: "results-c4",     enterAt: 0.62,  exitAt: 0.81 },
+  { id: "activate-cta",   enterAt: 0.82,  exitAt: 1.05 },
   { id: "m-wake",     enterAt: 0.00, exitAt: 0.17 },
   { id: "m-helper",   enterAt: 0.18, exitAt: 0.39 },
   { id: "m-chaos",    enterAt: 0.40, exitAt: 0.59 },
@@ -53,7 +54,7 @@ export const PANELS: PanelSpec[] = [
 ]
 
 /** Fade width, in stage-progress units, at each end of a panel window. */
-export const PANEL_FADE = 0.035
+export const PANEL_FADE = 0.025
 /** Width of the accent-color crossfade approaching a beat boundary. */
 export const ACCENT_BLEND = 0.02
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Bot, Calendar, Database, Globe, Workflow, X } from 'lucide-react';
+import { ArrowRight, Bot, Calendar, Database, FlaskConical, Workflow, X } from 'lucide-react';
 import Counter from './Counter';
 import { BEATS, PANELS, panelT, type PanelSpec } from './stage';
 
@@ -17,8 +17,9 @@ const counterCard = `${glass} border-[#2AAF7F]/25 px-6 py-4 text-center`;
 
 // Desktop outer-wrapper position classes per panel id (mobile m-* handled separately).
 const POS: Record<string, string> = {
-  'wake-headline': 'left-1/2 -translate-x-1/2 top-[10vh] w-[min(92vw,760px)] text-center',
-  'wake-cue': 'left-1/2 -translate-x-1/2 bottom-[5vh]',
+  'wake-headline': 'left-1/2 -translate-x-1/2 top-[12vh] w-[min(92vw,760px)] text-center',
+  // Bottom-left, not centered: the robot's platform covers the bottom center.
+  'wake-cue': 'left-[5vw] bottom-[7vh]',
   'helper-title': 'left-1/2 -translate-x-1/2 top-[9vh] text-center',
   'helper-chip-1': 'left-[7vw] top-[27vh]',
   'helper-chip-2': 'right-[7vw] top-[31vh]',
@@ -103,15 +104,15 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
 
   const pains = [
     { title: 'Lead-uri care scapă', body: 'Clienți care întreabă seara și cumpără de la altcineva dimineața.' },
-    { title: 'Follow-up manual, uitat', body: 'Mesaje trimise doar când îți aduci aminte.' },
-    { title: 'Zero vizibilitate în cifre', body: 'Excel-uri pe care nu le mai înțelege nimeni.' },
+    { title: 'Muncă manuală repetitivă', body: 'Oameni buni blocați în emailuri, copy-paste și tabele.' },
+    { title: 'Un blocaj pe care nu-l vede nimeni', body: 'Un singur pas lent încetinește tot procesul și costă în fiecare zi.' },
   ];
 
   const chips = [
-    { icon: <Bot size={16} className="text-[#1E94A5]" />, label: 'Asistent AI 24/7' },
-    { icon: <Workflow size={16} className="text-[#1E94A5]" />, label: 'CRM + automatizări' },
-    { icon: <Database size={16} className="text-[#1E94A5]" />, label: 'Reactivare bază de date' },
-    { icon: <Globe size={16} className="text-[#1E94A5]" />, label: 'Web AI-driven' },
+    { icon: <Bot size={16} className="text-[#1E94A5]" />, label: 'Asistent AI care răspunde 24/7' },
+    { icon: <Workflow size={16} className="text-[#1E94A5]" />, label: 'Agenți AI pentru munca repetitivă' },
+    { icon: <Database size={16} className="text-[#1E94A5]" />, label: 'Follow-up și CRM automat' },
+    { icon: <FlaskConical size={16} className="text-[#1E94A5]" />, label: 'Testare automată cu agenți AI' },
   ];
 
   const counterData = [
@@ -141,13 +142,13 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
   const content: Record<string, React.ReactNode> = {
     'wake-headline': (
       <>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/15 bg-white/5 text-xs font-mono uppercase tracking-widest text-[#39B5C4] mb-5">
-          Sistem de automatizare AI
-        </div>
-        <h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tight leading-[1.05]">Motorul de Clienți Noi</h1>
-        <p className="mt-4 text-slate-300 text-lg md:text-xl">Sisteme AI care lucrează non-stop pentru afacerea ta</p>
-        <div className="mt-7">
-          <CtaButton onClick={onPrimaryCta}>Activează Sistemul</CtaButton>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-[1.05]">
+          Găsesc blocajul.<br />
+          Îl automatizez <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#39B5C4] to-[#2AAF7F]">cu AI.</span>
+        </h1>
+        <p className="mt-3 text-slate-300 text-base md:text-lg">Integrez agenți AI acolo unde afacerea ta pierde timp și bani.</p>
+        <div className="mt-5">
+          <CtaButton onClick={onPrimaryCta}>Programează un audit AI</CtaButton>
         </div>
       </>
     ),
@@ -157,12 +158,12 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
         <span className="animate-bounce">↓</span>
       </div>
     ),
-    'helper-title': <h2 className="text-3xl md:text-4xl font-bold text-white">Ce implementez</h2>,
+    'helper-title': <h2 className="text-3xl md:text-4xl font-bold text-white">Ce automatizez cu AI</h2>,
     'helper-chip-1': <div className={chip}>{chips[0].icon}{chips[0].label}</div>,
     'helper-chip-2': <div className={chip}>{chips[1].icon}{chips[1].label}</div>,
     'helper-chip-3': <div className={chip}>{chips[2].icon}{chips[2].label}</div>,
     'helper-chip-4': <div className={chip}>{chips[3].icon}{chips[3].label}</div>,
-    'chaos-title': <h2 className="text-3xl md:text-4xl font-bold text-white">Haosul de azi</h2>,
+    'chaos-title': <h2 className="text-3xl md:text-4xl font-bold text-white">Unde se pierd azi timp și bani</h2>,
     'chaos-pain-1': (
       <div className={painCard}>
         <div className="flex items-center gap-2 text-white font-semibold text-sm"><X size={14} className="text-red-400" />{pains[0].title}</div>
@@ -184,8 +185,8 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
     'results-title': <h2 className="text-3xl md:text-4xl font-bold text-white">Rezultate din producție</h2>,
     'activate-cta': (
       <>
-        <p className="text-[#2AAF7F] font-bold text-lg mb-4">Nu lăsa lead-uri să scape.</p>
-        <CtaButton onClick={onPrimaryCta}>Activează Sistemul</CtaButton>
+        <p className="text-[#2AAF7F] font-bold text-lg mb-4">Hai să găsim blocajul din afacerea ta.</p>
+        <CtaButton onClick={onPrimaryCta}>Programează un audit AI</CtaButton>
         <button onClick={onSecondaryCta} className="mt-3 mx-auto text-slate-400 hover:text-white text-sm font-medium transition-colors flex items-center gap-2">
           sau trimite o cerere <ArrowRight size={14} />
         </button>
@@ -204,14 +205,17 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
   const mobileContent: Record<string, React.ReactNode> = {
     'm-wake': (
       <div className={`${glass} px-5 py-6 text-center`}>
-        <h1 className="text-3xl font-extrabold text-white tracking-tight">Motorul de Clienți Noi</h1>
-        <p className="mt-2 text-slate-300 text-sm">Sisteme AI care lucrează non-stop pentru afacerea ta</p>
-        <div className="mt-4"><CtaButton onClick={onPrimaryCta}>Activează Sistemul</CtaButton></div>
+        <h1 className="text-3xl font-extrabold text-white tracking-tight leading-tight">
+          Găsesc blocajul.<br />
+          Îl automatizez <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#39B5C4] to-[#2AAF7F]">cu AI.</span>
+        </h1>
+        <p className="mt-2 text-slate-300 text-sm">Integrez agenți AI acolo unde afacerea ta pierde timp și bani.</p>
+        <div className="mt-4"><CtaButton onClick={onPrimaryCta}>Programează un audit AI</CtaButton></div>
       </div>
     ),
     'm-helper': (
       <div className={`${glass} px-5 py-5`}>
-        <h2 className="text-lg font-bold text-white mb-3">Ce implementez</h2>
+        <h2 className="text-lg font-bold text-white mb-3">Ce automatizez cu AI</h2>
         <div className="grid grid-cols-2 gap-2">
           {chips.map((c) => (
             <div key={c.label} className="flex items-center gap-2 text-xs text-white font-medium">{c.icon}{c.label}</div>
@@ -221,7 +225,7 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
     ),
     'm-chaos': (
       <div className={`${glass} border-red-500/20 px-5 py-5`}>
-        <h2 className="text-lg font-bold text-white mb-3">Haosul de azi</h2>
+        <h2 className="text-lg font-bold text-white mb-3">Unde se pierd azi timp și bani</h2>
         <ul className="space-y-2">
           {pains.map((pn) => (
             <li key={pn.title} className="flex items-start gap-2 text-xs text-slate-300"><X size={12} className="text-red-400 mt-0.5 shrink-0" />{pn.title} — {pn.body}</li>
@@ -237,8 +241,8 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
     ),
     'm-activate': (
       <div className={`${glass} px-5 py-6 text-center`}>
-        <p className="text-[#2AAF7F] font-bold mb-3">Nu lăsa lead-uri să scape.</p>
-        <CtaButton onClick={onPrimaryCta}>Activează Sistemul</CtaButton>
+        <p className="text-[#2AAF7F] font-bold mb-3">Hai să găsim blocajul din afacerea ta.</p>
+        <CtaButton onClick={onPrimaryCta}>Programează un audit AI</CtaButton>
       </div>
     ),
   };
@@ -279,7 +283,7 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
   return (
     // z-[1000] on mobile lifts the bottom cards above the z-[999] canvas (an 812px screen can't fit robot + card
     // separated, so the glass sheet covers his feet). md:z-auto keeps the desktop robot painting in front.
-    <section ref={stageRef} data-stage className="relative h-[400vh] md:h-[500vh] z-[1000] md:z-auto">
+    <section ref={stageRef} data-stage className="relative h-[600vh] md:h-[800vh] z-[1000] md:z-auto">
       <div className="sticky top-0 h-screen supports-[height:100dvh]:h-dvh overflow-hidden">
         {PANELS.map((spec) => (
           <div key={spec.id} className={wrapperClass(spec)}>

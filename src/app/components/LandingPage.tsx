@@ -14,6 +14,9 @@ import {
   TrendingUp,
   CheckCircle2,
   Layers,
+  Workflow,
+  Search,
+  Bot,
 } from 'lucide-react';
 
 import dynamic from "next/dynamic";
@@ -207,9 +210,9 @@ const App = () => {
       {/* Navigation */}
       <FloatingNav
         navItems={[
+          { name: "Abordare", link: "#philosophy" },
           { name: "Studii de Caz", link: "#case-studies" },
           { name: "Servicii", link: "#services" },
-          { name: "Abordare", link: "#philosophy" },
           { name: "Despre mine", link: "https://www.linkedin.com/in/benedek-robert/" },
         ]}
         className="bg-[#000022] border-white/[0.1]"
@@ -284,7 +287,7 @@ const App = () => {
               </div>
               <div className="text-sm">
                 <div className="text-white font-bold text-lg">Backend Engineer</div>
-                <div className="text-slate-400">Arhitectură de Sistem</div>
+                <div className="text-slate-400">Integrări AI în producție</div>
               </div>
             </div>
 
@@ -294,8 +297,8 @@ const App = () => {
                 <Server size={28} className="text-[#76007D]" />
               </div>
               <div className="text-sm">
-                <div className="text-white font-bold text-lg">Itheum + Tokeny</div>
-                <div className="text-slate-400">3 Ani+ în mediu startup</div>
+                <div className="text-white font-bold text-lg">Tokeny · Apex Group</div>
+                <div className="text-slate-400">Integrare AI în echipa de dezvoltare</div>
               </div>
             </div>
 
@@ -337,6 +340,100 @@ const App = () => {
         </div>
       </section>
 
+      {/* Proof: real AI integration story */}
+      <section id="philosophy" className="relative z-10 py-24 px-6 text-[#E5E7EB] font-sans selection:bg-[#76007D] selection:text-white overflow-x-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#000045] via-[#000025] to-[#000010]">
+        <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
+          <svg width="100%" height="100%">
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" />
+            </pattern>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+          </svg>
+        </div>
+
+        <div ref={philosophyRevealRef} className={`container mx-auto max-w-6xl relative z-10 ${revealCls(philosophyRevealed)}`}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="relative inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-white/[0.15] bg-gradient-to-r from-[#76007D]/15 to-[#1E94A5]/15 shadow-[0_0_20px_rgba(118,0,125,0.15)] mb-6 group cursor-default">
+                <Terminal size={14} className="text-[#1E94A5]" />
+                <span className="text-sm font-semibold text-white/90 tracking-wide">Caz real, nu teorie</span>
+                <span className="absolute inset-x-0 w-2/3 mx-auto -bottom-px bg-gradient-to-r from-transparent via-[#1E94A5] to-transparent h-px" />
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
+                Nu îți vând povești.<br />
+                Îți arăt <span className="text-[#0A2540] bg-white px-2 whitespace-nowrap">ce am construit.</span>
+              </h2>
+              <p className="text-blue-100 mb-8">
+                La Tokeny (Apex Group), în ultimul an m-am ocupat de integrarea AI în echipa mea de dezvoltare. Metoda e simplă: găsești blocajul, îl automatizezi, treci la următorul.
+              </p>
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="mt-1 p-1 bg-[#0A2540] rounded text-white h-fit">
+                    <Workflow size={20} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xl mb-1">Primele agent loops din echipă</h4>
+                    <p className="text-blue-100">Un tichet intră, agenții AI scriu specificația, implementează codul și deschid un pull request gata de livrare. Spec-driven development, cap-coadă.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="mt-1 p-1 bg-[#0A2540] rounded text-white h-fit">
+                    <Search size={20} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xl mb-1">Următorul blocaj: QA-ul</h4>
+                    <p className="text-blue-100">Când codul a început să vină mai repede, testarea a devenit punctul lent. Așa se întâmplă în orice proces: rezolvi un blocaj și apare următorul.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="mt-1 p-1 bg-[#0A2540] rounded text-white h-fit">
+                    <Bot size={20} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xl mb-1">Agenți autonomi care testează</h4>
+                    <p className="text-blue-100">Am integrat agenți AI care apelează singuri endpoint-urile noi și le verifică. O bună parte din QA rulează acum automat.</p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-8 p-5 rounded-xl border border-[#2AAF7F]/30 bg-[#2AAF7F]/10">
+                <p className="text-white font-semibold">Orice companie are un astfel de blocaj. Rolul meu este să-l găsesc și să-l automatizez, ca să câștigi timp și bani și să te adaptezi la lumea cu AI.</p>
+                <p className="mt-2 text-sm text-slate-400">Garanție „fără BS”: dacă sistemul nu aduce eficiență măsurabilă, îl rescriem.</p>
+              </div>
+            </div>
+
+            <div className="relative p-8 rounded-2xl bg-[#39B5C4]/10 backdrop-blur-xl shadow-[0_20px_60px_rgba(57,181,196,0.15)] hover:-translate-y-[2px] hover:shadow-[0_30px_80px_rgba(57,181,196,0.25)] border border-white/10">
+              <div className="absolute top-0 left-0 right-0 mx-2 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
+              <div className="absolute -top-4 -right-8 bg-white text-[#0A2540] px-4 py-2 font-bold rounded shadow-lg transform rotate-12">
+                TESTAT ÎN PRODUCȚIE
+              </div>
+              <div className="space-y-4 font-mono text-sm text-slate-300">
+                <div className="flex justify-between border-b border-gray-700 pb-2">
+                  <span>AGENȚI:</span>
+                  <span className="text-[#2AAF7F]">ACTIVI</span>
+                </div>
+                <div className="flex justify-between border-b border-gray-700 pb-2">
+                  <span>MOD:</span>
+                  <span className="text-white">SPEC-DRIVEN</span>
+                </div>
+                <div className="flex justify-between border-b border-gray-700 pb-2">
+                  <span>QA:</span>
+                  <span className="text-[#1E94A5]">AUTOMATIZAT</span>
+                </div>
+                <div className="p-4 bg-black/30 rounded mt-4">
+                  <code className="block text-xs text-green-500 mb-1">$ agent-loop --ticket 142</code>
+                  <code className="block text-xs text-slate-400">› specificație generată</code>
+                  <code className="block text-xs text-slate-400">› cod și teste implementate</code>
+                  <code className="block text-xs text-slate-400">› pull request deschis</code>
+                  <code className="block text-xs text-green-500 mt-2 mb-1">$ qa-agents --test endpoints</code>
+                  <code className="block text-xs text-slate-400">› endpoint-uri noi verificate</code>
+                  <code className="block text-xs text-green-500 mt-2">Gata. Blocaj eliminat.</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Beneficii tangibile → Flow Boost Benefits */}
       {/* <section className="relative z-10 py-16 px-6 bg-[#39B5C4]/8 backdrop-blur-xl border-y border-white/5">
         <div className="container mx-auto max-w-5xl">
@@ -367,8 +464,8 @@ const App = () => {
       <section id="case-studies" className="relative z-10 py-24 px-6 bg-[#39B5C4]/8 backdrop-blur-xl">
         <div className="container mx-auto max-w-5xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#2AAF7F]/30 bg-[#2AAF7F]/10 text-[#2AAF7F] text-xs font-mono uppercase tracking-widest mb-4">Date din producție</div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">Cum arată digitalizarea în practică?</h2>
-          <p className="mt-4 text-slate-300">Câteva scenarii reale unde sistemele mele fac diferența:</p>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white">Cum arată AI-ul aplicat în afacerea ta</h2>
+          <p className="mt-4 text-slate-300">Trei scenarii concrete în care AI-ul aduce bani înapoi:</p>
           <div ref={casesRevealRef} className={`mt-6 grid sm:grid-cols-3 gap-6 ${revealCls(casesRevealed)}`}>
             <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
               <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
@@ -421,7 +518,7 @@ const App = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-1">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 sticky top-32">
-                Stack Tehnologic & Servicii
+                Ce construiesc pentru tine
                 <div className="w-20 h-1 bg-[#76007D] mt-4 rounded-full"></div>
               </h2>
             </div>
@@ -509,16 +606,16 @@ const App = () => {
                   <div className="p-3 bg-[#00FFFF]/10 border border-[#00FFFF]/25 rounded-lg text-[#00FFFF]">
                     <Layers size={28} />
                   </div>
-                  <h3 className="text-xl font-bold text-white">Arhitectură Custom & Audit</h3>
+                  <h3 className="text-xl font-bold text-white">Integrare AI Custom & Audit</h3>
                 </div>
                 <p className="text-slate-300 mb-4">
-                  Soluțiile standard nu se potrivesc modelului tău? Analizez business-ul de la zero și construiesc un sistem <span className="text-[#39B5C4] font-semibold">100% personalizat</span>. Rezolv probleme complexe pe care agențiile „copy-paste” le ignoră.
+                  Analizez procesele afacerii tale, găsesc blocajul care te costă cel mai mult și integrez agenți AI exact acolo. Aceeași metodă pe care o folosesc în echipa mea, adaptată <span className="text-[#39B5C4] font-semibold">100% modelului tău</span>.
                 </p>
                 <ul className="grid grid-cols-2 gap-2 text-sm text-slate-300">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Consultanță 1-la-1</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Integrare Sisteme Legacy</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Soluții Non-Standard</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Scalabilitate Garantată</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Audit de procese 1-la-1</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Agenți AI construiți pe măsură</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Integrare cu sistemele existente</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Rezultate măsurabile</li>
                 </ul>
                 <div className="mt-6 items-center justify-center pt-4  border-t border-white/10">
                   <button
@@ -536,103 +633,12 @@ const App = () => {
         </div>
       </section>
 
-      {/* USPs / Philosophy */}
-      <section id="philosophy" className="relative z-10 py-24 px-6 text-[#E5E7EB] font-sans selection:bg-[#76007D] selection:text-white overflow-x-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#000045] via-[#000025] to-[#000010]">
-        <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
-          <svg width="100%" height="100%">
-            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" />
-            </pattern>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
-        </div>
-
-        <div ref={philosophyRevealRef} className={`container mx-auto max-w-6xl relative z-10 ${revealCls(philosophyRevealed)}`}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div>
-
-
-              <div className="relative inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-white/[0.15] bg-gradient-to-r from-[#76007D]/15 to-[#1E94A5]/15 shadow-[0_0_20px_rgba(118,0,125,0.15)] mb-6 group cursor-default">
-                <Terminal size={14} className="text-[#1E94A5]" />
-                <span className="text-sm font-semibold text-white/90 tracking-wide">Inginerie, nu gălăgie</span>
-                <span className="absolute inset-x-0 w-2/3 mx-auto -bottom-px bg-gradient-to-r from-transparent via-[#1E94A5] to-transparent h-px" />
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-8">
-                Nu îți vând povești.<br />
-                Îți construiesc <span className="text-[#0A2540] bg-white px-2">infrastructura.</span>
-              </h2>
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <div className="mt-1 p-1 bg-[#0A2540] rounded text-white h-fit">
-                    <Terminal size={20} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-xl mb-1">Inginer Backend, Nu Marketer</h4>
-                    <p className="text-blue-100">Gândesc în sisteme logice, fluxuri de date și eficiență computațională, nu în „buzzwords” creative.</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="mt-1 p-1 bg-[#0A2540] rounded text-white h-fit">
-                    <Code2 size={20} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-xl mb-1">Implementare Tehnică Reală</h4>
-                    <p className="text-blue-100">Scriu cod, integrez API-uri și configurez servere. Soluțiile mele sunt robuste și scalabile.</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="mt-1 p-1 bg-[#0A2540] rounded text-white h-fit">
-                    <ShieldCheck size={20} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-xl mb-1">Garanții „Fără BS”</h4>
-                    <p className="text-blue-100">Dacă sistemul nu aduce eficiență măsurabilă, îl rescriem. Transparență totală în raportare.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative p-8 rounded-2xl bg-[#39B5C4]/10 backdrop-blur-xl shadow-[0_20px_60px_rgba(57,181,196,0.15)] hover:-translate-y-[2px] hover:shadow-[0_30px_80px_rgba(57,181,196,0.25)] border border-white/10  ">
-              <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
-              {/* <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute -top-8 -left-12 w-[240px] h-[240px] bg-gradient-to-br from-white/10 to-transparent rounded-full blur-2xl opacity-10"></div>
-                <div className="absolute -bottom-12 -right-16 w-[300px] h-[300px] bg-gradient-to-tr from-[#1E94A5]/10 to-transparent rounded-full blur-2xl opacity-10"></div>
-              </div> */}
-              <div className="absolute -top-4 -right-8 bg-white text-[#0A2540] px-4 py-2 font-bold rounded shadow-lg transform rotate-12">
-                TESTAT ÎN PRODUCȚIE
-              </div>
-              <div className="space-y-4 font-mono text-sm text-slate-300">
-                <div className="flex justify-between border-b border-gray-700 pb-2">
-                  <span>STATUS:</span>
-                  <span className="text-[#2AAF7F]">ONLINE</span>
-                </div>
-                <div className="flex justify-between border-b border-gray-700 pb-2">
-                  <span>UPTIME:</span>
-                  <span className="text-white">99.9%</span>
-                </div>
-                <div className="flex justify-between border-b border-gray-700 pb-2">
-                  <span>OPTIMIZATION:</span>
-                  <span className="text-[#1E94A5]">AI-ENABLED</span>
-                </div>
-                <div className="p-4 bg-black/30 rounded mt-4">
-                  <code className="block text-xs text-green-500 mb-1">$ system_check --complet</code>
-                  <code className="block text-xs text-slate-400">Analyzing workflow bottlenecks...</code>
-                  <code className="block text-xs text-slate-400">Found: 3 critical inefficiencies</code>
-                  <code className="block text-xs text-slate-400">Initiating automated fix...</code>
-                  <code className="block text-xs text-green-500 mt-2">Done. Revenue increased.</code>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Calendly / Booking Section */}
       <section id="booking" className="relative z-10 py-24 px-6">
         <div ref={bookingRevealRef} className={`container mx-auto max-w-4xl text-center ${revealCls(bookingRevealed)}`}>
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Discutăm Sisteme, Nu Strategii</h2>
           <p className="text-slate-400 mb-12 max-w-2xl mx-auto">
-            Aceasta nu este o convorbire de vânzări. Este o evaluare tehnică a fluxului tău de lucru. Voi analiza unde pierzi bani și îți voi propune o soluție inginerească.
+            Aceasta nu este o convorbire de vânzări. Este o evaluare tehnică a fluxului tău de lucru: găsim împreună blocajul și îți arăt unde AI-ul aduce cei mai mulți bani.
           </p>
           <div className="relative bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(57,181,196,0.20)] w-full p-8 text-left">
             <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
