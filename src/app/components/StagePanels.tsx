@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Bot, Calendar, Database, FlaskConical, Workflow, X } from 'lucide-react';
-import Counter from './Counter';
+import { ArrowRight, Bot, Calendar, ChevronDown, Database, FlaskConical, Workflow, X } from 'lucide-react';
 import { BEATS, PANELS, panelT, type PanelSpec } from './stage';
 
 type Props = {
@@ -13,27 +12,25 @@ type Props = {
 const glass = 'rounded-xl bg-[#000022]/60 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.35)]';
 const chip = `${glass} px-4 py-2.5 text-sm font-semibold text-white flex items-center gap-2`;
 const painCard = `${glass} border-red-500/20 px-4 py-3`;
-const counterCard = `${glass} border-[#2AAF7F]/25 px-6 py-4 text-center`;
+const stepCard = `${glass} border-[#2AAF7F]/25 px-5 py-4`;
 
 // Desktop outer-wrapper position classes per panel id (mobile m-* handled separately).
 const POS: Record<string, string> = {
   'wake-headline': 'left-1/2 -translate-x-1/2 top-[12vh] w-[min(92vw,760px)] text-center',
-  // Bottom-left, not centered: the robot's platform covers the bottom center.
-  'wake-cue': 'left-[5vw] bottom-[7vh]',
-  'helper-title': 'left-1/2 -translate-x-1/2 top-[9vh] text-center',
+  'helper-title': 'left-1/2 -translate-x-1/2 top-[13vh] text-center',
   'helper-chip-1': 'left-[7vw] top-[27vh]',
   'helper-chip-2': 'right-[7vw] top-[31vh]',
   'helper-chip-3': 'left-[9vw] bottom-[28vh]',
   'helper-chip-4': 'right-[9vw] bottom-[24vh]',
-  'chaos-title': 'left-1/2 -translate-x-1/2 top-[9vh] text-center',
+  'chaos-title': 'left-1/2 -translate-x-1/2 top-[13vh] text-center',
   'chaos-pain-1': 'left-[6vw] top-[27vh] w-[min(30vw,320px)]',
   'chaos-pain-2': 'right-[6vw] top-[31vh] w-[min(30vw,320px)]',
   'chaos-pain-3': 'left-[8vw] bottom-[24vh] w-[min(30vw,320px)]',
-  'results-title': 'left-1/2 -translate-x-1/2 top-[9vh] text-center',
-  'results-c1': 'left-[9vw] top-[28vh]',
-  'results-c2': 'right-[9vw] top-[28vh]',
-  'results-c3': 'left-[11vw] bottom-[26vh]',
-  'results-c4': 'right-[11vw] bottom-[26vh]',
+  'process-title': 'left-1/2 -translate-x-1/2 top-[13vh] text-center',
+  'process-1': 'left-[9vw] top-[28vh] w-[min(24vw,260px)]',
+  'process-2': 'right-[9vw] top-[28vh] w-[min(24vw,260px)]',
+  'process-3': 'left-[11vw] bottom-[26vh] w-[min(24vw,260px)]',
+  'process-4': 'right-[11vw] bottom-[26vh] w-[min(24vw,260px)]',
   // Top-center like wake (bookend): the z-999 canvas paints the robot OVER panels, and only ~120px clears
   // the podium at the bottom — a bottom-centered CTA gets buried. Above the head it is always readable.
   'activate-cta': 'left-1/2 -translate-x-1/2 top-[12vh] w-[min(92vw,560px)] text-center',
@@ -54,9 +51,9 @@ function CtaButton({ onClick, children }: { onClick: () => void; children: React
 export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
   const stageRef = useRef<HTMLElement | null>(null);
   const innerRefs = useRef(new Map<string, HTMLDivElement>());
-  const countersOnRef = useRef(false);
+  const railFillRef = useRef<HTMLDivElement | null>(null);
+  const dotRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const lastPRef = useRef(-1);
-  const [countersOn, setCountersOn] = useState(false);
   const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
@@ -85,10 +82,14 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
             node.style.transform = `translateY(${((1 - t) * 24).toFixed(1)}px)`;
             node.style.pointerEvents = t > 0.5 ? 'auto' : 'none';
           }
-          if (!countersOnRef.current && p >= BEATS[3].range[0]) {
-            countersOnRef.current = true;
-            setCountersOn(true);
-          }
+          if (railFillRef.current) railFillRef.current.style.transform = `scaleY(${p.toFixed(4)})`;
+          let active = 0;
+          BEATS.forEach((b, i) => {
+            if (p >= b.range[0]) active = i;
+          });
+          dotRefs.current.forEach((dot, i) => {
+            if (dot) dot.dataset.on = String(i <= active);
+          });
         }
       }
       raf = requestAnimationFrame(tick);
@@ -115,27 +116,18 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
     { icon: <FlaskConical size={16} className="text-[#1E94A5]" />, label: 'Testare automată cu agenți AI' },
   ];
 
-  const counterData = [
-    { to: 3.5, decimals: 1, prefix: '', suffix: 'x', label: 'ROI', static: '3.5x' },
-    { to: 0, decimals: 0, prefix: '', suffix: '', label: 'erori umane', static: '0' },
-    { to: 40, decimals: 0, prefix: '+', suffix: '%', label: 'eficiență', static: '+40%' },
-    { to: 24, decimals: 0, prefix: '', suffix: '/7', label: 'mereu activ', static: '24/7' },
+  const steps = [
+    { n: '01', title: 'Audit', body: 'Găsim blocajul care te costă cel mai mult.' },
+    { n: '02', title: 'Prototip', body: 'Un agent AI care rezolvă blocajul, testat pe datele tale.' },
+    { n: '03', title: 'Integrare', body: 'Îl conectez la sistemele pe care le folosești deja.' },
+    { n: '04', title: 'Măsurăm', body: 'Vedem cât timp și câți bani câștigi, apoi trecem la următorul blocaj.' },
   ];
 
-  const counterCards = (size: 'md' | 'lg') =>
-    counterData.map((c) => (
-      <div key={c.label} className={counterCard}>
-        <div className={`${size === 'lg' ? 'text-4xl' : 'text-2xl'} font-extrabold text-[#2AAF7F]`}>
-          <Counter to={c.to} decimals={c.decimals} prefix={c.prefix} suffix={c.suffix} active={countersOn} />
-        </div>
-        <div className="text-xs uppercase tracking-wider text-slate-400 mt-1">{c.label}</div>
-      </div>
-    ));
-
-  const staticCounterCards = counterData.map((c) => (
-    <div key={c.label} className={counterCard}>
-      <div className="text-4xl font-extrabold text-[#2AAF7F]">{c.static}</div>
-      <div className="text-xs uppercase tracking-wider text-slate-400 mt-1">{c.label}</div>
+  const stepCards = steps.map((s) => (
+    <div key={s.n} className={stepCard}>
+      <div className="font-mono text-sm text-[#2AAF7F]">{s.n}</div>
+      <div className="text-white font-semibold">{s.title}</div>
+      <p className="text-slate-400 text-xs mt-1">{s.body}</p>
     </div>
   ));
 
@@ -151,12 +143,6 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
           <CtaButton onClick={onPrimaryCta}>Programează un audit AI</CtaButton>
         </div>
       </>
-    ),
-    'wake-cue': (
-      <div className="flex flex-col items-center gap-1 text-slate-500 text-xs uppercase tracking-widest">
-        <span>derulează</span>
-        <span className="animate-bounce">↓</span>
-      </div>
     ),
     'helper-title': <h2 className="text-3xl md:text-4xl font-bold text-white">Ce automatizez cu AI</h2>,
     'helper-chip-1': <div className={chip}>{chips[0].icon}{chips[0].label}</div>,
@@ -182,7 +168,11 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
         <p className="text-slate-400 text-xs mt-1">{pains[2].body}</p>
       </div>
     ),
-    'results-title': <h2 className="text-3xl md:text-4xl font-bold text-white">Rezultate din producție</h2>,
+    'process-title': <h2 className="text-3xl md:text-4xl font-bold text-white">Cum lucrăm împreună</h2>,
+    'process-1': stepCards[0],
+    'process-2': stepCards[1],
+    'process-3': stepCards[2],
+    'process-4': stepCards[3],
     'activate-cta': (
       <>
         <p className="text-[#2AAF7F] font-bold text-lg mb-4">Hai să găsim blocajul din afacerea ta.</p>
@@ -193,13 +183,6 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
       </>
     ),
   };
-
-  // The four result counters are separate desktop panels.
-  const counterPanels: Record<string, React.ReactNode> = {};
-  const counterNodes = counterCards('lg');
-  ['results-c1', 'results-c2', 'results-c3', 'results-c4'].forEach((id, i) => {
-    counterPanels[id] = counterNodes[i];
-  });
 
   // Mobile per-beat cards: one bottom-anchored card per beat.
   const mobileContent: Record<string, React.ReactNode> = {
@@ -233,10 +216,17 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
         </ul>
       </div>
     ),
-    'm-results': (
+    'm-process': (
       <div className={`${glass} border-[#2AAF7F]/25 px-5 py-5`}>
-        <h2 className="text-lg font-bold text-white mb-3">Rezultate din producție</h2>
-        <div className="grid grid-cols-2 gap-2">{counterCards('md')}</div>
+        <h2 className="text-lg font-bold text-white mb-3">Cum lucrăm împreună</h2>
+        <ol className="space-y-2">
+          {steps.map((s) => (
+            <li key={s.n} className="flex items-start gap-2 text-xs text-slate-300">
+              <span className="font-mono text-[#2AAF7F] shrink-0">{s.n}</span>
+              <span><span className="text-white font-semibold">{s.title}</span> — {s.body}</span>
+            </li>
+          ))}
+        </ol>
       </div>
     ),
     'm-activate': (
@@ -247,7 +237,7 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
     ),
   };
 
-  const renderContent = (id: string) => content[id] ?? counterPanels[id] ?? mobileContent[id] ?? null;
+  const renderContent = (id: string) => content[id] ?? mobileContent[id] ?? null;
 
   const wrapperClass = (spec: PanelSpec) =>
     spec.id.startsWith('m-')
@@ -272,8 +262,8 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
           <div className="grid md:grid-cols-3 gap-4 max-w-4xl">{['chaos-pain-1', 'chaos-pain-2', 'chaos-pain-3'].map((id) => (<div key={id}>{content[id]}</div>))}</div>
         </div>
         <div className="min-h-[60vh] flex flex-col items-center justify-center px-6 gap-5">
-          {content['results-title']}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">{staticCounterCards}</div>
+          {content['process-title']}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-5xl">{stepCards}</div>
         </div>
         <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-6">{content['activate-cta']}</div>
       </section>
@@ -292,6 +282,25 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
             </div>
           </div>
         ))}
+        {/* Scroll rail: fills with stage progress; one dot per beat lights up as it starts. */}
+        <div aria-hidden="true" className="absolute left-[3vw] top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-3 pointer-events-none select-none">
+          <span className="font-mono text-[10px] uppercase tracking-[0.35em] text-[#39B5C4]/80 [writing-mode:vertical-rl]">Derulează</span>
+          <div className="relative w-px h-[30vh] bg-white/15">
+            <div ref={railFillRef} className="absolute inset-0 origin-top scale-y-0 bg-gradient-to-b from-[#39B5C4] to-[#2AAF7F]" />
+            {BEATS.map((b, i) => (
+              <span
+                key={b.id}
+                ref={(node) => {
+                  dotRefs.current[i] = node;
+                }}
+                data-on={i === 0}
+                style={{ top: `${b.range[0] * 100}%` }}
+                className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white/25 transition-all duration-300 data-[on=true]:bg-[#39B5C4] data-[on=true]:shadow-[0_0_10px_#39B5C4]"
+              />
+            ))}
+          </div>
+          <ChevronDown size={16} className="text-[#39B5C4]/80 animate-bounce" />
+        </div>
       </div>
     </section>
   );

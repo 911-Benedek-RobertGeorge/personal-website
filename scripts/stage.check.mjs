@@ -77,7 +77,7 @@ assert.equal(smoothstep(-3), 0);
 assert.equal(smoothstep(3), 1);
 
 // Readability floor: each desktop beat panel holds full opacity for >= 0.1 of the stage.
-for (const s of PANELS.filter((x) => !x.id.startsWith("m-") && x.id !== "wake-cue")) {
+for (const s of PANELS.filter((x) => !x.id.startsWith("m-"))) {
   const start = s.enterAt <= 0 ? 0 : s.enterAt + PANEL_FADE;
   const end = Math.min(s.exitAt - PANEL_FADE, 1);
   assert.ok(end - start >= 0.1, `panel ${s.id} fully visible for ${(end - start).toFixed(3)} < 0.1`);

@@ -21,11 +21,13 @@ export const FloatingNav = ({
   className,
   ctaLabel = "Programează",
   ctaLink = "#booking",
+  brand,
 }: {
   navItems: { name: string; link: string; icon?: React.ReactNode }[];
   className?: string;
   ctaLabel?: string;
   ctaLink?: string;
+  brand?: React.ReactNode;
 }) => {
   // Start visible
   const [visible, setVisible] = useState(true);
@@ -66,8 +68,10 @@ export const FloatingNav = ({
 
   return (
     <div
-      className={`flex max-w-fit fixed top-6 inset-x-0 mx-auto border border-white/[0.15] rounded-full bg-[#000022]/90 backdrop-blur-xl text-white shadow-[0_8px_32px_rgba(0,0,0,0.45),0_0_0_1px_rgba(255,255,255,0.05)] z-[7000] px-6 py-2.5 items-center justify-center space-x-6 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-28 pointer-events-none"} ${className ?? ""}`}
+      className={`flex max-w-fit fixed top-6 inset-x-0 mx-auto border border-white/[0.15] rounded-full bg-[#000022]/90 backdrop-blur-xl text-white shadow-[0_8px_32px_rgba(0,0,0,0.45),0_0_0_1px_rgba(255,255,255,0.05)] z-[7000] px-6 py-2.5 items-center justify-center gap-6 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-28 pointer-events-none"} ${className ?? ""}`}
     >
+      {/* Brand is hidden from 640px to 767px: brand + links + CTA would overflow the pill there. */}
+      {brand && <div className="sm:hidden md:block md:pr-6 md:border-r md:border-white/10">{brand}</div>}
       <div className="hidden sm:flex space-x-5">
         {navItems.map((navItem, idx) => (
           <a

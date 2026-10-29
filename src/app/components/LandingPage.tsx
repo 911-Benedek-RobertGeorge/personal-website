@@ -6,12 +6,10 @@ import {
 
   ArrowRight,
   Code2,
-  ShieldCheck,
 
   Linkedin,
   Server,
   Zap,
-  TrendingUp,
   CheckCircle2,
   Layers,
   Workflow,
@@ -24,7 +22,6 @@ import Script from 'next/script';
 import { FloatingNav } from "@/components/ui/floating-navbar";
 import StagePanels from "./StagePanels";
 import { useReveal } from "./useReveal";
-import Counter from "./Counter";
 import TiltCard from "./TiltCard";
 
 const Scene = dynamic(() => import("./Scene"), { ssr: false });
@@ -40,6 +37,13 @@ type CalendlyWindow = Window & {
 };
 
 const revealCls = (on: boolean) => `transition-all duration-700 ease-out ${on ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`;
+
+const Wordmark = ({ className = '' }: { className?: string }) => (
+  <span className={`font-mono font-bold tracking-tight whitespace-nowrap select-none text-white ${className}`}>
+    <span className="text-[#39B5C4]">›</span> benedek<span className="text-[#2AAF7F]">.sys</span>
+    <span aria-hidden="true" className="inline-block w-[0.5em] h-[1em] ml-0.5 align-[-0.15em] bg-[#39B5C4] animate-pulse" />
+  </span>
+);
 
 const App = () => {
   const [showInitialPopup, setShowInitialPopup] = useState(false);
@@ -189,29 +193,12 @@ const App = () => {
               <span className="block text-[0.65rem] md:text-[0.85rem] font-bold uppercase text-transparent bg-clip-text bg-gradient-to-r from-[#39B5C4] to-[#76007D] tracking-[0.3em] md:tracking-[0.38em] ml-0.5 -mt-0.5 md:-mt-2 pr-1">
                 SYSTEMS
               </span> */}
-      {/* Animated Logo — Corner Shape */}
-      <div className="absolute top-0 -left-2 z-40">
-        <div
-          className="relative w-[180px] h-[110px] md:w-[240px] md:h-[140px] overflow-hidden shadow-[10px_10px_40px_rgba(30,148,165,0.15)]"
-          style={{
-            borderRadius: '0 20% 60% 10% / 0 30% 60% 20%', // Sharp top-left, organic bottom/right
-          }}
-        >
-          <video
-            src="/logo-intro.mp4"
-            autoPlay
-            muted
-            playsInline
-            className="absolute top-1/2 left-1/2 -translate-x-[50%] -translate-y-[65%] w-[130%] h-[130%] object-cover"
-          />
-        </div>
-      </div>
-
       {/* Navigation */}
       <FloatingNav
+        brand={<Wordmark className="text-sm" />}
         navItems={[
           { name: "Abordare", link: "#philosophy" },
-          { name: "Studii de Caz", link: "#case-studies" },
+          { name: "Exemple", link: "#case-studies" },
           { name: "Servicii", link: "#services" },
           { name: "Despre mine", link: "https://www.linkedin.com/in/benedek-robert/" },
         ]}
@@ -463,31 +450,26 @@ const App = () => {
       {/* Case Studies → Use Cases */}
       <section id="case-studies" className="relative z-10 py-24 px-6 bg-[#39B5C4]/8 backdrop-blur-xl">
         <div className="container mx-auto max-w-5xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#2AAF7F]/30 bg-[#2AAF7F]/10 text-[#2AAF7F] text-xs font-mono uppercase tracking-widest mb-4">Date din producție</div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#2AAF7F]/30 bg-[#2AAF7F]/10 text-[#2AAF7F] text-xs font-mono uppercase tracking-widest mb-4">Exemple de aplicare</div>
           <h2 className="text-2xl sm:text-3xl font-bold text-white">Cum arată AI-ul aplicat în afacerea ta</h2>
-          <p className="mt-4 text-slate-300">Trei scenarii concrete în care AI-ul aduce bani înapoi:</p>
+          <p className="mt-4 text-slate-300">Trei scenarii în care AI-ul poate aduce bani înapoi:</p>
           <div ref={casesRevealRef} className={`mt-6 grid sm:grid-cols-3 gap-6 ${revealCls(casesRevealed)}`}>
             <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
               <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
               <h3 className="text-white font-semibold">„Mina de Aur Abandonată”</h3>
               <p className="text-slate-400 text-sm">Reactivarea bazei de date</p>
-              <p className="mt-3 text-slate-300">Ai sute de numere vechi. Nu ai timp să le suni. Sistem AI care trimite mesaje personalizate și empatice tuturor. Clienți vechi se reîntorc în 24 de ore, fără reclame.</p>
-              <div className="mt-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2AAF7F]/10 border border-[#2AAF7F]/25 text-[#2AAF7F] text-sm font-bold"><TrendingUp size={14} /> <Counter to={3.5} decimals={1} suffix="x ROI" active={casesRevealed} /></div>
+              <p className="mt-3 text-slate-300">Ai sute de numere vechi și nu ai timp să le suni. Un sistem AI le trimite mesaje personalizate, ca să readuci clienți vechi fără să plătești reclame.</p>
             </div>
             <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
               <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
               <h3 className="text-white font-semibold">„Secretara Virtuală care nu doarme”</h3>
               <p className="text-slate-400 text-sm">Asistent AI 24/7</p>
-              <p className="mt-3 text-slate-300">Pierzi clienți pentru că nu răspunzi în weekend/seara. Asistentul AI răspunde la întrebări și face programarea direct în calendarul tău.</p>
-              <div className="mt-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2AAF7F]/10 border border-[#2AAF7F]/25 text-[#2AAF7F] text-sm font-bold"><ShieldCheck size={14} /> <Counter to={0} suffix=" erori umane" active={casesRevealed} /></div>
-            </div>
+              <p className="mt-3 text-slate-300">Pierzi clienți pentru că nu răspunzi în weekend/seara. Asistentul AI răspunde la întrebări și face programarea direct în calendarul tău.</p>            </div>
             <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
               <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
               <h3 className="text-white font-semibold">„Marketingul care nu uită”</h3>
               <p className="text-slate-400 text-sm">Nurturing automat</p>
-              <p className="mt-3 text-slate-300">Plătești reclame, oamenii intră pe site, dar nu cumpără. Sistemul trimite mail/SMS util timp de 2 săptămâni până când sunt gata să cumpere.</p>
-              <div className="mt-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2AAF7F]/10 border border-[#2AAF7F]/25 text-[#2AAF7F] text-sm font-bold"><Zap size={14} /> <Counter to={40} prefix="+" suffix="% eficiență" active={casesRevealed} /></div>
-            </div>
+              <p className="mt-3 text-slate-300">Plătești reclame, oamenii intră pe site, dar nu cumpără. Sistemul trimite mail/SMS util timp de 2 săptămâni până când sunt gata să cumpere.</p>            </div>
           </div>
         </div>
       </section>
@@ -685,19 +667,7 @@ const App = () => {
       <footer className="hidden md:block bg-[#051321] text-slate-500 py-4 border-t border-white/5 relative z-10 text-sm">
         <div className="container flex-row mx-auto px-6 text-center">
           <div className='flex text-center items-center justify-center gap-4'>
-            <div className="flex items-center justify-center font-sans tracking-tight mb-3">
-              <div className="h-16 w-16 -mr-4">
-                <img src="/logo.png" alt="B" className="h-full w-full object-contain object-center" />
-              </div>
-              <div className="flex flex-col items-start mt-2 select-none">
-                <span className="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white/90 to-white/30 leading-none pb-0.5">
-                  enedek
-                </span>
-                <span className="block text-[0.55rem] font-bold uppercase text-transparent bg-clip-text bg-gradient-to-r from-[#39B5C4] to-[#76007D] tracking-[0.36em] ml-0.5 -mt-0.5 pr-1">
-                  SYSTEMS
-                </span>
-              </div>
-            </div>
+            <Wordmark className="text-xl mb-4" />
             <div className="flex justify-center  gap-4 mb-4">
               <a href="https://www.linkedin.com/in/benedek-robert/" className="text-[#0077b5] hover:text-white transition-colors">LinkedIn</a>
               <a href="mailto:benedek.robertgeorge@gmail.com" className="hover:text-white transition-colors">Email</a>

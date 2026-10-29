@@ -22,7 +22,7 @@ export const BEATS: Beat[] = [
   { id: "wake",     range: [0.00, 0.18], clip: [0.00, 0.16], accent: "#1E94A5" },
   { id: "helper",   range: [0.18, 0.40], clip: [0.16, 0.42], accent: "#1E94A5" },
   { id: "chaos",    range: [0.40, 0.60], clip: [0.42, 0.62], accent: "#76007D" },
-  { id: "results",  range: [0.60, 0.82], clip: [0.62, 0.86], accent: "#2AAF7F" },
+  { id: "process",  range: [0.60, 0.82], clip: [0.62, 0.86], accent: "#2AAF7F" },
   { id: "activate", range: [0.82, 1.00], clip: [0.86, 1.00], accent: "#2AAF7F" },
 ]
 
@@ -30,7 +30,6 @@ export const BEATS: Beat[] = [
 // A beat's panels arrive together (tight 0.005 stagger) and hold until the beat ends, so text stays readable.
 export const PANELS: PanelSpec[] = [
   { id: "wake-headline",  enterAt: 0.00,  exitAt: 0.17 },
-  { id: "wake-cue",       enterAt: 0.00,  exitAt: 0.15 },
   { id: "helper-title",   enterAt: 0.18,  exitAt: 0.39 },
   { id: "helper-chip-1",  enterAt: 0.185, exitAt: 0.39 },
   { id: "helper-chip-2",  enterAt: 0.19,  exitAt: 0.39 },
@@ -40,16 +39,16 @@ export const PANELS: PanelSpec[] = [
   { id: "chaos-pain-1",   enterAt: 0.405, exitAt: 0.59 },
   { id: "chaos-pain-2",   enterAt: 0.41,  exitAt: 0.59 },
   { id: "chaos-pain-3",   enterAt: 0.415, exitAt: 0.59 },
-  { id: "results-title",  enterAt: 0.60,  exitAt: 0.81 },
-  { id: "results-c1",     enterAt: 0.605, exitAt: 0.81 },
-  { id: "results-c2",     enterAt: 0.61,  exitAt: 0.81 },
-  { id: "results-c3",     enterAt: 0.615, exitAt: 0.81 },
-  { id: "results-c4",     enterAt: 0.62,  exitAt: 0.81 },
+  { id: "process-title",  enterAt: 0.60,  exitAt: 0.81 },
+  { id: "process-1",      enterAt: 0.605, exitAt: 0.81 },
+  { id: "process-2",      enterAt: 0.61,  exitAt: 0.81 },
+  { id: "process-3",      enterAt: 0.615, exitAt: 0.81 },
+  { id: "process-4",      enterAt: 0.62,  exitAt: 0.81 },
   { id: "activate-cta",   enterAt: 0.82,  exitAt: 1.05 },
   { id: "m-wake",     enterAt: 0.00, exitAt: 0.17 },
   { id: "m-helper",   enterAt: 0.18, exitAt: 0.39 },
   { id: "m-chaos",    enterAt: 0.40, exitAt: 0.59 },
-  { id: "m-results",  enterAt: 0.60, exitAt: 0.81 },
+  { id: "m-process",  enterAt: 0.60, exitAt: 0.81 },
   { id: "m-activate", enterAt: 0.82, exitAt: 1.05 },
 ]
 
