@@ -1,14 +1,13 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import { 
-  Terminal, 
-  CheckCircle2, 
-  Mail, 
-  Calendar, 
-  Clipboard, 
-  ArrowLeft, 
-  Linkedin, 
-  BarChart3,
+import Link from 'next/link';
+import {
+  Terminal,
+  CheckCircle2,
+  Mail,
+  Calendar,
+  ArrowLeft,
+  Linkedin,
   Cpu,
   Activity,
   Layers
@@ -125,7 +124,7 @@ const App = () => {
               </h3>
               <div className="h-px w-full bg-gradient-to-r from-[#2AAF7F]/50 to-transparent mb-4"></div>
               <p className="text-sm text-slate-300 leading-relaxed">
-                Nu pleci cu "sfaturi". Pleci cu un <strong className="text-white border-b border-[#2AAF7F]/40">Blueprint de Ineficiență</strong> și primele <strong className="text-white border-b border-[#2AAF7F]/40">3 Instrucțiuni de Optimizare</strong> pentru a debloca venituri imediat.
+                Nu pleci cu „sfaturi”. Pleci cu un <strong className="text-white border-b border-[#2AAF7F]/40">Blueprint de Ineficiență</strong> și primele <strong className="text-white border-b border-[#2AAF7F]/40">3 Instrucțiuni de Optimizare</strong> pentru a debloca venituri imediat.
               </p>
             </div>
           </div>
@@ -141,7 +140,7 @@ const App = () => {
                   Pregătire Tehnică (Input Required)
                 </h3>
                 <p className="text-sm text-slate-500 mb-6 font-mono">
-                  // Maximizează ROI-ul celor 30 de minute
+                  {'// Maximizează ROI-ul celor 30 de minute'}
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -170,10 +169,10 @@ const App = () => {
                 </a>
             </div>
 
-            <a href="/" className="group flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-medium transition-all hover:border-[#1E94A5]/50">
+            <Link href="/" className="group flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-medium transition-all hover:border-[#1E94A5]/50">
                 <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform text-[#1E94A5]" />
                 Înapoi la Site
-            </a>
+            </Link>
           </div>
 
         </div>

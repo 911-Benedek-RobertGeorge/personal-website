@@ -1,32 +1,48 @@
-import "@react-three/fiber"
-import { useThree } from "@react-three/fiber"
-import { useEffect, useRef, useState } from "react"
-import { Group, AnimationMixer, AnimationClip, AnimationAction, Object3D, LoopOnce } from "three"
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
+import { AnimationAction, AnimationClip, AnimationMixer, Group, LoopOnce, Object3D } from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js"
 
-export default function Model() {
+export type ModelHandle = {
+  group: Group | null
+  /** Scrub the GLB animation to fraction t (0..1) of the clip. */
+  setClipT: (t: number) => void
+}
+
+// Loads the robot and exposes imperative control to the StageRig in Scene.tsx.
+// Position/rotation/scale are owned by the rig; this component only loads and scrubs.
+const Model = forwardRef<ModelHandle>(function Model(_props, ref) {
   const group = useRef<Group>(null)
   const [gltfScene, setGltfScene] = useState<Object3D | null>(null)
   const mixerRef = useRef<AnimationMixer | null>(null)
   const clipRef = useRef<AnimationClip | null>(null)
   const actionRef = useRef<AnimationAction | null>(null)
-  // Responsive sizing based on viewport width
-  const { size } = useThree()
-  const isMobile = size.width <= 640
-  const isTablet = size.width > 640 && size.width <= 1024
-  // Make the robot smaller across breakpoints
-  const scale = isMobile ? 0.75 : isTablet ? 0.9 : 1.05
-  // Slight left offset so the right side doesn’t get cut
-  const offsetX = isMobile ? -0.15 : isTablet ? -0.22 : -0.15
 
-  // Load GLTF and setup animation (paused for scrub)
+  useImperativeHandle(
+    ref,
+    () => ({
+      get group() {
+        return group.current
+      },
+      setClipT: (t: number) => {
+        const mixer = mixerRef.current
+        const clip = clipRef.current
+        const action = actionRef.current
+        if (!mixer || !clip || !action) return
+        action.time = Math.max(0, Math.min(clip.duration * t, clip.duration))
+        mixer.update(0)
+      },
+    }),
+    []
+  )
+
   useEffect(() => {
     const loader = new GLTFLoader()
+    loader.setMeshoptDecoder(MeshoptDecoder)
     loader.load(
       "/robot_playground.glb",
       (gltf) => {
         setGltfScene(gltf.scene)
-        // Improve visibility & avoid frustum culling issues
         gltf.scene.frustumCulled = false
         gltf.scene.traverse((obj) => {
           obj.frustumCulled = false
@@ -39,13 +55,11 @@ export default function Model() {
           const action = mixer.clipAction(clip)
           actionRef.current = action
           action.reset()
-          action.setLoop(LoopOnce, 0) // LoopOnce
+          action.setLoop(LoopOnce, 0)
           action.clampWhenFinished = true
           action.enabled = true
           action.play()
-          // Pause; we'll scrub via scroll
           action.paused = true
-          // Ensure initial pose is applied
           action.time = 0
           mixer.update(0)
         } else {
@@ -59,42 +73,7 @@ export default function Model() {
     )
   }, [])
 
-  // Helper to compute page scroll progress [0,1]
-  const getScrollProgress = () => {
-    if (typeof window === "undefined") return 0
-    const scrollTop = window.scrollY || document.documentElement.scrollTop || 0
-    const maxScroll = Math.max(
-      (document.documentElement.scrollHeight || 0) - (window.innerHeight || 0),
-      0
-    )
-    return maxScroll > 0 ? Math.min(Math.max(scrollTop / maxScroll, 0), 1) : 0
-  }
+  return <group ref={group}>{gltfScene && <primitive object={gltfScene} />}</group>
+})
 
-  // Scrub animation time according to page scroll (RAF loop)
-  useEffect(() => {
-    let rafId = 0
-    const tick = () => {
-      const mixer = mixerRef.current
-      const clip = clipRef.current
-      const action = actionRef.current
-      if (mixer && clip && action) {
-        const progress = getScrollProgress()
-        const t = Math.max(0, Math.min(clip.duration * progress, clip.duration))
-        action.time = t
-        // Apply keyframes at current time
-        mixer.update(0)
-      }
-      rafId = requestAnimationFrame(tick)
-    }
-    rafId = requestAnimationFrame(tick)
-    return () => {
-      if (rafId) cancelAnimationFrame(rafId)
-    }
-  }, [])
-
-  return (
-    <group ref={group} scale={scale} position={[offsetX, -0.5, 0]} rotation={[0, 0, 0]}>
-      {gltfScene && <primitive object={gltfScene} />}
-    </group>
-  )
-}
+export default Model
