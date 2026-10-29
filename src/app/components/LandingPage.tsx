@@ -2,14 +2,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Terminal,
-  Database,
-
   ArrowRight,
-  Code2,
-
+  BadgeCheck,
   Linkedin,
   Server,
-  Zap,
   CheckCircle2,
   Layers,
   Workflow,
@@ -44,6 +40,37 @@ const Wordmark = ({ className = '' }: { className?: string }) => (
     <span aria-hidden="true" className="inline-block w-[0.5em] h-[1em] ml-0.5 align-[-0.15em] bg-[#39B5C4] animate-pulse" />
   </span>
 );
+
+const BEFORE_AFTER = [
+  {
+    area: 'Operațiuni',
+    title: 'Date copiate de mână',
+    before: 'Comenzile vin pe email. Cineva le copiază în Excel, apoi încă o dată în sistemul de facturare.',
+    after: 'Un agent AI citește emailul și completează singur sistemele. Omul verifică doar excepțiile.',
+  },
+  {
+    area: 'Vânzări',
+    title: 'Oferte care așteaptă zile',
+    before: 'Fiecare ofertă se face manual, din prețuri și informații împrăștiate în mai multe locuri.',
+    after: 'Agentul pregătește oferta din datele existente. Tu doar o verifici și o trimiți.',
+  },
+  {
+    area: 'Calitate',
+    title: 'Verificări făcute manual',
+    before: 'Înainte de fiecare livrare, cineva verifică pas cu pas că totul funcționează.',
+    after: 'Agenți autonomi rulează verificările și raportează doar ce nu e în regulă, ca în echipa mea.',
+  },
+];
+
+const CAPABILITIES = [
+  'Agenți AI',
+  'Integrări între sisteme',
+  'Automatizări de date',
+  'Testare automată',
+  'Site-uri și aplicații web',
+  'SEO tehnic',
+  'CRM și follow-up',
+];
 
 const App = () => {
   const [showInitialPopup, setShowInitialPopup] = useState(false);
@@ -267,14 +294,14 @@ const App = () => {
       <section ref={credSectionRef} className="relative z-10 border-y border-white/5 bg-[#39B5C4]/8 backdrop-blur-xl">
         <div ref={credRevealRef} className={`container mx-auto px-6 py-0 ${revealCls(credRevealed)}`}>
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">
-            {/* Tech Cred */}
+            {/* Certification */}
             <div className="flex items-center justify-center md:justify-start gap-4 py-8 md:pr-8">
               <div className="p-3 bg-white/5 rounded-lg border border-white/5">
-                <Code2 size={28} className="text-[#1E94A5]" />
+                <BadgeCheck size={28} className="text-[#1E94A5]" />
               </div>
               <div className="text-sm">
-                <div className="text-white font-bold text-lg">Backend Engineer</div>
-                <div className="text-slate-400">Integrări AI în producție</div>
+                <div className="text-white font-bold text-lg">Claude Certified Architect</div>
+                <div className="text-slate-400">Professional · certificare Anthropic</div>
               </div>
             </div>
 
@@ -285,7 +312,7 @@ const App = () => {
               </div>
               <div className="text-sm">
                 <div className="text-white font-bold text-lg">Tokeny · Apex Group</div>
-                <div className="text-slate-400">Integrare AI în echipa de dezvoltare</div>
+                <div className="text-slate-400">Backend Engineer · integrare AI în echipă</div>
               </div>
             </div>
 
@@ -447,29 +474,28 @@ const App = () => {
         </div>
       </section> */}
 
-      {/* Case Studies → Use Cases */}
+      {/* Common bottlenecks, before and after */}
       <section id="case-studies" className="relative z-10 py-24 px-6 bg-[#39B5C4]/8 backdrop-blur-xl">
         <div className="container mx-auto max-w-5xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#2AAF7F]/30 bg-[#2AAF7F]/10 text-[#2AAF7F] text-xs font-mono uppercase tracking-widest mb-4">Exemple de aplicare</div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">Cum arată AI-ul aplicat în afacerea ta</h2>
-          <p className="mt-4 text-slate-300">Trei scenarii în care AI-ul poate aduce bani înapoi:</p>
-          <div ref={casesRevealRef} className={`mt-6 grid sm:grid-cols-3 gap-6 ${revealCls(casesRevealed)}`}>
-            <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
-              <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
-              <h3 className="text-white font-semibold">„Mina de Aur Abandonată”</h3>
-              <p className="text-slate-400 text-sm">Reactivarea bazei de date</p>
-              <p className="mt-3 text-slate-300">Ai sute de numere vechi și nu ai timp să le suni. Un sistem AI le trimite mesaje personalizate, ca să readuci clienți vechi fără să plătești reclame.</p>
-            </div>
-            <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
-              <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
-              <h3 className="text-white font-semibold">„Secretara Virtuală care nu doarme”</h3>
-              <p className="text-slate-400 text-sm">Asistent AI 24/7</p>
-              <p className="mt-3 text-slate-300">Pierzi clienți pentru că nu răspunzi în weekend/seara. Asistentul AI răspunde la întrebări și face programarea direct în calendarul tău.</p>            </div>
-            <div className="relative p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
-              <div className="absolute top-0 left-0 right-0 mx-2  h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
-              <h3 className="text-white font-semibold">„Marketingul care nu uită”</h3>
-              <p className="text-slate-400 text-sm">Nurturing automat</p>
-              <p className="mt-3 text-slate-300">Plătești reclame, oamenii intră pe site, dar nu cumpără. Sistemul trimite mail/SMS util timp de 2 săptămâni până când sunt gata să cumpere.</p>            </div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#2AAF7F]/30 bg-[#2AAF7F]/10 text-[#2AAF7F] text-xs font-mono uppercase tracking-widest mb-4">Exemple generale</div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white">Cum arată un blocaj rezolvat</h2>
+          <p className="mt-4 text-slate-300">Trei blocaje pe care le întâlnesc multe firme, înainte și după automatizare:</p>
+          <div ref={casesRevealRef} className={`mt-8 grid md:grid-cols-3 gap-6 ${revealCls(casesRevealed)}`}>
+            {BEFORE_AFTER.map((x) => (
+              <div key={x.title} className="relative flex flex-col p-6 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
+                <div className="absolute top-0 inset-x-2 h-px bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70" />
+                <div className="text-xs font-mono uppercase tracking-widest text-slate-400">{x.area}</div>
+                <h3 className="mt-1 text-white font-semibold text-lg">{x.title}</h3>
+                <div className="mt-4 rounded-lg border border-red-500/20 bg-red-500/[0.06] p-3">
+                  <div className="text-[11px] font-mono uppercase tracking-widest text-red-400">Înainte</div>
+                  <p className="mt-1 text-sm text-slate-300">{x.before}</p>
+                </div>
+                <div className="mt-3 rounded-lg border border-[#2AAF7F]/25 bg-[#2AAF7F]/[0.08] p-3">
+                  <div className="text-[11px] font-mono uppercase tracking-widest text-[#2AAF7F]">După</div>
+                  <p className="mt-1 text-sm text-slate-200">{x.after}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -494,122 +520,114 @@ const App = () => {
         </div>
       </section> */}
 
-      {/* Services Section */}
+      {/* Services: built on the client's bottleneck and budget */}
       <section id="services" className="relative z-10 py-24 px-6">
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-1">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 sticky top-32">
-                Ce construiesc pentru tine
-                <div className="w-20 h-1 bg-[#76007D] mt-4 rounded-full"></div>
-              </h2>
+              <div className="lg:sticky lg:top-32">
+                <h2 className="text-3xl md:text-4xl font-bold text-white">
+                  Construit pe blocajul tău
+                  <div className="w-20 h-1 bg-[#76007D] mt-4 rounded-full"></div>
+                </h2>
+                <p className="mt-6 text-slate-300">Nu vând pachete fixe. Găsim împreună blocajul, apoi construim exact ce îl rezolvă, pentru compania ta și la bugetul tău.</p>
+                <p className="mt-6 text-xs font-mono uppercase tracking-widest text-slate-500">Ce pot construi</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {CAPABILITIES.map((c) => (
+                    <span key={c} className="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs text-slate-300">{c}</span>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <div ref={servicesRevealRef} className={`lg:col-span-2 space-y-6 ${revealCls(servicesRevealed)}`}>
-              {/* Service 1 */}
               <TiltCard>
-              <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="p-3 bg-[#76007D]/10 rounded-lg text-[#76007D]">
-                    <Code2 size={28} />
+                <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 overflow-hidden">
+                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 bg-[#76007D]/10 rounded-lg text-[#76007D]">
+                      <Search size={28} />
+                    </div>
+                    <div>
+                      <div className="text-xs font-mono uppercase tracking-widest text-slate-400">Pasul 1</div>
+                      <h3 className="text-xl font-bold text-white">Audit de blocaje</h3>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold text-white">Dezvoltare Web AI-Driven</h3>
+                  <p className="text-slate-300 mb-4">
+                    Analizăm procesele tale și primești harta blocajelor: unde se pierde timp, cât costă fiecare și ce merită automatizat întâi.
+                  </p>
+                  <ul className="grid grid-cols-2 gap-2 text-sm text-slate-400">
+                    <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Discuții cu echipa</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Harta fluxurilor de lucru</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Costul fiecărui blocaj</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Plan pe priorități</li>
+                  </ul>
                 </div>
-                <p className="text-slate-300 mb-4">
-                  Nu doar un site de prezentare, ci o mașinărie de conversie. Construiesc platforme custom cu sisteme integrate de captare a lead-urilor și CRM, optimizate pentru viteză și UX.
-                </p>
-                <ul className="grid grid-cols-2 gap-2 text-sm text-slate-400">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Arhitectură React/Next.js</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Integrări API Native</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Dashboard Admin Custom</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Securitate Enterprise</li>
-                </ul>
-              </div>
               </TiltCard>
 
-              {/* Service 2 */}
               <TiltCard>
-              <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="p-3 bg-[#76007D]/10 rounded-lg text-[#76007D]">
-                    <Zap size={28} />
+                <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 overflow-hidden">
+                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 bg-[#76007D]/10 rounded-lg text-[#76007D]">
+                      <Workflow size={28} />
+                    </div>
+                    <div>
+                      <div className="text-xs font-mono uppercase tracking-widest text-slate-400">Pasul 2</div>
+                      <h3 className="text-xl font-bold text-white">Automatizare țintită</h3>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold text-white">SEO & Optimizare Automată</h3>
+                  <p className="text-slate-300 mb-4">
+                    Rezolvăm un blocaj concret: un agent AI sau o integrare care preia munca repetitivă, conectată la sistemele pe care le ai deja.
+                  </p>
+                  <ul className="grid grid-cols-2 gap-2 text-sm text-slate-400">
+                    <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Prototip pe datele tale</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Integrare cu sistemele existente</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Testare automată</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Rezultat măsurat</li>
+                  </ul>
                 </div>
-                <p className="text-slate-300 mb-4">
-                  Audit tehnic profund și implementare automată. Sistemele mele monitorizează constant performanța, ajustează meta-datele și optimizează conținutul pentru a domina rezultatele de căutare.
-                </p>
-                <ul className="grid grid-cols-2 gap-2 text-sm text-slate-400">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Audit Tehnic Automat</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Schema Markup Dinamic</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Optimizare Viteză Core Web Vitals</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Rapoarte KPI Automate</li>
-                </ul>
-              </div>
               </TiltCard>
 
-              {/* Service 3 */}
               <TiltCard>
-              <div className="relative p-8 rounded-xl bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70"></div>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="p-3 bg-[#76007D]/10 rounded-lg text-[#76007D]">
-                    <Database size={28} />
+                <div className="relative p-8 rounded-2xl bg-[#00FFFF]/8 backdrop-blur-xl border border-[#00FFFF]/25 transition-all overflow-hidden group">
+                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#00FFFF] via-[#39B5C4] to-[#00FFFF] opacity-80"></div>
+                  <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#00FFFF] via-[#39B5C4] to-[#00FFFF] opacity-60"></div>
+                  <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute -top-10 -left-14 w-[260px] h-[260px] bg-gradient-to-br from-white/15 to-transparent rounded-full blur-3xl opacity-20"></div>
+                    <div className="absolute -bottom-12 -right-16 w-[300px] h-[300px] bg-gradient-to-tr from-[#00FFFF]/15 to-transparent rounded-full blur-3xl opacity-20"></div>
                   </div>
-                  <h3 className="text-xl font-bold text-white">Reactivare Baze de Date & CRM</h3>
-                </div>
-                <p className="text-slate-300 mb-4">
-                  Transformă listele de contacte „moarte” în venituri. Configurez sisteme care scanează baza de date, segmentează clienții și inițiază conversații personalizate prin AI pentru a-i readuce în pipeline.
-                </p>
-                <ul className="grid grid-cols-2 gap-2 text-sm text-slate-400">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Lead Scoring Automat</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Campanii de Reactivare AI</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Integrare CRM Bidirecțională</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#1E94A5]" /> Curățare Date Automată</li>
-                </ul>
-              </div>
-              </TiltCard>
-
-              {/* Service 4 - CUSTOM PERSONALIZED (Premium Cyan Neon) */}
-              <TiltCard>
-              <div className="relative p-8 rounded-2xl bg-[#00FFFF]/8 backdrop-blur-xl border border-[#00FFFF]/25   transition-all overflow-hidden group">
-                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#00FFFF] via-[#39B5C4] to-[#00FFFF] opacity-80"></div>
-                <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-[#00FFFF] via-[#39B5C4] to-[#00FFFF] opacity-60"></div>
-                <div className="absolute inset-0 pointer-events-none">
-                  <div className="absolute -top-10 -left-14 w-[260px] h-[260px] bg-gradient-to-br from-white/15 to-transparent rounded-full blur-3xl opacity-20"></div>
-                  <div className="absolute -bottom-12 -right-16 w-[300px] h-[300px] bg-gradient-to-tr from-[#00FFFF]/15 to-transparent rounded-full blur-3xl opacity-20"></div>
-                </div>
-                <div className="absolute top-0 right-0 p-2 bg-[#00FFFF]/10 text-[#00FFFF] text-xs font-bold rounded-bl-lg border-b border-l border-[#00FFFF]/25">
-                  PREMIUM
-                </div>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="p-3 bg-[#00FFFF]/10 border border-[#00FFFF]/25 rounded-lg text-[#00FFFF]">
-                    <Layers size={28} />
+                  <div className="absolute top-0 right-0 p-2 bg-[#00FFFF]/10 text-[#00FFFF] text-xs font-bold rounded-bl-lg border-b border-l border-[#00FFFF]/25">
+                    PREMIUM
                   </div>
-                  <h3 className="text-xl font-bold text-white">Integrare AI Custom & Audit</h3>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 bg-[#00FFFF]/10 border border-[#00FFFF]/25 rounded-lg text-[#00FFFF]">
+                      <Layers size={28} />
+                    </div>
+                    <div>
+                      <div className="text-xs font-mono uppercase tracking-widest text-slate-400">Continuu</div>
+                      <h3 className="text-xl font-bold text-white">Partener tehnic AI</h3>
+                    </div>
+                  </div>
+                  <p className="text-slate-300 mb-4">
+                    Lucrăm continuu, blocaj după blocaj, ca o echipă internă de AI. <span className="text-[#39B5C4] font-semibold">Ritmul și bugetul le stabilești tu.</span>
+                  </p>
+                  <ul className="grid grid-cols-2 gap-2 text-sm text-slate-300">
+                    <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Consultanță 1-la-1</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Agenți AI construiți pe măsură</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Arhitectură scalabilă</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Prioritate la implementare</li>
+                  </ul>
+                  <div className="mt-6 items-center justify-center pt-4 border-t border-white/10">
+                    <button
+                      onClick={scrollToBooking}
+                      className="w-full inline-flex h-12 animate-shimmer items-center justify-center rounded-xl border border-[#00FFFF]/25 bg-[linear-gradient(110deg,#000022,45%,#39B5C4,55%,#000022)] bg-[length:200%_100%] px-6 font-semibold text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#1E94A5] focus:ring-offset-2 focus:ring-offset-[#000022]"
+                    >
+                      Cere Ofertă Personalizată <ArrowRight size={16} className="ml-2" />
+                    </button>
+                  </div>
                 </div>
-                <p className="text-slate-300 mb-4">
-                  Analizez procesele afacerii tale, găsesc blocajul care te costă cel mai mult și integrez agenți AI exact acolo. Aceeași metodă pe care o folosesc în echipa mea, adaptată <span className="text-[#39B5C4] font-semibold">100% modelului tău</span>.
-                </p>
-                <ul className="grid grid-cols-2 gap-2 text-sm text-slate-300">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Audit de procese 1-la-1</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Agenți AI construiți pe măsură</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Integrare cu sistemele existente</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#00FFFF]" /> Rezultate măsurabile</li>
-                </ul>
-                <div className="mt-6 items-center justify-center pt-4  border-t border-white/10">
-                  <button
-                    onClick={scrollToBooking}
-                    className="w-full inline-flex h-12 animate-shimmer items-center justify-center rounded-xl border border-[#00FFFF]/25 bg-[linear-gradient(110deg,#000022,45%,#39B5C4,55%,#000022)] bg-[length:200%_100%] px-6 font-semibold text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#1E94A5] focus:ring-offset-2 focus:ring-offset-[#000022]"
-                  >
-                    Cere Ofertă Personalizată <ArrowRight size={16} className="ml-2" />
-                  </button>
-                </div>
-              </div>
               </TiltCard>
-
             </div>
           </div>
         </div>

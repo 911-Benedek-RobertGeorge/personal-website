@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Bot, Calendar, ChevronDown, Database, FlaskConical, Workflow, X } from 'lucide-react';
+import { ArrowRight, Calendar, ChevronDown, X } from 'lucide-react';
 import { BEATS, PANELS, panelT, type PanelSpec } from './stage';
 
 type Props = {
@@ -9,28 +9,42 @@ type Props = {
   onSecondaryCta: () => void;
 };
 
+type Tone = 'red' | 'teal' | 'green';
+
+const TONE = {
+  red: { border: 'border-red-500/25', mark: 'text-red-400', line: 'to-red-400/80', dot: 'bg-red-400 shadow-[0_0_10px_#f87171]' },
+  teal: { border: 'border-[#39B5C4]/30', mark: 'text-[#39B5C4]', line: 'to-[#39B5C4]/80', dot: 'bg-[#39B5C4] shadow-[0_0_10px_#39B5C4]' },
+  green: { border: 'border-[#2AAF7F]/30', mark: 'text-[#2AAF7F]', line: 'to-[#2AAF7F]/80', dot: 'bg-[#2AAF7F] shadow-[0_0_10px_#2AAF7F]' },
+} as const;
+
 const glass = 'rounded-xl bg-[#000022]/60 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.35)]';
-const chip = `${glass} px-4 py-2.5 text-sm font-semibold text-white flex items-center gap-2`;
-const painCard = `${glass} border-red-500/20 px-4 py-3`;
-const stepCard = `${glass} border-[#2AAF7F]/25 px-5 py-4`;
+const card = 'w-[min(30vw,340px)]';
+// Cards sit in an arc around the robot, measured from the screen center in vh (his size follows the
+// viewport height). Upper cards hug him; lower cards clear his orbiting props (about ±30vh), and
+// min() keeps them on screen when the window is narrow.
+const TITLE = 'left-1/2 -translate-x-1/2 top-[13vh] w-[min(92vw,900px)] text-center';
+const TL = `right-[calc(50%+12vh)] top-[21vh] ${card}`;
+const TR = `left-[calc(50%+12vh)] top-[21vh] ${card}`;
+const BL = `right-[min(calc(50%+32vh),calc(100%-340px-5vw))] top-[46vh] ${card}`;
+const BR = `left-[min(calc(50%+32vh),calc(100%-340px-5vw))] top-[46vh] ${card}`;
 
 // Desktop outer-wrapper position classes per panel id (mobile m-* handled separately).
 const POS: Record<string, string> = {
   'wake-headline': 'left-1/2 -translate-x-1/2 top-[12vh] w-[min(92vw,760px)] text-center',
-  'helper-title': 'left-1/2 -translate-x-1/2 top-[13vh] text-center',
-  'helper-chip-1': 'left-[7vw] top-[27vh]',
-  'helper-chip-2': 'right-[7vw] top-[31vh]',
-  'helper-chip-3': 'left-[9vw] bottom-[28vh]',
-  'helper-chip-4': 'right-[9vw] bottom-[24vh]',
-  'chaos-title': 'left-1/2 -translate-x-1/2 top-[13vh] text-center',
-  'chaos-pain-1': 'left-[6vw] top-[27vh] w-[min(30vw,320px)]',
-  'chaos-pain-2': 'right-[6vw] top-[31vh] w-[min(30vw,320px)]',
-  'chaos-pain-3': 'left-[8vw] bottom-[24vh] w-[min(30vw,320px)]',
-  'process-title': 'left-1/2 -translate-x-1/2 top-[13vh] text-center',
-  'process-1': 'left-[9vw] top-[28vh] w-[min(24vw,260px)]',
-  'process-2': 'right-[9vw] top-[28vh] w-[min(24vw,260px)]',
-  'process-3': 'left-[11vw] bottom-[26vh] w-[min(24vw,260px)]',
-  'process-4': 'right-[11vw] bottom-[26vh] w-[min(24vw,260px)]',
+  'pains-title': TITLE,
+  'pains-1': TL,
+  'pains-2': TR,
+  'pains-3': BL,
+  'method-title': TITLE,
+  'method-1': TL,
+  'method-2': TR,
+  'method-3': BL,
+  'method-4': BR,
+  'process-title': TITLE,
+  'process-1': TL,
+  'process-2': TR,
+  'process-3': BL,
+  'process-4': BR,
   // Top-center like wake (bookend): the z-999 canvas paints the robot OVER panels, and only ~120px clears
   // the podium at the bottom — a bottom-centered CTA gets buried. Above the head it is always readable.
   'activate-cta': 'left-1/2 -translate-x-1/2 top-[12vh] w-[min(92vw,560px)] text-center',
@@ -45,6 +59,30 @@ function CtaButton({ onClick, children }: { onClick: () => void; children: React
       <Calendar size={18} />
       {children}
     </button>
+  );
+}
+
+function HudCard({ tone, mark, title, body }: { tone: Tone; mark: React.ReactNode; title: string; body: string }) {
+  const t = TONE[tone];
+  return (
+    <div className={`relative overflow-hidden rounded-2xl bg-[#000022]/70 backdrop-blur-xl border ${t.border} shadow-[0_8px_32px_rgba(0,0,0,0.35)] px-6 py-5`}>
+      <div className="absolute top-0 inset-x-4 h-px bg-gradient-to-r from-[#76007D] via-[#1E94A5] to-[#2AAF7F] opacity-70" />
+      <div className={`font-mono text-xs tracking-widest ${t.mark}`}>{mark}</div>
+      <div className="mt-1 text-white text-lg font-semibold leading-snug">{title}</div>
+      <p className="mt-1.5 text-slate-300 text-sm leading-relaxed">{body}</p>
+    </div>
+  );
+}
+
+// A line and a dot from the card's inner edge toward the robot, so each card reads as a callout on him.
+function Callout({ side, tone, children }: { side: 'left' | 'right'; tone: Tone; children: React.ReactNode }) {
+  const t = TONE[tone];
+  return (
+    <div className="relative">
+      {children}
+      <span aria-hidden="true" className={`absolute top-1/2 h-px w-[5vh] from-white/10 ${t.line} ${side === 'left' ? 'left-full bg-gradient-to-r' : 'right-full bg-gradient-to-l'}`} />
+      <span aria-hidden="true" className={`absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full ${t.dot} ${side === 'left' ? 'left-[calc(100%+5vh)]' : 'right-[calc(100%+5vh)]'}`} />
+    </div>
   );
 }
 
@@ -104,32 +142,41 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
   };
 
   const pains = [
-    { title: 'Lead-uri care scapă', body: 'Clienți care întreabă seara și cumpără de la altcineva dimineața.' },
-    { title: 'Muncă manuală repetitivă', body: 'Oameni buni blocați în emailuri, copy-paste și tabele.' },
-    { title: 'Un blocaj pe care nu-l vede nimeni', body: 'Un singur pas lent încetinește tot procesul și costă în fiecare zi.' },
+    { title: 'Date copiate de mână', body: 'Aceeași informație introdusă de mai multe ori, în sisteme diferite.' },
+    { title: 'Cereri care așteaptă un om', body: 'Oferte, aprobări și răspunsuri care stau zile întregi în inbox.' },
+    { title: 'Verificări făcute manual', body: 'Ore în fiecare săptămână pe controale și rapoarte repetitive.' },
   ];
 
-  const chips = [
-    { icon: <Bot size={16} className="text-[#1E94A5]" />, label: 'Asistent AI care răspunde 24/7' },
-    { icon: <Workflow size={16} className="text-[#1E94A5]" />, label: 'Agenți AI pentru munca repetitivă' },
-    { icon: <Database size={16} className="text-[#1E94A5]" />, label: 'Follow-up și CRM automat' },
-    { icon: <FlaskConical size={16} className="text-[#1E94A5]" />, label: 'Testare automată cu agenți AI' },
+  const method = [
+    { n: '01', title: 'Urmăresc fluxul', body: 'De la cerere la livrare: cine face ce și cu ce unelte.' },
+    { n: '02', title: 'Găsesc așteptările', body: 'Unde stă munca și unde se repetă de mână.' },
+    { n: '03', title: 'Calculez costul', body: 'Câte ore și câți bani consumă fiecare pas, în fiecare lună.' },
+    { n: '04', title: 'Aleg blocajul', body: 'Pasul unde automatizarea aduce cel mai mult, cel mai repede.' },
   ];
 
-  const steps = [
-    { n: '01', title: 'Audit', body: 'Găsim blocajul care te costă cel mai mult.' },
-    { n: '02', title: 'Prototip', body: 'Un agent AI care rezolvă blocajul, testat pe datele tale.' },
-    { n: '03', title: 'Integrare', body: 'Îl conectez la sistemele pe care le folosești deja.' },
-    { n: '04', title: 'Măsurăm', body: 'Vedem cât timp și câți bani câștigi, apoi trecem la următorul blocaj.' },
+  const solve = [
+    { n: '05', title: 'Prototip', body: 'Un agent AI care preia pasul blocat, testat pe datele tale.' },
+    { n: '06', title: 'Integrare', body: 'Îl conectez la sistemele pe care le folosești deja.' },
+    { n: '07', title: 'Măsurăm', body: 'Vedem cât timp și câți bani câștigi.' },
+    { n: '08', title: 'Următorul blocaj', body: 'Rezolvi unul și apare altul. Îl luăm și pe el.' },
   ];
 
-  const stepCards = steps.map((s) => (
-    <div key={s.n} className={stepCard}>
-      <div className="font-mono text-sm text-[#2AAF7F]">{s.n}</div>
-      <div className="text-white font-semibold">{s.title}</div>
-      <p className="text-slate-400 text-xs mt-1">{s.body}</p>
-    </div>
-  ));
+  const painCards = pains.map((x) => <HudCard key={x.title} tone="red" mark={<X size={14} />} title={x.title} body={x.body} />);
+  const methodCards = method.map((x) => <HudCard key={x.n} tone="teal" mark={x.n} title={x.title} body={x.body} />);
+  const solveCards = solve.map((x) => <HudCard key={x.n} tone="green" mark={x.n} title={x.title} body={x.body} />);
+
+  const stepList = (steps: { n: string; title: string; body: string }[]) => (
+    <ol className="space-y-2">
+      {steps.map((s) => (
+        <li key={s.n} className="flex items-start gap-2 text-xs text-slate-300">
+          <span className="font-mono text-[#2AAF7F] shrink-0">{s.n}</span>
+          <span><span className="text-white font-semibold">{s.title}</span> — {s.body}</span>
+        </li>
+      ))}
+    </ol>
+  );
+
+  const title = (text: string) => <h2 className="text-3xl md:text-4xl font-bold text-white">{text}</h2>;
 
   const content: Record<string, React.ReactNode> = {
     'wake-headline': (
@@ -144,35 +191,20 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
         </div>
       </>
     ),
-    'helper-title': <h2 className="text-3xl md:text-4xl font-bold text-white">Ce automatizez cu AI</h2>,
-    'helper-chip-1': <div className={chip}>{chips[0].icon}{chips[0].label}</div>,
-    'helper-chip-2': <div className={chip}>{chips[1].icon}{chips[1].label}</div>,
-    'helper-chip-3': <div className={chip}>{chips[2].icon}{chips[2].label}</div>,
-    'helper-chip-4': <div className={chip}>{chips[3].icon}{chips[3].label}</div>,
-    'chaos-title': <h2 className="text-3xl md:text-4xl font-bold text-white">Unde se pierd azi timp și bani</h2>,
-    'chaos-pain-1': (
-      <div className={painCard}>
-        <div className="flex items-center gap-2 text-white font-semibold text-sm"><X size={14} className="text-red-400" />{pains[0].title}</div>
-        <p className="text-slate-400 text-xs mt-1">{pains[0].body}</p>
-      </div>
-    ),
-    'chaos-pain-2': (
-      <div className={painCard}>
-        <div className="flex items-center gap-2 text-white font-semibold text-sm"><X size={14} className="text-red-400" />{pains[1].title}</div>
-        <p className="text-slate-400 text-xs mt-1">{pains[1].body}</p>
-      </div>
-    ),
-    'chaos-pain-3': (
-      <div className={painCard}>
-        <div className="flex items-center gap-2 text-white font-semibold text-sm"><X size={14} className="text-red-400" />{pains[2].title}</div>
-        <p className="text-slate-400 text-xs mt-1">{pains[2].body}</p>
-      </div>
-    ),
-    'process-title': <h2 className="text-3xl md:text-4xl font-bold text-white">Cum lucrăm împreună</h2>,
-    'process-1': stepCards[0],
-    'process-2': stepCards[1],
-    'process-3': stepCards[2],
-    'process-4': stepCards[3],
+    'pains-title': title('Blocaje pe care le au multe firme'),
+    'pains-1': <Callout side="left" tone="red">{painCards[0]}</Callout>,
+    'pains-2': <Callout side="right" tone="red">{painCards[1]}</Callout>,
+    'pains-3': <Callout side="left" tone="red">{painCards[2]}</Callout>,
+    'method-title': title('Cum găsesc blocajul tău'),
+    'method-1': <Callout side="left" tone="teal">{methodCards[0]}</Callout>,
+    'method-2': <Callout side="right" tone="teal">{methodCards[1]}</Callout>,
+    'method-3': <Callout side="left" tone="teal">{methodCards[2]}</Callout>,
+    'method-4': <Callout side="right" tone="teal">{methodCards[3]}</Callout>,
+    'process-title': title('Cum îl rezolvăm'),
+    'process-1': <Callout side="left" tone="green">{solveCards[0]}</Callout>,
+    'process-2': <Callout side="right" tone="green">{solveCards[1]}</Callout>,
+    'process-3': <Callout side="left" tone="green">{solveCards[2]}</Callout>,
+    'process-4': <Callout side="right" tone="green">{solveCards[3]}</Callout>,
     'activate-cta': (
       <>
         <p className="text-[#2AAF7F] font-bold text-lg mb-4">Hai să găsim blocajul din afacerea ta.</p>
@@ -196,37 +228,26 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
         <div className="mt-4"><CtaButton onClick={onPrimaryCta}>Programează un audit AI</CtaButton></div>
       </div>
     ),
-    'm-helper': (
-      <div className={`${glass} px-5 py-5`}>
-        <h2 className="text-lg font-bold text-white mb-3">Ce automatizez cu AI</h2>
-        <div className="grid grid-cols-2 gap-2">
-          {chips.map((c) => (
-            <div key={c.label} className="flex items-center gap-2 text-xs text-white font-medium">{c.icon}{c.label}</div>
-          ))}
-        </div>
-      </div>
-    ),
-    'm-chaos': (
+    'm-pains': (
       <div className={`${glass} border-red-500/20 px-5 py-5`}>
-        <h2 className="text-lg font-bold text-white mb-3">Unde se pierd azi timp și bani</h2>
+        <h2 className="text-lg font-bold text-white mb-3">Blocaje pe care le au multe firme</h2>
         <ul className="space-y-2">
           {pains.map((pn) => (
-            <li key={pn.title} className="flex items-start gap-2 text-xs text-slate-300"><X size={12} className="text-red-400 mt-0.5 shrink-0" />{pn.title} — {pn.body}</li>
+            <li key={pn.title} className="flex items-start gap-2 text-xs text-slate-300"><X size={12} className="text-red-400 mt-0.5 shrink-0" /><span><span className="text-white font-semibold">{pn.title}</span> — {pn.body}</span></li>
           ))}
         </ul>
       </div>
     ),
+    'm-method': (
+      <div className={`${glass} border-[#39B5C4]/25 px-5 py-5`}>
+        <h2 className="text-lg font-bold text-white mb-3">Cum găsesc blocajul tău</h2>
+        {stepList(method)}
+      </div>
+    ),
     'm-process': (
       <div className={`${glass} border-[#2AAF7F]/25 px-5 py-5`}>
-        <h2 className="text-lg font-bold text-white mb-3">Cum lucrăm împreună</h2>
-        <ol className="space-y-2">
-          {steps.map((s) => (
-            <li key={s.n} className="flex items-start gap-2 text-xs text-slate-300">
-              <span className="font-mono text-[#2AAF7F] shrink-0">{s.n}</span>
-              <span><span className="text-white font-semibold">{s.title}</span> — {s.body}</span>
-            </li>
-          ))}
-        </ol>
+        <h2 className="text-lg font-bold text-white mb-3">Cum îl rezolvăm</h2>
+        {stepList(solve)}
       </div>
     ),
     'm-activate': (
@@ -254,16 +275,16 @@ export default function StagePanels({ onPrimaryCta, onSecondaryCta }: Props) {
       <section data-stage className="relative">
         <div className="min-h-[80vh] flex flex-col items-center justify-center text-center px-6 gap-4">{content['wake-headline']}</div>
         <div className="min-h-[60vh] flex flex-col items-center justify-center px-6 gap-5">
-          {content['helper-title']}
-          <div className="flex flex-wrap justify-center gap-3">{chips.map((c) => (<div key={c.label} className={chip}>{c.icon}{c.label}</div>))}</div>
+          {content['pains-title']}
+          <div className="grid md:grid-cols-3 gap-4 max-w-5xl">{painCards}</div>
         </div>
         <div className="min-h-[60vh] flex flex-col items-center justify-center px-6 gap-5">
-          {content['chaos-title']}
-          <div className="grid md:grid-cols-3 gap-4 max-w-4xl">{['chaos-pain-1', 'chaos-pain-2', 'chaos-pain-3'].map((id) => (<div key={id}>{content[id]}</div>))}</div>
+          {content['method-title']}
+          <div className="grid md:grid-cols-4 gap-4 max-w-6xl">{methodCards}</div>
         </div>
         <div className="min-h-[60vh] flex flex-col items-center justify-center px-6 gap-5">
           {content['process-title']}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-5xl">{stepCards}</div>
+          <div className="grid md:grid-cols-4 gap-4 max-w-6xl">{solveCards}</div>
         </div>
         <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-6">{content['activate-cta']}</div>
       </section>

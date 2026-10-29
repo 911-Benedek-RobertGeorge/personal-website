@@ -33,7 +33,7 @@ for (const s of PANELS) {
 }
 
 // panelT trapezoid: 0 before enter, 1 mid-window, 0 after exit.
-const w = PANELS.find((s) => s.id === "helper-chip-1");
+const w = PANELS.find((s) => s.id === "pains-1");
 assert.equal(panelT(w, w.enterAt - 0.01), 0, "hidden before enter");
 const mid = (w.enterAt + w.exitAt) / 2;
 assert.equal(panelT(w, mid), 1, "fully visible mid-window");
