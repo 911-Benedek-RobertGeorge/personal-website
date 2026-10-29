@@ -14,7 +14,6 @@ import {
 } from 'lucide-react';
 
 import dynamic from "next/dynamic";
-import Script from 'next/script';
 import { FloatingNav } from "@/components/ui/floating-navbar";
 import StagePanels from "./StagePanels";
 import { useReveal } from "./useReveal";
@@ -22,12 +21,6 @@ import TiltCard from "./TiltCard";
 
 const Scene = dynamic(() => import("./Scene"), { ssr: false });
 
-type YTPlayer = { playVideo?: () => void };
-type YTNamespace = {
-  Player: new (elementId: string, options: object) => YTPlayer;
-  PlayerState: { PLAYING: number };
-};
-type YTWindow = Window & { YT?: YTNamespace; onYouTubeIframeAPIReady?: () => void };
 type CalendlyWindow = Window & {
   Calendly?: { initPopupWidget?: (opts: { url: string }) => void };
 };
@@ -159,37 +152,7 @@ const App = () => {
     }
   };
 
-  const [videoExpanded, setVideoExpanded] = useState(false);
-  const playerRef = useRef<YTPlayer | null>(null);
-  const videoSrc = `https://www.youtube.com/embed/Co4FE_SGRtI?enablejsapi=1&autoplay=0&controls=1&rel=0&modestbranding=1&playsinline=1`;
-
-  useEffect(() => {
-    const createPlayer = () => {
-      try {
-        const YTObj = (window as YTWindow).YT;
-        if (YTObj && YTObj.Player && !playerRef.current) {
-          playerRef.current = new YTObj.Player('hero-vsl', {
-            playerVars: {
-              origin: window.location.origin,
-              modestbranding: 1,
-              rel: 0,
-              playsinline: 1,
-            },
-            events: {
-              onStateChange: (e: { data?: number }) => {
-                const state = e?.data;
-                if (state === YTObj.PlayerState.PLAYING) {
-                  setVideoExpanded(true);
-                }
-              }
-            }
-          });
-        }
-      } catch { }
-    };
-    (window as YTWindow).onYouTubeIframeAPIReady = createPlayer;
-    createPlayer();
-  }, []);
+  const videoSrc = `https://www.youtube.com/embed/Co4FE_SGRtI?autoplay=0&controls=1&rel=0&modestbranding=1&playsinline=1`;
 
   return (
     // overflow-x-clip (NOT -hidden): hidden computes overflow-y:auto, making this a scroll container that un-sticks the pinned stage.
@@ -235,7 +198,6 @@ const App = () => {
       />
 
       {/* Act 1 — The pinned robot stage */}
-      <Script src="https://www.youtube.com/iframe_api" strategy="afterInteractive" />
       <StagePanels onPrimaryCta={handleScheduleClick} onSecondaryCta={scrollToBooking} />
 
       {/* Act 2 — VSL */}
@@ -243,47 +205,22 @@ const App = () => {
         <div className="container mx-auto max-w-5xl">
           <div
             ref={vslRevealRef}
-            // Revealed state must carry NO transform (scale-100 still sets one), or this div becomes the
-            // containing block for the expanded video's `fixed inset-0` and collapses it to ~2px.
             className={`transition-all duration-700 ease-out ${vslRevealed ? 'opacity-100' : 'opacity-0 scale-[0.94]'}`}
           >
             <div className="relative">
               <div className="absolute -inset-10 bg-[#2AAF7F]/15 rounded-full blur-[110px] pointer-events-none" />
               <div className="absolute -inset-10 bg-[#76007D]/10 rounded-full blur-[130px] pointer-events-none" />
-              <div className={`${videoExpanded ? 'fixed inset-0 z-[6000] rounded-none pointer-events-none' : 'relative z-0 rounded-2xl w-full'} group overflow-hidden bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10 transition-all duration-700 ease-[cubic-bezier(.2,.8,.2,1)] transform-gpu`}>
-                <div className={`${videoExpanded ? 'w-full h-full' : 'w-full aspect-video'} transition-all duration-700 ease-[cubic-bezier(.2,.8,.2,1)]`}>
+              <div className="relative z-0 w-full rounded-2xl overflow-hidden bg-[#39B5C4]/10 backdrop-blur-xl border border-white/10">
+                <div className="w-full aspect-video">
                   <iframe
                     title="VSL — Digitalizare & Automatizare"
-                    className="w-full h-full pointer-events-auto"
-                    id="hero-vsl"
+                    className="w-full h-full"
                     src={videoSrc}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
-                  {!videoExpanded && (
-                    <button
-                      aria-label="Play"
-                      onClick={() => {
-                        setVideoExpanded(true);
-                        setTimeout(() => {
-                          try { playerRef.current?.playVideo?.(); } catch { }
-                        }, 50);
-                      }}
-                      className="absolute inset-0 z-[100] md:hidden"
-                    />
-                  )}
                 </div>
               </div>
-              {videoExpanded && (
-                <div className="fixed inset-0 z-[6500] pointer-events-none">
-                  <button
-                    onClick={() => setVideoExpanded(false)}
-                    className="pointer-events-auto absolute top-16 right-4 bg-white/10 text-white text-xs px-3 py-1 rounded border border-white/20 cursor-pointer"
-                  >
-                    Închide
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         </div>
